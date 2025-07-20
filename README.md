@@ -1,14 +1,27 @@
 # LLMunix 🦄
 
-**Now with dual runtime support!** LLMunix is a Pure Markdown Operating System that can run on both Claude Code and Gemini CLI, providing flexible deployment options based on your preferred AI runtime.
+**The Pure Markdown Operating System with Dual Runtime Support**
 
-> ⚠️ **IMPORTANT FOR GEMINI CLI USERS**: To use LLMunix with Gemini CLI, you need the "virtual tools" feature from [Gemini CLI Issue #1806](https://github.com/google-gemini/gemini-cli/issues/1806). This feature is currently in PR. You must compile the `issue-1806` branch from the fork at https://github.com/EvolvingAgentsLabs/gemini-cli
+LLMunix turns AI models into autonomous agents using a pure markdown architecture. Run the exact same system on either Claude Code or Gemini CLI based on your preference and needs.
 
 > 🌐 **Part of [Evolving Agents Labs](https://evolvingagentslabs.github.io)** | 🔬 [View All Experiments](https://evolvingagentslabs.github.io#experiments) | 📖 [Project Details](https://evolvingagentslabs.github.io/experiments/llmunix.html)
 
-A Pure Markdown Operating System where an AI agent acts as the kernel. It's designed to be run by manifest-aware, tool-calling runtimes like **[Claude Code](https://anthropic.com/claude-code)** or an enhanced **[Gemini CLI](https://github.com/google-gemini/gemini-cli)**.
+## Choose Your Runtime:
 
-LLMunix implements a concept called **Adaptive Behavior Management**, where the system's behavior dynamically adapts through evolving behavioral constraints. The system features a well-organized structure with core components in the system folder and specialized components in the components folder.
+### [Claude Code](https://anthropic.com/claude-code)
+* Ready to use with Claude's powerful built-in tools
+* Excellent for production and complex workflows
+* Fast setup with minimal configuration
+
+### [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+* Requires the enhanced version with virtual tools support
+* Clone: `git clone https://github.com/EvolvingAgentsLabs/gemini-cli -b issue-1806`
+* Build following the repo instructions
+* Great for local development and customization
+
+## Core Concepts
+
+LLMunix implements **Adaptive Behavior Management** - the system's behavior dynamically adapts through evolving constraints. The framework features a well-organized structure with core components in the system folder and specialized components in the components folder.
 
 -   **Pure Markdown Architecture**: All system components—agents and tools—are human-readable Markdown files.
 -   **Manifest-Driven**: The OS "firmware" and "system calls" are defined in either `CLAUDE.md` for Claude Code or `GEMINI.md` for Gemini CLI.
@@ -25,54 +38,159 @@ LLMunix implements a concept called **Adaptive Behavior Management**, where the 
 
 ---
 
-## Quick Start
+## Getting Started
 
-The LLMunix workflow is a simple and powerful process that turns your AI runtime into an autonomous agent for this project.
+LLMunix supports two AI runtimes: Claude Code and Gemini CLI. Choose the one that best fits your needs and follow the instructions below.
 
-### Using Claude Code
+### Prerequisites
 
-**1. Boot the System**
+- **For Claude Code**: You need [Claude Code](https://anthropic.com/claude-code) installed
+- **For Gemini CLI**: You need the enhanced version with virtual tools support:
+  - Clone: `git clone https://github.com/EvolvingAgentsLabs/gemini-cli -b issue-1806`
+  - Build: Follow instructions in the README of that repository
+
+### Installation
 
 ```bash
-# From the llmunix project root:
+# Clone the LLMunix repository
+git clone https://github.com/EvolvingAgentsLabs/llmunix.git
+cd llmunix
+```
+
+## Running LLMunix with Claude Code
+
+### 1. Boot the System
+
+This initializes the workspace and prepares the environment.
+
+```bash
+# From the llmunix project root directory:
 boot llmunix
 ```
 
-This displays the boot welcome message and prepares the workspace for execution.
+You'll see the ASCII art welcome message and example commands.
 
-**2. Execute a Goal**
+### 2. Execute a Task
+
+Use the `llmunix execute:` command followed by your goal in quotes:
 
 ```bash
-# Give the agent its goal directly
+# Basic execution
 llmunix execute: "Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing."
+
+# Research task example
+llmunix execute: "Get live content from https://huggingface.co/blog and create a research summary"
+
+# Interactive mode (with user involvement)
+llmunix execute: "Create a Python calculator" -i
 ```
 
-Claude Code will read the `CLAUDE.md` manifest and execute your goal autonomously.
+Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously.
 
-### Using Gemini CLI
+### 3. Other Commands
 
-**1. Boot the System (Run Once per Session)**
+```bash
+# Interactive session
+./llmunix-llm interactive
 
-This deterministic script prepares the workspace. It clears any previous state, ensuring a fresh run.
+# Simulate a task (for training data generation)
+llmunix simulate: "Research task workflow for fine-tuning dataset"
+```
+
+## Running LLMunix with Gemini CLI
+
+### 1. Boot the System
+
+This script prepares the workspace for execution. Run it once per session:
 
 ```bash
 # From the llmunix project root:
 ./llmunix-boot
 ```
 
-**2. Execute a Goal**
+### 2. Start Gemini CLI
 
-Now, start the Gemini CLI. It will automatically detect the `GEMINI.md` manifest and assume the role of the `SystemAgent`. Provide your high-level goal directly at the prompt.
+Start the enhanced Gemini CLI from your terminal:
 
 ```bash
-# Start the Gemini CLI
-gemini
+# If using the compiled version from EvolvingAgentsLabs fork:
+/path/to/gemini
+```
 
-# Give the agent its goal at the prompt
+### 3. Execute a Task
+
+Simply type your goal at the Gemini CLI prompt:
+
+```
 > Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.
 ```
 
-The system will now take over, create a plan, and execute it autonomously until the goal is complete.
+Or for a research task:
+
+```
+> Get live content from https://huggingface.co/blog and create a research summary
+```
+
+Gemini CLI reads the `GEMINI.md` manifest and executes your goal autonomously.
+
+### 4. Interactive Commands
+
+During an interactive session, you can use these commands:
+
+```
+🎯 llmunix> refine     # Refine the last executed goal
+🎯 llmunix> status     # Show current workspace status
+🎯 llmunix> history    # Display execution history
+🎯 llmunix> clear      # Reset workspace (with confirmation)
+🎯 llmunix> help       # Show available commands
+🎯 llmunix> exit       # Exit interactive mode
+```
+
+## Example Use Cases & Commands
+
+### Real-World Examples
+
+Here are practical examples of tasks you can ask LLMunix to perform:
+
+#### Research and Analysis
+
+```bash
+# Claude Code
+llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing"
+
+# Gemini CLI
+> Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing
+```
+
+#### Content Creation
+
+```bash
+# Claude Code
+llmunix execute: "Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona"
+
+# Gemini CLI
+> Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona
+```
+
+#### Web Research
+
+```bash
+# Claude Code
+llmunix execute: "Get live content from https://huggingface.co/blog and create a research summary"
+
+# Gemini CLI
+> Get live content from https://huggingface.co/blog and create a research summary
+```
+
+#### Training Data Generation
+
+```bash
+# Claude Code
+llmunix simulate: "Research task workflow for fine-tuning dataset"
+
+# Gemini CLI
+> Simulate a research task workflow for fine-tuning dataset
+```
 
 ---
 
@@ -122,28 +240,45 @@ This demonstrates how virtual tools enable:
 - **Local computation** - Sensitive data stays on-premise
 - **API integration** - Connect to any service via HTTP
 
-## How It Works: An Agent in Action
+## LLMunix in Action: How It Works
 
-This repository is a "program" written in Markdown. The manifest file acts as its "firmware," turning the AI runtime (Claude Code or Gemini CLI) into an autonomous agent. The best way to understand it is to see the agent's thought process during a real task.
+LLMunix turns AI runtimes into autonomous agents that can solve complex problems. Here's how it works in practice:
 
-**Goal:** *"Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing."*
+### Example Task Execution
 
-The following is a summary of the agent's actual execution trace:
+When given the task: *"Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing"*
 
-1.  **Planning:** The agent first creates a plan: identify sources, fetch content, analyze topics, and generate a briefing. It writes this to `workspace/state/plan.md`.
+The agent follows this execution flow:
 
-2.  **Tool Failure & Recovery:** The agent tries to use the `GoogleSearch` tool to find sources, but it fails due to an API error. The agent doesn't stop. It recovers by creating its own list of reliable sources and saving it to `workspace/state/tech_news_sources.md`.
+1. **Planning Phase**
+   * Creates detailed execution plan in `workspace/state/plan.md`
+   * Identifies required resources and tools
+   * Establishes success criteria and fallback strategies
 
-3.  **Capability Evolution:** The plan requires extracting "trending topics" and creating a "briefing," but the agent recognizes it has no specialized tools for these tasks. It autonomously **evolves its own capabilities** by:
-    *   Generating the complete Markdown definition for a new `TrendingTopicExtractorAgent.md`.
-    *   Generating the complete Markdown definition for a new `IntelligenceBriefingAgent.md`.
-    *   Using the `write_file` tool to save these new agents to the `components/agents/` directory, making them available for future use.
+2. **Adaptive Error Handling**
+   * When `GoogleSearch` tool fails due to API errors
+   * Recovers by creating its own list of reliable sources
+   * Saves alternative approach to `workspace/state/tech_news_sources.md`
 
-4.  **Tool Confusion & Manual Override:** The agent then attempts to use its newly created agents via the `run_agent` tool. However, it makes a mistake and the command fails (`bash: run_agent: command not found`). After several failed attempts to call the tool correctly, the agent demonstrates a remarkable level of resilience: it decides to **manually perform the logic of the agents itself**. It reads the agent files it just created, understands their logic, and executes the steps manually within its own thought process.
+3. **Dynamic Capability Evolution**
+   * Recognizes need for specialized tools not yet available
+   * Generates new agent definitions like `TrendingTopicExtractorAgent.md`
+   * Creates `IntelligenceBriefingAgent.md` with specialized analysis logic
+   * Writes these new components to `components/agents/` for future reuse
 
-5.  **Completion:** Despite the tool-use errors, the agent successfully extracts the topics, synthesizes the information, and writes the final `intelligence_briefing.md` to the workspace, completing the user's goal.
+4. **Resilient Task Completion**
+   * Even when facing tool execution errors
+   * Falls back to manual implementation of agent logic
+   * Uses created agent definitions as execution templates
+   * Adapts approach based on current execution context
 
-This entire sequence—planning, recovering from errors, evolving new capabilities, and even working around its own mistakes—is fully autonomous, driven by the instructions in the manifest file.
+5. **Final Delivery**
+   * Successfully extracts trending topics across sources
+   * Synthesizes comprehensive intelligence briefing
+   * Writes final output to `intelligence_briefing.md`
+   * Completes goal despite obstacles encountered
+
+This entire execution sequence demonstrates LLMunix's power: planning, error recovery, capability evolution, and resilience - all fully autonomous and driven by markdown-based instructions.
 
 ![LLMunix Demo](./llmunix.gif)
 
@@ -319,31 +454,56 @@ The enhanced memory and messaging systems enable:
 - Context-aware decision making
 - Self-organizing agent hierarchies
 
-## Runtime Support and Flexibility
+## Runtime Support: Claude Code vs Gemini CLI
 
-### Claude Code Integration
+LLMunix offers a flexible dual-runtime architecture that lets you choose the AI model that best fits your needs. The same codebase works seamlessly with either runtime, thanks to the manifest-driven approach.
 
-LLMunix leverages Claude Code's powerful tool capabilities for production-grade execution:
+### Claude Code Runtime
 
-- **Native WebFetch Support**: Direct access to web content through Claude's WebFetch tool
-- **Comprehensive File Operations**: Read, Write, Edit tools provide complete file management
-- **Pattern Matching**: Glob and Grep enable powerful searching capabilities
-- **System Access**: Bash and Task tools enable complex workflow orchestration
+**Key Features:**
 
-### Gemini CLI Integration
+- **Production-Ready Tools**: Leverage Claude's robust built-in tools
+  - `WebFetch`: Direct web content access with smart processing
+  - `Read/Write/Edit`: Complete file system management
+  - `Glob/Grep`: Powerful pattern matching and search
+  - `Bash/Task`: System command execution and parallel processing
 
-LLMunix extends Gemini CLI with enhanced capabilities through virtual tools:
+- **Developer Experience:**
+  - Seamless integration with Claude Code CLI
+  - Comprehensive error handling and debugging
+  - High-quality responses with Claude's reasoning capabilities
 
-- **Custom Tool Definitions**: Add new capabilities via markdown-defined tools
-- **Sandbox Security**: Tools operate within the Gemini CLI security model
-- **Easy Extension**: Create new tools without compilation
+- **Ideal For:**
+  - Production environments requiring stability
+  - Complex research tasks needing web access
+  - Projects requiring advanced file management
 
-### Advantages of Dual Runtime Support
+### Gemini CLI Runtime
 
-- **Runtime Choice**: Select the AI model that best fits your use case
-- **Model Specialization**: Leverage different models for different tasks
-- **Deployment Flexibility**: Run locally or in cloud environments
-- **Future Compatibility**: Architecture designed to support additional runtimes
+**Key Features:**
+
+- **Virtual Tool System:**
+  - Custom tools defined in markdown files
+  - Secure sandboxed execution environment
+  - Dynamic tool discovery without compilation
+
+- **Developer Experience:**
+  - More flexible deployment options
+  - Easy customization of tooling
+  - Simpler setup process for local development
+
+- **Ideal For:**
+  - Local development environments
+  - Custom toolchain integration
+  - Edge computing scenarios
+
+### Benefits of Dual Runtime Support
+
+1. **AI Model Choice**: Select the language model that best fits your specific use case
+2. **Task-Specific Models**: Use different models for different types of tasks
+3. **Deployment Options**: Run locally or in cloud environments based on your needs
+4. **Future Compatibility**: Architecture designed to support additional AI runtimes
+5. **Consistent Experience**: Same markdown components work across all supported runtimes
 
 ## Future Potential
 
