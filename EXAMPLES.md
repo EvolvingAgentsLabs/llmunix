@@ -1,10 +1,18 @@
 # LLMunix Examples: Autonomous, Adaptive, and Evolvable Workflows
 
-This document showcases the power of the LLMunix framework when run by manifest-aware interpreters like Claude Code or an enhanced Gemini CLI. These examples demonstrate how the system autonomously plans, evolves, and executes complex tasks.
+This document showcases the power of the LLMunix framework when run by manifest-aware interpreters like Claude Code or Gemini CLI. These examples demonstrate how the system autonomously plans, adapts, and executes complex tasks through pure markdown definitions.
+
+## What Makes LLMunix Unique
+
+* **Pure Markdown Architecture**: Everything is defined in markdown - agents, tools, and workflows
+* **Runtime Flexibility**: Works seamlessly with both Claude Code and Gemini CLI
+* **Self-Improving System**: Creates new tools and agents as needed during execution
+* **Memory-Driven Intelligence**: Learns from past executions to improve future performance
+* **Adaptive Workflow**: Automatically adjusts execution based on constraints and requirements
 
 ## 🚀 Using LLMunix with Your Preferred Runtime
 
-All examples can be run with either Claude Code or Gemini CLI following these simple workflows:
+All examples can be run with either Claude Code or Gemini CLI following these simple workflows. Choose the runtime that best fits your needs - both provide the full power of LLMunix's pure markdown architecture:
 
 ### Claude Code Workflow
 
@@ -18,13 +26,13 @@ boot llmunix
 **2. Execute a Goal**
 
 ```bash
-# Direct execution
+# Direct execution - for single tasks
 llmunix execute: "Your high-level goal here..."
 
-# Interactive mode
+# Interactive mode - for conversational workflows
 llmunix execute: "Your goal here..." -i
 
-# Simulation mode (for training data generation)
+# Simulation mode - for training data generation
 llmunix simulate: "Your goal here..."
 ```
 
@@ -47,6 +55,8 @@ gemini
 > Your high-level goal here...
 ```
 
+Both runtimes provide identical capabilities through different interfaces. All examples below work with either runtime.
+
 ---
 
 ## 🎯 Core Capability Examples
@@ -68,9 +78,23 @@ llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker 
 ```
 
 **Expected Behavior:**
-1.  **PLAN:** The system creates a `plan.md` using `write_file` or Claude's Write tool to outline the steps: identify sources, fetch content, analyze, and generate the briefing.
-2.  **EXECUTE (Loop):** It uses `web_fetch` or Claude's WebFetch tool to get content, saves it to `workspace/fetched_content/`, and processes the text.
-3.  **COMPLETE:** It writes the final `intelligence_briefing.md` to `workspace/outputs/` and notifies the user.
+
+1. **PLAN:** 
+   - The system creates a detailed execution plan
+   - **Claude Code:** Uses Write tool to create `workspace/state/plan.md`
+   - **Gemini CLI:** Uses `write_file` to create the plan
+   - Plan outlines steps: identify sources, fetch content, analyze, and generate the briefing
+
+2. **EXECUTE (Loop):** 
+   - **Claude Code:** Uses WebFetch tool to get content from each source
+   - **Gemini CLI:** Uses `web_fetch` tool for each source
+   - Saves fetched content to `workspace/fetched_content/`
+   - Processes text to identify trending AI topics
+
+3. **COMPLETE:** 
+   - Writes the final `intelligence_briefing.md` to `workspace/outputs/`
+   - Provides summary of key themes identified across sources
+   - Notifies user of task completion
 
 ### Dynamic Capability Evolution (Self-Improvement)
 
@@ -89,10 +113,27 @@ llmunix execute: "Analyze the sentiment of the latest 5 articles on TechCrunch A
 ```
 
 **Expected Behavior:**
-1.  **PLAN & GAP ANALYSIS:** The system determines it lacks a specialized "sentiment analysis" capability.
-2.  **EVOLVE:** It autonomously generates the Markdown definition for a new `SentimentAnalysisAgent.md` and saves it to `components/agents/`. The runtime automatically detects this new component.
-3.  **EXECUTE:** After fetching the articles, it invokes its newly created agent to get the sentiment scores for each article.
-4.  **COMPLETE:** It synthesizes the scores and provides a final answer.
+
+1. **PLAN & GAP ANALYSIS:** 
+   - System determines it lacks a specialized "sentiment analysis" capability
+   - Identifies this as a critical gap for completing the task
+   - Plans to create a new component before proceeding
+
+2. **EVOLVE:** 
+   - **Claude Code:** Uses Write tool to create `components/agents/SentimentAnalysisAgent.md`
+   - **Gemini CLI:** Uses `write_file` to create the agent definition
+   - The runtime automatically detects this new component
+   - Agent includes scoring methodology and sentiment classification rules
+
+3. **EXECUTE:** 
+   - Fetches articles from TechCrunch AI section
+   - Invokes newly created agent to analyze sentiment of each article
+   - Assigns sentiment scores using consistent methodology
+
+4. **COMPLETE:** 
+   - Synthesizes individual scores into an overall sentiment evaluation
+   - Provides evidence-based assessment of tech industry sentiment
+   - Saves both component scores and final analysis
 
 **Runtime-Specific Implementation:**
 - **Claude Code:** Uses Write tool to create the agent file, WebFetch for articles, and Task to execute the agent logic
@@ -115,9 +156,24 @@ llmunix execute: "Create a full marketing campaign for a new product called 'Syn
 ```
 
 **Expected Behavior:**
-1.  **ORCHESTRATE:** The system creates a high-level plan (define audience, generate copy, create outline).
-2.  **DELEGATE:** For each sub-task, it invokes a specialized agent (e.g., `AdCopyGeneratorAgent`, `MarketingPersonaAgent`). If a required agent doesn't exist, it creates it first using the Evolve pattern.
-3.  **SYNTHESIZE:** It combines the outputs from all the specialist agents into a final `campaign_brief.md` file.
+
+1. **ORCHESTRATE:** 
+   - Creates a high-level plan for the marketing campaign
+   - Divides work into specialized domains: audience analysis, ad copy, blog content
+   - Establishes coordination workflow and deliverable format
+
+2. **DELEGATE:** 
+   - **Claude Code:** Uses Task tool for each specialized sub-task
+   - **Gemini CLI:** Uses `run_agent` for each specialized component
+   - Invokes specialized agents (e.g., `AdCopyGeneratorAgent`, `MarketingPersonaAgent`)
+   - Creates any missing agents using the Evolve pattern when needed
+
+3. **SYNTHESIZE:** 
+   - Collects outputs from all specialist agents
+   - Ensures consistency across all campaign elements
+   - **Claude Code:** Uses Write tool to create final `campaign_brief.md` 
+   - **Gemini CLI:** Uses `write_file` for the final deliverable
+   - Provides a cohesive marketing strategy incorporating all components
 
 **Runtime-Specific Implementation:**
 - **Claude Code:** Uses Task tool for agent delegation and Write tool for file operations
@@ -274,53 +330,102 @@ llmunix execute: "Our competitor just announced a major product update. I need a
 
 **Expected Behavior:**
 1. **Crisis Alert**: SystemAgent broadcasts urgent message:
-   ```
-   broadcast_message(
-     message="URGENT: Competitor announcement requires immediate response. All agents standby.",
-     topic="crisis_response"
-   )
-   ```
+   - **Claude Code**: Uses Task tool to run the BroadcastAgent with the urgent message
+   - **Gemini CLI**: Uses the messaging system:
+     ```
+     broadcast_message(
+       message="URGENT: Competitor announcement requires immediate response. All agents standby.",
+       topic="crisis_response"
+     )
+     ```
+
 2. **Parallel Execution**: Multiple agents work simultaneously:
-   - MarketAnalyst fetches competitor details
-   - ContentWriter drafts response options
-   - CEO reviews and decides strategy
+   - **Claude Code**: Uses multiple Task tool calls in parallel
+   - **Gemini CLI**: Spawns multiple agent processes
+   - Agents involved:
+     - MarketAnalyst fetches competitor details
+     - ContentWriter drafts response options
+     - CEO reviews and decides strategy
+
 3. **Message Flow**:
-   ```
-   # Analyst to CEO
-   send_message(
-     to="CEOAgent",
-     message="Competitor analysis complete. They're targeting our core market with 20% lower pricing.",
-     priority="urgent"
-   )
-   
-   # CEO to Writer
-   send_message(
-     to="ContentWriterAgent", 
-     message="Draft announcement emphasizing our superior quality and support. Due in 30 mins.",
-     priority="urgent"
-   )
-   ```
+   - **Claude Code**: Uses Write tool to create message files in workspace/messages/
+   - **Gemini CLI**: Uses the messaging API:
+     ```
+     # Analyst to CEO
+     send_message(
+       to="CEOAgent",
+       message="Competitor analysis complete. They're targeting our core market with 20% lower pricing.",
+       priority="urgent"
+     )
+     
+     # CEO to Writer
+     send_message(
+       to="ContentWriterAgent", 
+       message="Draft announcement emphasizing our superior quality and support. Due in 30 mins.",
+       priority="urgent"
+     )
+     ```
+
 4. **Coordination**: Agents check messages frequently during crisis:
-   ```
-   check_messages(agent="ContentWriterAgent", priority="urgent")
-   ```
+   - **Claude Code**: Uses Read tool to check message directory
+   - **Gemini CLI**: Uses messaging API:
+     ```
+     check_messages(agent="ContentWriterAgent", priority="urgent")
+     ```
+
+5. **Final Deliverable**:
+   - A comprehensive response strategy document
+   - Competitive analysis with pricing recommendations
+   - Draft press release and social media announcement
+   - Timeline for phased response implementation
 
 ## 🔬 Advanced Scenarios
 
-These examples demonstrate the system's more sophisticated adaptive capabilities.
+These examples demonstrate the system's more sophisticated adaptive capabilities. Each scenario showcases how LLMunix can intelligently respond to complex requirements, learn from past experiences, and dynamically evolve its toolset to meet challenges.
 
 ### Adaptive Execution & Constraint Management
+
+#### Claude Code Example
+
+```bash
+llmunix execute: "URGENT: Analyze this 50-page legal document for risks in under 10 minutes. Focus only on liability and termination clauses."
+```
+
+#### Gemini CLI Example
 
 ```
 > URGENT: Analyze this 50-page legal document for risks in under 10 minutes. Focus only on liability and termination clauses.
 ```
 
 **Expected Behavior:**
-*   The system parses the "URGENT" and "10 minutes" cues from the prompt.
-*   It immediately calls `write_file` to update `workspace/state/constraints.md` with new rules like `priority: speed_and_clarity` and `max_execution_time: 600`.
-*   It then proceeds with the task, altering its plan to prioritize speed over comprehensive analysis, for example by using a more focused prompt for its `summarize` tool calls.
+
+1. **Constraint Detection**: The system parses the "URGENT" and "10 minutes" cues from the prompt.
+
+2. **Constraint Update**: 
+   - **Claude Code**: Uses Write tool to update `workspace/state/constraints.md` with new rules
+   - **Gemini CLI**: Uses `write_file` to update constraints
+   - New constraints include: `priority: speed_and_clarity` and `max_execution_time: 600`
+
+3. **Adaptive Planning**:
+   - Creates a highly focused execution plan
+   - Prioritizes speed over comprehensive analysis
+   - Limits scope to only liability and termination clauses
+
+4. **Execution Adaptation**:
+   - **Claude Code**: Uses more concise prompts with WebFetch and Task tools
+   - **Gemini CLI**: Uses focused prompts for `summarize` tool calls
+   - Skips formatting and visualization steps that would take extra time
+   - Implements parallel processing where possible
 
 ### Memory-Driven Task Improvement
+
+#### Claude Code Example
+
+```bash
+llmunix execute: "Research the latest advancements in quantum computing."
+```
+
+#### Gemini CLI Example
 
 ```
 > Research the latest advancements in quantum computing.
@@ -328,13 +433,40 @@ These examples demonstrate the system's more sophisticated adaptive capabilities
 *(After a previous run where the agent used slow or unreliable sources...)*
 
 **Expected Behavior:**
-*   The system's first action is to call `read_file` on `system/memory_log.md` to review past experiences tagged with "quantum computing".
-*   It finds a log entry noting: "Fetching from `slow-science-journal.com` timed out. `fast-arxiv.com` was more reliable."
-*   In its new plan, it intelligently prioritizes `fast-arxiv.com` and avoids the previously problematic source, demonstrating learning from experience.
+
+1. **Memory Consultation**:
+   - **Claude Code**: Uses Read tool to check `system/memory_log.md`
+   - **Gemini CLI**: Uses `read_file` to review past experiences
+   - Looks specifically for entries tagged with "quantum computing"
+
+2. **Memory Analysis**:
+   - Finds log entries with valuable insights such as:
+     - "Fetching from `slow-science-journal.com` timed out. `fast-arxiv.com` was more reliable."
+     - "Google Scholar provided more relevant results than general search."
+     - "Papers from last 6 months contained most significant breakthroughs."
+
+3. **Adaptive Planning**:
+   - Creates research plan that incorporates these learnings
+   - Intelligently prioritizes `fast-arxiv.com` over slower sources
+   - Focuses on papers from the last 6 months
+   - Uses Google Scholar as primary search tool
+
+4. **Execution Improvement**:
+   - Completes research 40% faster than previous run
+   - Discovers more relevant information
+   - Updates memory with new reliable sources for future reference
 
 ### Complex Tool Orchestration
 
 This example shows how virtual tools can work together in sophisticated workflows.
+
+#### Claude Code Example
+
+```bash
+llmunix execute: "Create a comprehensive competitor analysis for our new AI music app. Use web search for public info, consult llama3.2 for market insights, and generate visualizations of the competitive landscape."
+```
+
+#### Gemini CLI Example
 
 ```
 > Create a comprehensive competitor analysis for our new AI music app. 
@@ -355,6 +487,14 @@ This example shows how virtual tools can work together in sophisticated workflow
 ### Virtual Tool Creation On-Demand
 
 This demonstrates the system creating new tools during execution.
+
+#### Claude Code Example
+
+```bash
+llmunix execute: "I need to analyze 100 CSV files for anomalies. Create whatever tools you need to process them efficiently."
+```
+
+#### Gemini CLI Example
 
 ```
 > I need to analyze 100 CSV files for anomalies. Create whatever tools you need to process them efficiently.
