@@ -28,3 +28,4 @@ Thumbs.db               # Windows Explorer
 # Temporary files
 *.tmp
 *.temp
+.claude/settings.local.json

@@ -1,1 +1,0 @@
-[2025-07-05 17:39:06] Adopted a new, targeted strategic messaging directive for the EcoFlow Pro series. RIVER Pro will be marketed to adventurers, emphasizing portability. DELTA Pro will be marketed to homeowners and professionals, emphasizing power and reliability. Full directive at /Users/agustinazwiener/evolving-agents-labs/llmunix/workspace/strategic_messaging.md.

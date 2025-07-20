@@ -7,7 +7,7 @@
 
 ## Purpose
 
-The QueryMemoryTool serves as the bridge between the SystemAgent and the MemoryAnalysisAgent, providing a standardized interface for memory consultation during task planning and execution. It enables the SystemAgent to leverage historical experiences for improved decision-making and adaptive behavior.
+The QueryMemoryTool serves as the bridge between the SystemAgent and the system's MemoryAnalysisAgent, providing a standardized interface for memory consultation during task planning and execution. It enables the SystemAgent to leverage historical experiences for improved decision-making and adaptive behavior.
 
 ## Core Functionality
 

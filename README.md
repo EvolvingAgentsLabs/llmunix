@@ -1,15 +1,17 @@
 # LLMunix 🦄
 
-> ⚠️ **IMPORTANT**: LLMunix requires the "virtual tools" feature from [Gemini CLI Issue #1806](https://github.com/google-gemini/gemini-cli/issues/1806). This feature is currently in PR. To use LLMunix, you must compile the `issue-1806` branch from the fork at https://github.com/EvolvingAgentsLabs/gemini-cli
+**Now with dual runtime support!** LLMunix is a Pure Markdown Operating System that can run on both Claude Code and Gemini CLI, providing flexible deployment options based on your preferred AI runtime.
+
+> ⚠️ **IMPORTANT FOR GEMINI CLI USERS**: To use LLMunix with Gemini CLI, you need the "virtual tools" feature from [Gemini CLI Issue #1806](https://github.com/google-gemini/gemini-cli/issues/1806). This feature is currently in PR. You must compile the `issue-1806` branch from the fork at https://github.com/EvolvingAgentsLabs/gemini-cli
 
 > 🌐 **Part of [Evolving Agents Labs](https://evolvingagentslabs.github.io)** | 🔬 [View All Experiments](https://evolvingagentslabs.github.io#experiments) | 📖 [Project Details](https://evolvingagentslabs.github.io/experiments/llmunix.html)
 
-A Pure Markdown Operating System where an AI agent acts as the kernel. It's designed to be run by a manifest-aware, tool-calling runtime like an enhanced **[Gemini CLI](https://github.com/google-gemini/gemini-cli)**.
+A Pure Markdown Operating System where an AI agent acts as the kernel. It's designed to be run by manifest-aware, tool-calling runtimes like **[Claude Code](https://anthropic.com/claude-code)** or an enhanced **[Gemini CLI](https://github.com/google-gemini/gemini-cli)**.
 
-LLMunix implements a concept called **Adaptive Behavior Management**, where the system's behavior dynamically adapts through evolving behavioral constraints.
+LLMunix implements a concept called **Adaptive Behavior Management**, where the system's behavior dynamically adapts through evolving behavioral constraints. The system features a well-organized structure with core components in the system folder and specialized components in the components folder.
 
 -   **Pure Markdown Architecture**: All system components—agents and tools—are human-readable Markdown files.
--   **Manifest-Driven**: The entire OS "firmware" and "system calls" are defined in a single `GEMINI.md` file.
+-   **Manifest-Driven**: The OS "firmware" and "system calls" are defined in either `CLAUDE.md` for Claude Code or `GEMINI.md` for Gemini CLI.
 -   **Multi-Tier Memory System**: Three memory levels for different persistence needs:
     -   **Volatile Memory**: Temporary data for current execution
     -   **Task Memory**: Information relevant to the current goal
@@ -19,12 +21,35 @@ LLMunix implements a concept called **Adaptive Behavior Management**, where the 
     -   **Broadcasts**: System-wide announcements via bulletin boards
     -   **Inbox Management**: Each agent has its own message queue
 -   **Dynamic Evolution**: The agent can write new Markdown component files to create new tools and agents on the fly.
+-   **Dual Runtime Support**: Run on either Claude Code or Gemini CLI with the same codebase through runtime-specific manifest files.
 
 ---
 
 ## Quick Start
 
-The LLMunix workflow is a simple and powerful two-step process that turns Gemini CLI into an autonomous agent for this project.
+The LLMunix workflow is a simple and powerful process that turns your AI runtime into an autonomous agent for this project.
+
+### Using Claude Code
+
+**1. Boot the System**
+
+```bash
+# From the llmunix project root:
+boot llmunix
+```
+
+This displays the boot welcome message and prepares the workspace for execution.
+
+**2. Execute a Goal**
+
+```bash
+# Give the agent its goal directly
+llmunix execute: "Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing."
+```
+
+Claude Code will read the `CLAUDE.md` manifest and execute your goal autonomously.
+
+### Using Gemini CLI
 
 **1. Boot the System (Run Once per Session)**
 
@@ -57,7 +82,7 @@ LLMunix leverages a revolutionary **manifest-driven virtual tool system** that t
 
 ### Key Innovation: Virtual Tools in Markdown
 
-The `GEMINI.md` manifest can define custom tools using a simple format:
+The manifest file (`CLAUDE.md` or `GEMINI.md`) can define custom tools using a simple format:
 
 ```markdown
 #### tool_name
@@ -99,7 +124,7 @@ This demonstrates how virtual tools enable:
 
 ## How It Works: An Agent in Action
 
-This repository is a "program" written in Markdown. The `GEMINI.md` file acts as its "firmware," turning the Gemini CLI into an autonomous agent. The best way to understand it is to see the agent's thought process during a real task.
+This repository is a "program" written in Markdown. The manifest file acts as its "firmware," turning the AI runtime (Claude Code or Gemini CLI) into an autonomous agent. The best way to understand it is to see the agent's thought process during a real task.
 
 **Goal:** *"Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing."*
 
@@ -118,26 +143,33 @@ The following is a summary of the agent's actual execution trace:
 
 5.  **Completion:** Despite the tool-use errors, the agent successfully extracts the topics, synthesizes the information, and writes the final `intelligence_briefing.md` to the workspace, completing the user's goal.
 
-This entire sequence—planning, recovering from errors, evolving new capabilities, and even working around its own mistakes—is fully autonomous, driven by the instructions in `GEMINI.md`.
+This entire sequence—planning, recovering from errors, evolving new capabilities, and even working around its own mistakes—is fully autonomous, driven by the instructions in the manifest file.
 
 ![LLMunix Demo](./llmunix.gif)
 
 ### Core Architecture
 
-The architecture is designed to enable this emergent, intelligent behavior.
+The architecture is designed to enable this emergent, intelligent behavior. LLMunix features a dual-runtime design with a clear separation between core system components and specialized tools/agents.
 
 ```
 llmunix/
 ├── llmunix-boot         # The deterministic boot script.
-├── GEMINI.md            # The master manifest: OS firmware and all virtual tools.
+├── CLAUDE.md            # Claude Code manifest: OS firmware for Claude runtime.
+├── GEMINI.md            # Gemini manifest: OS firmware for Gemini CLI runtime.
 ├── components/          # A library of pre-built, reusable agents and tools.
-│   ├── agents/
-│   └── tools/
-├── system/              # Core, non-executable system files.
-│   └── memory_log.md
+│   ├── agents/          # Specialized/domain-specific agents
+│   └── tools/           # Specialized/domain-specific tools
+├── system/              # Core system files and components.
+│   ├── agents/          # Core system agents (SystemAgent, MemoryAnalysisAgent)
+│   ├── tools/           # Core system tools (ClaudeCodeToolMap, QueryMemoryTool)
+│   └── memory_log.md    # Structured, queryable experience database
 └── workspace/           # Ephemeral working directory for a single run.
     └── state/           # The agent's live memory and state.
 ```
+
+**Component Organization:**
+- **Core System Components**: Essential components that power the LLMunix framework itself are in `system/agents/` and `system/tools/`
+- **Specialized Components**: Domain-specific and reusable components for various tasks in `components/agents/` and `components/tools/`
 
 ## Enhanced Architecture: Memory & Messaging
 
@@ -223,9 +255,26 @@ See the power of memory and messaging in action with our Virtual Company example
 
 ## Technical Architecture
 
+### Dual Runtime Architecture
+
+LLMunix is designed to work with multiple AI runtimes through a unified component architecture:
+
+1. **Runtime-Specific Manifests**: 
+   - `CLAUDE.md` - Configuration optimized for Claude Code
+   - `GEMINI.md` - Configuration optimized for Gemini CLI
+
+2. **Shared Component Library**:
+   - Both runtimes use the same system components and tools
+   - Runtime-specific behavior is isolated to manifest files
+
+3. **Unified Tool Integration**:
+   - Components map to native tools for each runtime
+   - Same components work across different AI systems
+   - Consistent API across runtimes
+
 ### Virtual Tool Execution Flow
 
-1. **Discovery**: On startup, the runtime parses `GEMINI.md` and any component files
+1. **Discovery**: On startup, the runtime parses the manifest file (`CLAUDE.md` or `GEMINI.md`) and any component files
 2. **Registration**: Each tool definition creates a callable function in the AI's context
 3. **Invocation**: When the AI calls a tool, the shell script executes with arguments passed via `$GEMINI_TOOL_ARGS`
 4. **Sandboxing**: All execution happens within the runtime's security boundaries
@@ -270,6 +319,32 @@ The enhanced memory and messaging systems enable:
 - Context-aware decision making
 - Self-organizing agent hierarchies
 
+## Runtime Support and Flexibility
+
+### Claude Code Integration
+
+LLMunix leverages Claude Code's powerful tool capabilities for production-grade execution:
+
+- **Native WebFetch Support**: Direct access to web content through Claude's WebFetch tool
+- **Comprehensive File Operations**: Read, Write, Edit tools provide complete file management
+- **Pattern Matching**: Glob and Grep enable powerful searching capabilities
+- **System Access**: Bash and Task tools enable complex workflow orchestration
+
+### Gemini CLI Integration
+
+LLMunix extends Gemini CLI with enhanced capabilities through virtual tools:
+
+- **Custom Tool Definitions**: Add new capabilities via markdown-defined tools
+- **Sandbox Security**: Tools operate within the Gemini CLI security model
+- **Easy Extension**: Create new tools without compilation
+
+### Advantages of Dual Runtime Support
+
+- **Runtime Choice**: Select the AI model that best fits your use case
+- **Model Specialization**: Leverage different models for different tasks
+- **Deployment Flexibility**: Run locally or in cloud environments
+- **Future Compatibility**: Architecture designed to support additional runtimes
+
 ## Future Potential
 
 The manifest-driven approach enables:
@@ -283,6 +358,7 @@ The manifest-driven approach enables:
 ## Acknowledgements
 
 *   **Original Concept & Research**: [Matias Molinas](https://github.com/matiasmolinas) and [Ismael Faro](https://github.com/ismaelfaro).
-*   **Manifest-Driven Virtual Tools**: Proposed in [Gemini CLI Issue #1806](https://github.com/google-gemini/gemini-cli/issues/1806) and implemented in the [Evolving Agents Labs fork](https://github.com/EvolvingAgentsLabs/gemini-cli).
+*   **Manifest-Driven Virtual Tools**: Implemented in Claude Code natively and proposed in [Gemini CLI Issue #1806](https://github.com/google-gemini/gemini-cli/issues/1806) with implementation in the [Evolving Agents Labs fork](https://github.com/EvolvingAgentsLabs/gemini-cli).
+*   **Multi-Runtime Architecture**: Designed to work seamlessly across Claude Code and Gemini CLI with a unified component system.
 
 *This project is an experimental research prototype from **Evolving Agents Labs**.*
