@@ -59,9 +59,29 @@ cd llmunix
 
 ## Running LLMunix with Claude Code
 
-### 1. Boot the System
+### 1. Initialize and Boot the System
 
-This initializes the workspace and prepares the environment.
+Before using LLMunix, you must first initialize the environment:
+
+#### Initialization Step (Run Once)
+
+**Windows Users:**
+```powershell
+# Run in PowerShell directly on your system (not through Claude Code)
+powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1
+```
+
+**Unix/Linux/Mac Users:**
+```bash
+# Run in your terminal
+./setup_agents.sh
+```
+
+This creates the `.claude/agents/` directory and copies the agent markdown files there, making them discoverable by Claude Code.
+
+#### Boot the System
+
+After initialization, boot LLMunix:
 
 ```bash
 # From the llmunix project root directory:
@@ -69,22 +89,6 @@ boot llmunix
 ```
 
 You'll see the ASCII art welcome message and example commands.
-
-#### Windows-Specific Setup Instructions
-
-If you encounter issues with the `boot llmunix` command on Windows or Claude Code's Bash tool has trouble with path handling, follow these manual steps:
-
-1. Open PowerShell directly on your system (not through Claude Code)
-2. Navigate to the llmunix directory:
-   ```powershell
-   cd path\to\llmunix
-   ```
-3. Run the setup script with execution policy bypass:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1
-   ```
-
-This will create the `.claude/agents/` directory and copy the agent markdown files there, making them discoverable by Claude Code.
 
 ### 2. Execute a Task
 
@@ -115,14 +119,16 @@ llmunix simulate: "Research task workflow for fine-tuning dataset"
 
 ## Running LLMunix with Gemini CLI
 
-### 1. Boot the System
+### 1. Initialize and Boot the System
 
-This script prepares the workspace for execution. Run it once per session:
+Before using LLMunix with Gemini CLI, you must initialize the environment. This needs to be done once per session:
 
 ```bash
 # From the llmunix project root:
 ./llmunix-boot
 ```
+
+This script prepares the workspace for execution by setting up the required directory structure and copying files to their appropriate locations.
 
 ### 2. Start Gemini CLI
 

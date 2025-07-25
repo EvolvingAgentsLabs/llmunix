@@ -24,18 +24,25 @@ The OS "boots" when Claude reads the markdown system files and begins interpreti
 
 ## How to Boot LLMunix
 
-### Boot Command
+### Boot Process
+
+LLMunix requires a one-time initialization before use. **Before running any commands**, ensure you've run the appropriate initialization script for your platform:
+
+- **Windows users**: Run `setup_agents.ps1` script
+- **Unix/Linux/Mac users**: Run `setup_agents.sh` script
+
+This initialization prepares the environment by:
+1. Creating the `.claude/agents/` directory to make agents discoverable
+2. Copying agent markdown files to the appropriate locations
+3. Setting up the initial workspace structure
+
+Once initialized, you can use the boot command:
+
 ```
 boot llmunix
 ```
 
-This simple command activates the LLMunix kernel by having Claude read and interpret the markdown system files as a functional operating system. It performs the following steps:
-
-1. Cleans the workspace directory to ensure a fresh execution environment
-2. Sets up agent files by copying them to the `.claude/agents/` directory to make them discoverable
-3. Initializes the memory and state components
-
-**Windows users** should run `setup_agents.ps1` script, and **Unix/Linux/Mac users** should run `setup_agents.sh` script to prepare the environment.
+This command activates the LLMunix kernel by having Claude read and interpret the markdown system files as a functional operating system.
 
 ### Boot Welcome Message
 When LLMunix boots, display ASCII art welcome and example commands in this format:
