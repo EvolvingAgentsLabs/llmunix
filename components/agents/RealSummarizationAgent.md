@@ -1,3 +1,9 @@
+---
+name: real-summarization-agent
+description: A specialized agent for generating structured summaries from various content sources
+tools: Read, Write, WebFetch
+---
+
 # RealSummarizationAgent
 
 **Component Type**: Agent  

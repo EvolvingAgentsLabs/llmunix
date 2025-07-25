@@ -1,3 +1,9 @@
+---
+name: summarization-agent
+description: A specialized agent that analyzes text documents and produces concise, structured summaries
+tools: Read, Write
+---
+
 # Component: SummarizationAgent
 
 -   **Name**: SummarizationAgent
