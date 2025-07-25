@@ -70,6 +70,22 @@ boot llmunix
 
 You'll see the ASCII art welcome message and example commands.
 
+#### Windows-Specific Setup Instructions
+
+If you encounter issues with the `boot llmunix` command on Windows or Claude Code's Bash tool has trouble with path handling, follow these manual steps:
+
+1. Open PowerShell directly on your system (not through Claude Code)
+2. Navigate to the llmunix directory:
+   ```powershell
+   cd path\to\llmunix
+   ```
+3. Run the setup script with execution policy bypass:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1
+   ```
+
+This will create the `.claude/agents/` directory and copy the agent markdown files there, making them discoverable by Claude Code.
+
 ### 2. Execute a Task
 
 Use the `llmunix execute:` command followed by your goal in quotes:

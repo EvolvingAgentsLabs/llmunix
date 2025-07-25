@@ -251,6 +251,57 @@ To reset LLM-OS:
 3. Archive any valuable execution traces and behavioral learning data for training
 4. Ready for fresh scenario execution with clean sentient state
 
+## File and Folder Permissions
+
+If Claude Code lacks permissions to create folders and files, use these options:
+
+### Running with Elevated Permissions
+
+Use the `--dangerously-skip-permissions` flag when running Claude Code commands:
+```bash
+claude --dangerously-skip-permissions "your command here"
+```
+NOTE: Use this flag with caution as it bypasses permission prompts.
+
+### Alternative Permission Modes
+
+Start Claude Code with a specific permission mode:
+```bash
+claude --permission-mode plan "your command here"
+```
+
+### Windows-Specific Solutions
+
+1. Run Command Prompt or PowerShell as administrator when using Claude Code
+2. Check folder permissions in Windows Explorer:
+   - Right-click on the project folder
+   - Select Properties > Security
+   - Ensure your user account has Write permissions
+   - Apply changes
+
+### Unix/Linux/Mac Solutions
+
+1. Configure proper directory ownership:
+```bash
+sudo chown -R $USER:$USER /path/to/project/directory
+```
+
+2. Set appropriate permissions:
+```bash
+chmod -R 755 /path/to/project/directory
+```
+
+3. For npm-related permission issues, use:
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix ~/.npm-global
+```
+Add to your profile (e.g., ~/.profile, ~/.bash_profile):
+```bash
+export PATH=~/.npm-global/bin:$PATH
+```
+Then run `source ~/.profile` to apply changes.
+
 ## New Memory and Learning Features
 
 ### Intelligent Memory Consultation
