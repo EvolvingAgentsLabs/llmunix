@@ -24,12 +24,25 @@ The OS "boots" when Claude reads the markdown system files and begins interpreti
 
 ## How to Boot LLMunix
 
-### Boot Command
+### Boot Process
+
+LLMunix requires a one-time initialization before use. **Before running any commands**, ensure you've run the appropriate initialization script for your platform:
+
+- **Windows users**: Run `setup_agents.ps1` script
+- **Unix/Linux/Mac users**: Run `setup_agents.sh` script
+
+This initialization prepares the environment by:
+1. Creating the `.claude/agents/` directory to make agents discoverable
+2. Copying agent markdown files to the appropriate locations
+3. Setting up the initial workspace structure
+
+Once initialized, you can use the boot command:
+
 ```
 boot llmunix
 ```
 
-This simple command activates the LLMunix kernel by having Claude read and interpret the markdown system files as a functional operating system. **Boot automatically cleans the workspace directory to ensure a fresh execution environment.**
+This command activates the LLMunix kernel by having Claude read and interpret the markdown system files as a functional operating system.
 
 ### Boot Welcome Message
 When LLMunix boots, display ASCII art welcome and example commands in this format:
@@ -56,7 +69,7 @@ llmunix simulate: "Research task workflow for fine-tuning dataset"
 ### Running the Real-World Research Scenario
 
 1. **Execute the scenario** by asking Claude to:
-   - Act as the SystemAgent defined in `system/agents/SystemAgent.md`
+   - Invoke the `system-agent` to orchestrate the task
    - Execute the goal from `scenarios/RealWorld_Research_Task.md`
    - Use EXECUTION MODE for real tool calls
 
@@ -148,17 +161,17 @@ llmunix/
 
 **Real Task Execution:**
 ```
-"Act as the SystemAgent defined in system/agents/SystemAgent.md and execute the RealWorld_Research_Task scenario in EXECUTION MODE"
+Invoke the system-agent to execute the RealWorld_Research_Task scenario in EXECUTION MODE
 ```
 
 **Training Data Generation:**
 ```  
-"Act as the SystemAgent defined in system/agents/SystemAgent.md and simulate the research task scenario in SIMULATION MODE for training data"
+Invoke the system-agent to simulate the research task scenario in SIMULATION MODE for training data
 ```
 
 **Custom Real Task:**
 ```
-"Act as the SystemAgent defined in system/agents/SystemAgent.md and execute: [your goal] using real tools"
+Invoke the system-agent to execute: [your goal] using real tools
 ```
 
 ### Interactive Session Features
@@ -225,7 +238,7 @@ How would you like to refine this goal?
 - Budget management and cost reporting
 
 ### Intelligent Error Resilience:
-- **Memory-Guided Recovery**: QueryMemoryTool (in system/tools/) provides historical error recovery strategies
+- **Memory-Guided Recovery**: QueryMemoryTool leverages the memory-analysis-agent sub-agent for historical error recovery strategies
 - **Sentiment-Aware Adaptation**: Error handling adapts based on user frustration levels
 - **Constraint Evolution**: Failed attempts trigger behavioral modifications for future prevention
 - **Real Error Learning**: Actual tool failures become training data for improved resilience
@@ -245,10 +258,61 @@ To reset LLM-OS:
 3. Archive any valuable execution traces and behavioral learning data for training
 4. Ready for fresh scenario execution with clean sentient state
 
+## File and Folder Permissions
+
+If Claude Code lacks permissions to create folders and files, use these options:
+
+### Running with Elevated Permissions
+
+Use the `--dangerously-skip-permissions` flag when running Claude Code commands:
+```bash
+claude --dangerously-skip-permissions "your command here"
+```
+NOTE: Use this flag with caution as it bypasses permission prompts.
+
+### Alternative Permission Modes
+
+Start Claude Code with a specific permission mode:
+```bash
+claude --permission-mode plan "your command here"
+```
+
+### Windows-Specific Solutions
+
+1. Run Command Prompt or PowerShell as administrator when using Claude Code
+2. Check folder permissions in Windows Explorer:
+   - Right-click on the project folder
+   - Select Properties > Security
+   - Ensure your user account has Write permissions
+   - Apply changes
+
+### Unix/Linux/Mac Solutions
+
+1. Configure proper directory ownership:
+```bash
+sudo chown -R $USER:$USER /path/to/project/directory
+```
+
+2. Set appropriate permissions:
+```bash
+chmod -R 755 /path/to/project/directory
+```
+
+3. For npm-related permission issues, use:
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix ~/.npm-global
+```
+Add to your profile (e.g., ~/.profile, ~/.bash_profile):
+```bash
+export PATH=~/.npm-global/bin:$PATH
+```
+Then run `source ~/.profile` to apply changes.
+
 ## New Memory and Learning Features
 
 ### Intelligent Memory Consultation
-- **QueryMemoryTool**: Standardized interface for memory-driven decision making (in system/tools/)
+- **QueryMemoryTool**: Standardized interface for memory-driven decision making through the memory-analysis-agent sub-agent
 - **MemoryAnalysisAgent**: Advanced pattern recognition across historical executions (in system/agents/)
 - **Behavioral Learning**: User sentiment patterns and constraint preferences captured
 - **Adaptive Recommendations**: Memory provides actionable insights for current tasks

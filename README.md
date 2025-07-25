@@ -23,17 +23,17 @@ LLMunix turns AI models into autonomous agents using a pure markdown architectur
 
 LLMunix implements **Adaptive Behavior Management** - the system's behavior dynamically adapts through evolving constraints. The framework features a well-organized structure with core components in the system folder and specialized components in the components folder.
 
--   **Pure Markdown Architecture**: All system components—agents and tools—are human-readable Markdown files.
+-   **Pure Markdown Architecture**: All system components—sub-agents and tools—are human-readable Markdown files with YAML frontmatter.
 -   **Manifest-Driven**: The OS "firmware" and "system calls" are defined in either `CLAUDE.md` for Claude Code or `GEMINI.md` for Gemini CLI.
 -   **Multi-Tier Memory System**: Three memory levels for different persistence needs:
     -   **Volatile Memory**: Temporary data for current execution
     -   **Task Memory**: Information relevant to the current goal
     -   **Permanent Memory**: Long-term learnings that persist across sessions
--   **Inter-Agent Messaging**: Agents communicate through a priority-based messaging system:
-    -   **Direct Messages**: Point-to-point communication with priority levels
-    -   **Broadcasts**: System-wide announcements via bulletin boards
-    -   **Inbox Management**: Each agent has its own message queue
--   **Dynamic Evolution**: The agent can write new Markdown component files to create new tools and agents on the fly.
+-   **Sub-Agent Architecture**: The SystemAgent orchestrates specialized sub-agents:
+    -   **Context Isolation**: Each sub-agent runs in its own context window
+    -   **Tool Access Control**: Sub-agents have controlled access to specific tools
+    -   **State Sharing**: Sub-agents share state through workspace files
+-   **Dynamic Evolution**: The SystemAgent can write new sub-agent files to create new capabilities on the fly.
 -   **Dual Runtime Support**: Run on either Claude Code or Gemini CLI with the same codebase through runtime-specific manifest files.
 
 ---
@@ -59,9 +59,29 @@ cd llmunix
 
 ## Running LLMunix with Claude Code
 
-### 1. Boot the System
+### 1. Initialize and Boot the System
 
-This initializes the workspace and prepares the environment.
+Before using LLMunix, you must first initialize the environment:
+
+#### Initialization Step (Run Once)
+
+**Windows Users:**
+```powershell
+# Run in PowerShell directly on your system (not through Claude Code)
+powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1
+```
+
+**Unix/Linux/Mac Users:**
+```bash
+# Run in your terminal
+./setup_agents.sh
+```
+
+This creates the `.claude/agents/` directory and copies the agent markdown files there, making them discoverable by Claude Code.
+
+#### Boot the System
+
+After initialization, boot LLMunix:
 
 ```bash
 # From the llmunix project root directory:
@@ -99,14 +119,16 @@ llmunix simulate: "Research task workflow for fine-tuning dataset"
 
 ## Running LLMunix with Gemini CLI
 
-### 1. Boot the System
+### 1. Initialize and Boot the System
 
-This script prepares the workspace for execution. Run it once per session:
+Before using LLMunix with Gemini CLI, you must initialize the environment. This needs to be done once per session:
 
 ```bash
 # From the llmunix project root:
 ./llmunix-boot
 ```
+
+This script prepares the workspace for execution by setting up the required directory structure and copying files to their appropriate locations.
 
 ### 2. Start Gemini CLI
 
@@ -462,11 +484,16 @@ LLMunix offers a flexible dual-runtime architecture that lets you choose the AI 
 
 **Key Features:**
 
+- **Native Sub-Agent Architecture**: Leverage Claude's powerful sub-agent system
+  - **Isolated Context**: Each sub-agent runs in its own context window
+  - **Specialized Tools**: Sub-agents can have limited tool access
+  - **Dynamic Discovery**: New sub-agents can be created and used on the fly
+
 - **Production-Ready Tools**: Leverage Claude's robust built-in tools
   - `WebFetch`: Direct web content access with smart processing
   - `Read/Write/Edit`: Complete file system management
   - `Glob/Grep`: Powerful pattern matching and search
-  - `Bash/Task`: System command execution and parallel processing
+  - `Bash/Task`: System command execution and sub-agent delegation
 
 - **Developer Experience:**
   - Seamless integration with Claude Code CLI

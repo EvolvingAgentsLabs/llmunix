@@ -1,3 +1,9 @@
+---
+name: intelligence-briefing-agent
+description: A specialized agent for generating intelligence briefings from collected data and trends
+tools: Read, Write, WebFetch, Glob, Grep
+---
+
 # IntelligenceBriefingAgent
 This agent synthesizes trending topics from multiple tech news sources into a coherent intelligence briefing.
 
