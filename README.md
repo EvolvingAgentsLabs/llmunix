@@ -59,6 +59,38 @@ cd llmunix
 
 ## Running LLMunix with Claude Code
 
+### Important: Running Claude Code Without Restrictions
+
+LLMunix requires comprehensive file system access to function properly. To ensure smooth operation, run Claude Code with the appropriate permission flags:
+
+#### Recommended Setup
+
+**For unrestricted access (recommended for LLMunix):**
+```bash
+claude --dangerously-skip-permissions "boot llmunix"
+```
+
+**Alternative with permission mode:**
+```bash
+claude --permission-mode plan "boot llmunix"
+```
+
+**For ongoing development work:**
+```bash
+# Set up an alias for convenience
+alias claude-llmunix="claude --dangerously-skip-permissions"
+```
+
+#### Permission Requirements
+
+LLMunix needs permissions to:
+- Create and modify files in the workspace directory
+- Read and write to the `.claude/agents/` directory 
+- Execute shell scripts during setup
+- Access system components and memory logs
+
+**Note**: The `--dangerously-skip-permissions` flag bypasses permission prompts but should only be used with trusted code like LLMunix.
+
 ### 1. Initialize and Boot the System
 
 Before using LLMunix, you must first initialize the environment:
@@ -81,28 +113,31 @@ This creates the `.claude/agents/` directory and copies the agent markdown files
 
 #### Boot the System
 
-After initialization, boot LLMunix:
+After initialization, boot LLMunix with proper permissions:
 
 ```bash
 # From the llmunix project root directory:
-boot llmunix
+claude --dangerously-skip-permissions "boot llmunix"
 ```
 
 You'll see the ASCII art welcome message and example commands.
 
 ### 2. Execute a Task
 
-Use the `llmunix execute:` command followed by your goal in quotes:
+Use the `llmunix execute:` command followed by your goal in quotes, ensuring proper permissions:
 
 ```bash
-# Basic execution
-llmunix execute: "Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing."
+# Basic execution with proper permissions
+claude --dangerously-skip-permissions "llmunix execute: 'Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.'"
 
 # Research task example
-llmunix execute: "Get live content from https://huggingface.co/blog and create a research summary"
+claude --dangerously-skip-permissions "llmunix execute: 'Get live content from https://huggingface.co/blog and create a research summary'"
 
 # Interactive mode (with user involvement)
-llmunix execute: "Create a Python calculator" -i
+claude --dangerously-skip-permissions "llmunix execute: 'Create a Python calculator' -i"
+
+# Using the convenience alias (if set up)
+claude-llmunix "llmunix execute: 'Your task here'"
 ```
 
 Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously.
@@ -110,11 +145,14 @@ Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously.
 ### 3. Other Commands
 
 ```bash
-# Interactive session
-./llmunix-llm interactive
+# Interactive session with proper permissions
+claude --dangerously-skip-permissions "./llmunix-llm interactive"
 
 # Simulate a task (for training data generation)
-llmunix simulate: "Research task workflow for fine-tuning dataset"
+claude --dangerously-skip-permissions "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
+
+# Alternative permission mode for lighter tasks
+claude --permission-mode plan "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
 ```
 
 ## Running LLMunix with Gemini CLI
@@ -177,8 +215,8 @@ Here are practical examples of tasks you can ask LLMunix to perform:
 #### Research and Analysis
 
 ```bash
-# Claude Code
-llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing"
+# Claude Code (with proper permissions)
+claude --dangerously-skip-permissions "llmunix execute: 'Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing'"
 
 # Gemini CLI
 > Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing
@@ -187,8 +225,8 @@ llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker 
 #### Content Creation
 
 ```bash
-# Claude Code
-llmunix execute: "Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona"
+# Claude Code (with proper permissions)
+claude --dangerously-skip-permissions "llmunix execute: 'Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona'"
 
 # Gemini CLI
 > Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona
@@ -197,8 +235,8 @@ llmunix execute: "Create a marketing campaign for EcoFlow Pro battery system wit
 #### Web Research
 
 ```bash
-# Claude Code
-llmunix execute: "Get live content from https://huggingface.co/blog and create a research summary"
+# Claude Code (with proper permissions)
+claude --dangerously-skip-permissions "llmunix execute: 'Get live content from https://huggingface.co/blog and create a research summary'"
 
 # Gemini CLI
 > Get live content from https://huggingface.co/blog and create a research summary
@@ -207,8 +245,8 @@ llmunix execute: "Get live content from https://huggingface.co/blog and create a
 #### Training Data Generation
 
 ```bash
-# Claude Code
-llmunix simulate: "Research task workflow for fine-tuning dataset"
+# Claude Code (with proper permissions)
+claude --dangerously-skip-permissions "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
 
 # Gemini CLI
 > Simulate a research task workflow for fine-tuning dataset
