@@ -9,6 +9,7 @@ This document showcases the power of the LLMunix framework when run by manifest-
 * **Self-Improving System**: Creates new tools and agents as needed during execution
 * **Memory-Driven Intelligence**: Learns from past executions to improve future performance
 * **Adaptive Workflow**: Automatically adjusts execution based on constraints and requirements
+* **Native Sub-Agent Architecture**: In Claude Code, leverages isolated context windows for specialized tasks
 
 ## 🚀 Using LLMunix with Your Preferred Runtime
 
@@ -22,6 +23,8 @@ All examples can be run with either Claude Code or Gemini CLI following these si
 # From the llmunix project root:
 boot llmunix
 ```
+
+This prepares the environment and makes all sub-agents discoverable to Claude Code.
 
 **2. Execute a Goal**
 
@@ -55,7 +58,7 @@ gemini
 > Your high-level goal here...
 ```
 
-Both runtimes provide identical capabilities through different interfaces. All examples below work with either runtime.
+Both runtimes provide similar capabilities through different interfaces. All examples below work with either runtime, with implementation differences noted.
 
 ---
 
@@ -98,7 +101,7 @@ llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker 
 
 ### Dynamic Capability Evolution (Self-Improvement)
 
-This example shows the system creating a new tool it needs to complete a task.
+This example shows the system creating a new sub-agent it needs to complete a task.
 
 #### Claude Code Example
 
@@ -120,14 +123,24 @@ llmunix execute: "Analyze the sentiment of the latest 5 articles on TechCrunch A
    - Plans to create a new component before proceeding
 
 2. **EVOLVE:** 
-   - **Claude Code:** Uses Write tool to create `components/agents/SentimentAnalysisAgent.md`
+   - **Claude Code:** Creates `sentiment-analyzer-agent.md` with YAML frontmatter:
+   ```markdown
+   ---
+   name: sentiment-analyzer-agent
+   description: Analyzes text content to determine sentiment polarity (positive, negative, neutral) with scoring and evidence extraction.
+   tools: Read, Write, WebFetch
+   ---
+   # System Prompt: SentimentAnalyzerAgent
+   ...
+   ```
    - **Gemini CLI:** Uses `write_file` to create the agent definition
    - The runtime automatically detects this new component
    - Agent includes scoring methodology and sentiment classification rules
 
 3. **EXECUTE:** 
    - Fetches articles from TechCrunch AI section
-   - Invokes newly created agent to analyze sentiment of each article
+   - **Claude Code:** Uses Task tool to invoke the new sentiment-analyzer-agent
+   - **Gemini CLI:** Uses `run_agent` to invoke the new agent
    - Assigns sentiment scores using consistent methodology
 
 4. **COMPLETE:** 
@@ -136,12 +149,12 @@ llmunix execute: "Analyze the sentiment of the latest 5 articles on TechCrunch A
    - Saves both component scores and final analysis
 
 **Runtime-Specific Implementation:**
-- **Claude Code:** Uses Write tool to create the agent file, WebFetch for articles, and Task to execute the agent logic
+- **Claude Code:** Uses Write tool to create the sub-agent file with YAML frontmatter, WebFetch for articles, and Task tool to invoke the sub-agent in an isolated context
 - **Gemini CLI:** Uses `write_file` tool to create the agent file, `web_fetch` for articles, and `run_agent` tool for execution
 
 ### Hierarchical Agent Delegation
 
-This showcases a high-level orchestration of specialized agents.
+This showcases a high-level orchestration of specialized sub-agents.
 
 #### Claude Code Example
 
@@ -163,23 +176,115 @@ llmunix execute: "Create a full marketing campaign for a new product called 'Syn
    - Establishes coordination workflow and deliverable format
 
 2. **DELEGATE:** 
-   - **Claude Code:** Uses Task tool for each specialized sub-task
+   - **Claude Code:** Uses Task tool with appropriate sub-agent types:
+   ```
+   Task(
+     description="Create target audience profile",
+     prompt="Analyze the market for SynthWave AI music tool and create a detailed target audience profile...",
+     subagent_type="market-analyst-agent"
+   )
+   ```
    - **Gemini CLI:** Uses `run_agent` for each specialized component
-   - Invokes specialized agents (e.g., `AdCopyGeneratorAgent`, `MarketingPersonaAgent`)
+   - Invokes specialized agents (e.g., `ad-copy-generator-agent`, `market-analyst-agent`)
    - Creates any missing agents using the Evolve pattern when needed
 
 3. **SYNTHESIZE:** 
-   - Collects outputs from all specialist agents
+   - Collects outputs from all specialist sub-agents
    - Ensures consistency across all campaign elements
    - **Claude Code:** Uses Write tool to create final `campaign_brief.md` 
    - **Gemini CLI:** Uses `write_file` for the final deliverable
    - Provides a cohesive marketing strategy incorporating all components
 
 **Runtime-Specific Implementation:**
-- **Claude Code:** Uses Task tool for agent delegation and Write tool for file operations
+- **Claude Code:** Uses Task tool for sub-agent delegation with isolated contexts and Write tool for file operations
 - **Gemini CLI:** Uses `run_agent` tool for delegation and `write_file` for file operations
 
+## 🔄 Sub-Agent Architecture in Claude Code
+
+Claude Code's native sub-agent architecture provides significant advantages for LLMunix:
+
+### Context Isolation
+
+Each sub-agent operates in its own isolated context window, which provides several benefits:
+
+1. **Clean Slate Processing**: Sub-agents start with a fresh context for each task, preventing contamination from prior tasks
+2. **Specialized Focus**: Each sub-agent can focus exclusively on its domain without unrelated information
+3. **Parallel Processing**: Multiple sub-agents can work simultaneously on different aspects of a complex task
+
+```bash
+# Example: Run multiple specialized agents in parallel
+llmunix execute: "Research the AI market, draft a business plan, and create a pitch deck for a new AI startup."
+```
+
+In this example, the system-agent delegates to three specialized sub-agents that work in parallel:
+- research-analyst-agent gathers market data
+- business-planner-agent creates the business plan
+- presentation-designer-agent builds the pitch deck
+
+Each works with a clean context specifically tailored to its task.
+
+### Tool Access Control
+
+Sub-agents can be granted access to specific tools based on their function:
+
+```markdown
 ---
+name: security-auditor-agent
+description: Performs security audits of code repositories and identifies potential vulnerabilities
+tools: Read, Grep, Glob, Bash
+---
+```
+
+This security-focused agent has read-only tools and can't modify files, while:
+
+```markdown
+---
+name: code-fixer-agent
+description: Implements fixes for identified security vulnerabilities in code
+tools: Read, Write, Edit, MultiEdit, Grep, Glob
+---
+```
+
+This agent has write access to implement fixes. The SystemAgent can coordinate between them for a secure workflow.
+
+### Dynamic Discovery
+
+One of the most powerful features is the ability to create new sub-agents during execution:
+
+```bash
+llmunix execute: "I need a specialized agent for analyzing healthcare data. Create one and use it to analyze patient treatment outcomes."
+```
+
+The system-agent will:
+1. Create a new healthcare-analyst-agent.md file with appropriate YAML frontmatter
+2. Write it to the .claude/agents/ directory
+3. The sub-agent becomes immediately available for use
+4. Invoke it through the Task tool to analyze the healthcare data
+
+### Memory Integration with Sub-Agents
+
+The SystemAgent acts as the memory manager for sub-agents:
+
+1. **Before Delegation**:
+   ```
+   # SystemAgent queries memory for relevant context
+   [Reads from memory_log.md to find insights about healthcare data analysis]
+   
+   # Then includes this context when invoking the sub-agent
+   Task(
+     description="Analyze healthcare data",
+     prompt="Based on our previous analysis methods that were successful (summarized here: [context from memory]), analyze this patient treatment data...",
+     subagent_type="healthcare-analyst-agent"
+   )
+   ```
+
+2. **After Sub-Agent Execution**:
+   ```
+   # SystemAgent captures the sub-agent's insights and stores them in memory
+   [Takes results from healthcare-analyst-agent and writes key findings to memory_log.md]
+   ```
+
+This memory orchestration ensures that knowledge is preserved across sub-agent executions, even though each sub-agent operates in its own isolated context.
 
 ### External LLM Integration (Multi-Model Workflows)
 
@@ -227,25 +332,6 @@ llmunix execute: "Please analyze the following code snippet 'function example(a,
    - Provides a comprehensive review of the code
    - Prioritizes issues by severity and likelihood
    - Suggests specific code improvements
-
-**Actual Output Example:**
-```
-✦ The llama3.2 model has provided a good initial analysis. Here's my final analysis of the code snippet function example(a, b) { return a + b / 2; }:
-
-Potential Bugs and Considerations:
-
-1. **Operator Precedence**: The most immediate and common issue with this snippet is operator precedence. Division (/) has higher precedence than addition (+). This means b / 2 will be calculated first, and then the result will be added to a.
-   * Example: If a = 10 and b = 4, the function will return 10 + (4 / 2) = 10 + 2 = 12.
-   * If the intent was `(a + b) / 2`: The code should be return (a + b) / 2; to ensure the sum of a and b is divided by 2.
-
-2. **Input Validation / Type Coercion**: JavaScript is dynamically typed, so a and b can be of any type.
-   * If a or b are not numbers, JavaScript will attempt type coercion.
-   * Example: If a = "hello" and b = 4, b / 2 is 2, but "hello" + 2 results in "hello2" (string concatenation).
-
-3. **Division by Zero**: If b is 0, the expression b / 2 will result in 0. This is generally not an error in JavaScript.
-
-4. **Floating-Point Precision**: As with any language using standard floating-point representation (IEEE 754), arithmetic operations can sometimes lead to small precision errors.
-```
 
 **Key Benefits:**
 - **Model specialization**: Use models optimized for specific tasks
@@ -338,74 +424,6 @@ This consistent memory structure enables seamless runtime switching while preser
 - **Contextual Awareness**: Agents reference past analyses for better decisions
 - **Continuous Improvement**: Each campaign builds on previous learnings
 - **Reduced Redundancy**: Avoid repeating research on subsequent tasks
-
-### Inter-Agent Collaboration via Messaging
-
-This demonstrates complex multi-agent workflows using the messaging system.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Our competitor just announced a major product update. I need a rapid response strategy within 2 hours."
-```
-
-#### Gemini CLI Example
-
-```
-> Our competitor just announced a major product update. 
-> I need a rapid response strategy within 2 hours.
-```
-
-**Expected Behavior:**
-1. **Crisis Alert**: SystemAgent broadcasts urgent message:
-   - **Claude Code**: Uses Task tool to run the BroadcastAgent with the urgent message
-   - **Gemini CLI**: Uses the messaging system:
-     ```
-     broadcast_message(
-       message="URGENT: Competitor announcement requires immediate response. All agents standby.",
-       topic="crisis_response"
-     )
-     ```
-
-2. **Parallel Execution**: Multiple agents work simultaneously:
-   - **Claude Code**: Uses multiple Task tool calls in parallel
-   - **Gemini CLI**: Spawns multiple agent processes
-   - Agents involved:
-     - MarketAnalyst fetches competitor details
-     - ContentWriter drafts response options
-     - CEO reviews and decides strategy
-
-3. **Message Flow**:
-   - **Claude Code**: Uses Write tool to create message files in workspace/messages/
-   - **Gemini CLI**: Uses the messaging API:
-     ```
-     # Analyst to CEO
-     send_message(
-       to="CEOAgent",
-       message="Competitor analysis complete. They're targeting our core market with 20% lower pricing.",
-       priority="urgent"
-     )
-     
-     # CEO to Writer
-     send_message(
-       to="ContentWriterAgent", 
-       message="Draft announcement emphasizing our superior quality and support. Due in 30 mins.",
-       priority="urgent"
-     )
-     ```
-
-4. **Coordination**: Agents check messages frequently during crisis:
-   - **Claude Code**: Uses Read tool to check message directory
-   - **Gemini CLI**: Uses messaging API:
-     ```
-     check_messages(agent="ContentWriterAgent", priority="urgent")
-     ```
-
-5. **Final Deliverable**:
-   - A comprehensive response strategy document
-   - Competitive analysis with pricing recommendations
-   - Draft press release and social media announcement
-   - Timeline for phased response implementation
 
 ## 🔬 Advanced Scenarios
 
@@ -552,19 +570,18 @@ llmunix execute: "I need to analyze 100 CSV files for anomalies. Create whatever
    - Determines requirements for efficient CSV analysis
 
 2. **TOOL GENERATION:** 
-   - **Claude Code**: Creates a new tool using Write and Task tools
-   - **Gemini CLI**: Creates `CSVAnalyzer.md` with:
+   - **Claude Code**: Creates a new sub-agent using Write tool:
    ```markdown
-   #### analyze_csv
-   `sh`
-   ```sh
-   #!/bin/bash
-   FILE_PATH=$(echo "$GEMINI_TOOL_ARGS" | jq -r .path)
-   # Use awk/sed for CSV processing
-   # Detect anomalies based on statistical analysis
+   ---
+   name: csv-analyzer-agent
+   description: Specialized agent for processing and analyzing CSV files to detect anomalies and patterns
+   tools: Read, Write, Bash
+   ---
+   # System Prompt: CSVAnalyzerAgent
+   ...
    ```
-   ```
-   - Registers new tool in component registry
+   - **Gemini CLI**: Creates `CSVAnalyzer.md` with tool implementation
+   - Registers new tool/agent in component registry
    - Tool includes anomaly detection algorithms
 
 3. **BATCH PROCESSING:** 
@@ -586,6 +603,7 @@ These examples illustrate the transformative power of the manifest-driven virtua
 3. **Runtime Evolution**: The system adapts its toolset during execution
 4. **Security & Transparency**: All tool logic is auditable and sandboxed
 5. **Multi-Model Orchestration**: Seamlessly integrate external AI services
+6. **Context Isolation**: Sub-agents work in dedicated contexts for optimal performance
 
 ### 🏢 Virtual Company Demo
 
