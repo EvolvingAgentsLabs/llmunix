@@ -1,9 +1,9 @@
 # Query Memory Tool
 
 **Component Type**: Tool  
-**Version**: v1  
+**Version**: v2  
 **Status**: [REAL] - Production Ready  
-**Claude Tool Mapping**: Read, Grep, Bash  
+**Claude Tool Mapping**: Read, Grep, Bash, Task
 
 ## Purpose
 
@@ -88,8 +88,8 @@ recommendations:          # Next steps for SystemAgent
 4. **Cache Check**: Check if similar query has been cached recently
 
 ### Phase 2: Memory Analysis Execution
-1. **Format Query**: Convert input to MemoryAnalysisAgent format
-2. **Execute Analysis**: Call MemoryAnalysisAgent with formatted query
+1. **Format Query**: Convert input to memory-analysis-agent format
+2. **Execute Analysis**: Invoke memory-analysis-agent using Task tool with formatted query
 3. **Parse Response**: Extract insights and recommendations from analysis
 4. **Validate Results**: Ensure response quality and relevance
 
@@ -112,8 +112,12 @@ recommendations:          # Next steps for SystemAgent
 Action: Read system/memory_log.md
 Observation: [Memory log content for context awareness]
 
-Action: [Execute MemoryAnalysisAgent logic using Read/Grep/Bash]
-Observation: [Raw memory analysis results]
+Action: Task tool to invoke memory-analysis-agent
+Parameters:
+  description: "Query memory for insights"
+  prompt: "[Formatted query with context and filters]"
+  subagent_type: "memory-analysis-agent"
+Observation: [Structured memory analysis from sub-agent]
 
 Action: [Process and format results for SystemAgent]
 Observation: [Structured, actionable insights ready for use]
@@ -121,6 +125,7 @@ Observation: [Structured, actionable insights ready for use]
 
 ### Tool Usage Strategy
 - **Read**: Load memory log and extract relevant entries
+- **Task**: Delegate memory analysis to the specialized memory-analysis-agent sub-agent
 - **Grep**: Search for specific patterns and filter experiences
 - **Bash**: Use advanced text processing for complex analysis when needed
 

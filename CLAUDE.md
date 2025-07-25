@@ -231,7 +231,7 @@ How would you like to refine this goal?
 - Budget management and cost reporting
 
 ### Intelligent Error Resilience:
-- **Memory-Guided Recovery**: QueryMemoryTool (in system/tools/) provides historical error recovery strategies
+- **Memory-Guided Recovery**: QueryMemoryTool leverages the memory-analysis-agent sub-agent for historical error recovery strategies
 - **Sentiment-Aware Adaptation**: Error handling adapts based on user frustration levels
 - **Constraint Evolution**: Failed attempts trigger behavioral modifications for future prevention
 - **Real Error Learning**: Actual tool failures become training data for improved resilience
@@ -254,7 +254,7 @@ To reset LLM-OS:
 ## New Memory and Learning Features
 
 ### Intelligent Memory Consultation
-- **QueryMemoryTool**: Standardized interface for memory-driven decision making (in system/tools/)
+- **QueryMemoryTool**: Standardized interface for memory-driven decision making through the memory-analysis-agent sub-agent
 - **MemoryAnalysisAgent**: Advanced pattern recognition across historical executions (in system/agents/)
 - **Behavioral Learning**: User sentiment patterns and constraint preferences captured
 - **Adaptive Recommendations**: Memory provides actionable insights for current tasks
