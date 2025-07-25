@@ -200,8 +200,13 @@ llmunix execute: "Please analyze the following code snippet 'function example(a,
 ```
 
 **Expected Behavior:**
-1. **CAPABILITY CHECK:** The system finds the `LocalLLMTool.md` in `components/tools/`.
-2. **TOOL EXECUTION:** Calls the appropriate tool to interact with the local Ollama instance.
+
+1. **CAPABILITY CHECK:** 
+   - System finds the `LocalLLMTool.md` in `components/tools/`
+   - Verifies Ollama is running and accessible
+   - Confirms llama3.2 model is available
+
+2. **TOOL EXECUTION:** 
    - **Claude Code**: Uses Bash tool to call the local Ollama API
    - **Gemini CLI**: Uses `run_tool` with `LocalLLMTool.md` and parameters:
    ```json
@@ -210,12 +215,18 @@ llmunix execute: "Please analyze the following code snippet 'function example(a,
      "prompt": "Please analyze this code for bugs: function example(a, b) { return a + b / 2; }"
    }
    ```
+
 3. **LLM RESPONSE:** The llama3.2 model identifies several issues:
    - **Operator precedence**: Division happens before addition (b/2 is calculated first)
    - **No input validation**: Missing type checks for parameters
    - **Division by zero**: No check if b could be zero
    - **Floating point precision**: Potential rounding errors
-4. **SYNTHESIS:** The primary model combines llama3.2's analysis with its own insights, providing a comprehensive review.
+
+4. **SYNTHESIS:** 
+   - Primary model combines llama3.2's analysis with its own insights
+   - Provides a comprehensive review of the code
+   - Prioritizes issues by severity and likelihood
+   - Suggests specific code improvements
 
 **Actual Output Example:**
 ```
@@ -260,7 +271,7 @@ llmunix execute: "Create a comprehensive marketing campaign for 'EcoFlow Pro' - 
 
 **Multi-Tier Memory Architecture:**
 
-Both runtimes implement the same memory hierarchy:
+Both Claude Code and Gemini CLI implement the same memory hierarchy:
 
 ```
 workspace/memory/
@@ -269,13 +280,24 @@ workspace/memory/
 └── permanent/     # Located in system/memory/permanent/ - long-term learning
 ```
 
+This consistent memory structure enables seamless runtime switching while preserving learning continuity.
+
 **Memory Operations During Campaign Execution:**
 
-1. **Initial Planning**: SystemAgent stores the execution plan:
+1. **Initial Planning**: 
+   - SystemAgent stores the comprehensive execution plan
    - **Claude Code**: Uses Write tool to create `workspace/state/plan.md`
    - **Gemini CLI**: Uses `write_file` tool with similar parameters
+   - Both include metadata like estimated completion time and resource needs
 
-2. **Market Research Phase**: Memory tier usage example:
+2. **Market Research Phase**: 
+   - **Claude Code Example**:
+   ```bash
+   # Using Task tool to store volatile memory
+   "Store market research results for temporary use"
+   ```
+   
+   - **Gemini CLI Example**:
    ```
    # Volatile memory for temporary search results
    memory_store(type="volatile", key="brita_competitor_data", value="Market share: 35%...")
@@ -284,7 +306,10 @@ workspace/memory/
    memory_store(type="task", key="ecoflow_target_audience", value="Eco-conscious millennials...")
    ```
 
-3. **Permanent Learning**: Key market insights preserved for future use:
+3. **Permanent Learning**: 
+   - Key market insights preserved for future use
+   - **Claude Code**: Uses Write tool to create files in system/memory/permanent/
+   - **Gemini CLI**: Uses memory API:
    ```
    # Permanent memory creation
    memory_store(type="permanent", 
@@ -296,7 +321,10 @@ workspace/memory/
                 value="Major players: Brita, LifeStraw, Soma...")
    ```
 
-4. **Memory Retrieval**: For future campaigns, agents can access this knowledge:
+4. **Memory Retrieval**: 
+   - For future campaigns, agents access this knowledge
+   - **Claude Code**: Uses Read tool to access memory files
+   - **Gemini CLI**: Uses memory API:
    ```
    # Search across memory tiers
    memory_search(pattern="water purification market")
@@ -475,14 +503,30 @@ llmunix execute: "Create a comprehensive competitor analysis for our new AI musi
 ```
 
 **Expected Behavior:**
-1. **MULTI-TOOL PLANNING:** Creates a plan involving multiple tools:
-   - `web_fetch` for competitor websites
-   - `google_search` for market data
-   - `LocalLLMTool` for analysis via llama3.2
-   - A newly created `VisualizationAgent` for charts
-2. **PARALLEL EXECUTION:** Runs multiple tools concurrently when possible
-3. **DATA FLOW:** Passes outputs between tools, e.g., web data → llama3.2 → visualization
-4. **ERROR RESILIENCE:** If one tool fails (e.g., web fetch quota), adapts by using alternatives
+
+1. **MULTI-TOOL PLANNING:** 
+   - Creates a plan involving multiple specialized tools
+   - **Claude Code**: Uses multiple tool calls in parallel
+   - **Gemini CLI**: Uses various virtual tools defined in markdown:
+     - `web_fetch` for competitor websites
+     - `google_search` for market data
+     - `LocalLLMTool` for analysis via llama3.2
+     - A newly created `VisualizationAgent` for charts
+
+2. **PARALLEL EXECUTION:** 
+   - Runs multiple tools concurrently when possible
+   - Coordinates tool execution for maximum efficiency
+   - Manages dependencies between tool operations
+
+3. **DATA FLOW:** 
+   - Passes outputs between tools systematically
+   - Creates pipelines: web data → llama3.2 → visualization
+   - Handles data transformations between tool handoffs
+
+4. **ERROR RESILIENCE:** 
+   - If one tool fails (e.g., web fetch quota), adapts by using alternatives
+   - Implements retry logic with exponential backoff
+   - Provides graceful degradation when tools are unavailable
 
 ### Virtual Tool Creation On-Demand
 
@@ -501,8 +545,15 @@ llmunix execute: "I need to analyze 100 CSV files for anomalies. Create whatever
 ```
 
 **Expected Behavior:**
-1. **CAPABILITY GAP:** Realizes no CSV processing tool exists
-2. **TOOL GENERATION:** Creates `CSVAnalyzer.md` with:
+
+1. **CAPABILITY GAP:** 
+   - System analyzes the task and available tools
+   - Realizes no CSV processing tool exists in current library
+   - Determines requirements for efficient CSV analysis
+
+2. **TOOL GENERATION:** 
+   - **Claude Code**: Creates a new tool using Write and Task tools
+   - **Gemini CLI**: Creates `CSVAnalyzer.md` with:
    ```markdown
    #### analyze_csv
    `sh`
@@ -513,8 +564,18 @@ llmunix execute: "I need to analyze 100 CSV files for anomalies. Create whatever
    # Detect anomalies based on statistical analysis
    ```
    ```
-3. **BATCH PROCESSING:** Uses the new tool to process all files
-4. **OPTIMIZATION:** May create additional tools for parallel processing
+   - Registers new tool in component registry
+   - Tool includes anomaly detection algorithms
+
+3. **BATCH PROCESSING:** 
+   - Uses the new tool to process all 100 CSV files
+   - Implements batching strategy for efficiency
+   - Tracks progress and aggregates results
+
+4. **OPTIMIZATION:** 
+   - May create additional tools for parallel processing
+   - Implements worker pool for distributed processing
+   - Adds results aggregation and visualization tools
 
 ## Key Insights
 
