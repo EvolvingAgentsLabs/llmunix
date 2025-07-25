@@ -1,3 +1,9 @@
+---
+name: trending-topic-extractor-agent
+description: A specialized agent that analyzes tech news content and extracts trending topics using NLP techniques
+tools: Read, Write, Grep
+---
+
 # TrendingTopicExtractorAgent
 This agent analyzes the provided text content from a tech news source and extracts a list of trending topics.
 

@@ -1,3 +1,9 @@
+---
+name: research-report-agent
+description: A specialized agent that transforms raw research summaries into structured and polished formal reports
+tools: Read, Write
+---
+
 # ResearchReportAgent
 This agent transforms a raw research summary into a structured and polished formal report.
 
