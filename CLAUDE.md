@@ -29,7 +29,13 @@ The OS "boots" when Claude reads the markdown system files and begins interpreti
 boot llmunix
 ```
 
-This simple command activates the LLMunix kernel by having Claude read and interpret the markdown system files as a functional operating system. **Boot automatically cleans the workspace directory to ensure a fresh execution environment.**
+This simple command activates the LLMunix kernel by having Claude read and interpret the markdown system files as a functional operating system. It performs the following steps:
+
+1. Cleans the workspace directory to ensure a fresh execution environment
+2. Sets up agent files by copying them to the `.claude/agents/` directory to make them discoverable
+3. Initializes the memory and state components
+
+**Windows users** should run `setup_agents.ps1` script, and **Unix/Linux/Mac users** should run `setup_agents.sh` script to prepare the environment.
 
 ### Boot Welcome Message
 When LLMunix boots, display ASCII art welcome and example commands in this format:
@@ -56,7 +62,7 @@ llmunix simulate: "Research task workflow for fine-tuning dataset"
 ### Running the Real-World Research Scenario
 
 1. **Execute the scenario** by asking Claude to:
-   - Act as the SystemAgent defined in `system/agents/SystemAgent.md`
+   - Invoke the `system-agent` to orchestrate the task
    - Execute the goal from `scenarios/RealWorld_Research_Task.md`
    - Use EXECUTION MODE for real tool calls
 
@@ -148,17 +154,17 @@ llmunix/
 
 **Real Task Execution:**
 ```
-"Act as the SystemAgent defined in system/agents/SystemAgent.md and execute the RealWorld_Research_Task scenario in EXECUTION MODE"
+Invoke the system-agent to execute the RealWorld_Research_Task scenario in EXECUTION MODE
 ```
 
 **Training Data Generation:**
 ```  
-"Act as the SystemAgent defined in system/agents/SystemAgent.md and simulate the research task scenario in SIMULATION MODE for training data"
+Invoke the system-agent to simulate the research task scenario in SIMULATION MODE for training data
 ```
 
 **Custom Real Task:**
 ```
-"Act as the SystemAgent defined in system/agents/SystemAgent.md and execute: [your goal] using real tools"
+Invoke the system-agent to execute: [your goal] using real tools
 ```
 
 ### Interactive Session Features

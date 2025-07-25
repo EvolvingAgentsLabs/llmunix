@@ -1,9 +1,9 @@
+---
+name: memory-analysis-agent
+description: Specialized agent for analyzing memory logs, detecting patterns across historical executions, and providing insights to improve future task performance.
+tools: Read, Grep, Bash
+---
 # Memory Analysis Agent
-
-**Component Type**: Agent  
-**Version**: v1  
-**Status**: [REAL] - Production Ready  
-**Claude Tool Mapping**: Read, Grep, Bash  
 
 ## Purpose
 
@@ -168,7 +168,7 @@ behavioral_suggestions:
 
 ## Integration with SystemAgent
 
-The MemoryAnalysisAgent is called by the SystemAgent during the planning phase through the QueryMemoryTool. It provides historical context that directly influences:
+The MemoryAnalysisAgent is called by the SystemAgent during the planning phase through the Task tool. It provides historical context that directly influences:
 
 1. **Plan Generation**: Avoiding past mistakes and replicating successful patterns
 2. **Constraint Setting**: Adapting behavioral modifiers based on similar tasks
