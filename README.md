@@ -35,6 +35,7 @@ LLMunix implements **Adaptive Behavior Management** - the system's behavior dyna
     -   **State Sharing**: Sub-agents share state through workspace files
 -   **Dynamic Evolution**: The SystemAgent can write new sub-agent files to create new capabilities on the fly.
 -   **Dual Runtime Support**: Run on either Claude Code or Gemini CLI with the same codebase through runtime-specific manifest files.
+-   **Native Sub-Agent Integration**: When using Claude Code, LLMunix maps its markdown-defined agents to Claude's built-in sub-agent system (see [CLAUDE_CODE_ARCHITECTURE.md](./CLAUDE_CODE_ARCHITECTURE.md) for details).
 
 ---
 
@@ -84,9 +85,14 @@ This creates the `.claude/agents/` directory and copies the agent markdown files
 After initialization, boot LLMunix:
 
 ```bash
-# From the llmunix project root directory:
-boot llmunix
+# Recommended: Run with verbose output and permission bypass for best experience
+claude --dangerously-skip-permissions --verbose "boot llmunix"
+
+# Basic version (if you prefer to confirm permissions):
+claude "boot llmunix"
 ```
+
+The `--dangerously-skip-permissions` flag prevents permission prompts for file operations, and `--verbose` provides detailed visibility into sub-agent execution and tool calls.
 
 You'll see the ASCII art welcome message and example commands.
 
@@ -95,27 +101,29 @@ You'll see the ASCII art welcome message and example commands.
 Use the `llmunix execute:` command followed by your goal in quotes:
 
 ```bash
-# Basic execution
-llmunix execute: "Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing."
+# Basic execution with recommended flags
+claude --dangerously-skip-permissions --verbose "llmunix execute: \"Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.\""
 
 # Research task example
-llmunix execute: "Get live content from https://huggingface.co/blog and create a research summary"
+claude --dangerously-skip-permissions --verbose "llmunix execute: \"Get live content from https://huggingface.co/blog and create a research summary\""
 
 # Interactive mode (with user involvement)
-llmunix execute: "Create a Python calculator" -i
+claude --dangerously-skip-permissions --verbose "llmunix execute: \"Create a Python calculator\" -i"
 ```
 
-Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously.
+Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously. The `--verbose` flag shows detailed sub-agent execution and tool usage, while `--dangerously-skip-permissions` avoids permission prompts during execution.
 
 ### 3. Other Commands
 
 ```bash
 # Interactive session
-./llmunix-llm interactive
+claude --dangerously-skip-permissions --verbose "./llmunix-llm interactive"
 
 # Simulate a task (for training data generation)
-llmunix simulate: "Research task workflow for fine-tuning dataset"
+claude --dangerously-skip-permissions --verbose "llmunix simulate: \"Research task workflow for fine-tuning dataset\""
 ```
+
+Always use the `--verbose` flag for better visibility into sub-agent execution and debugging information.
 
 ## Running LLMunix with Gemini CLI
 
@@ -488,6 +496,7 @@ LLMunix offers a flexible dual-runtime architecture that lets you choose the AI 
   - **Isolated Context**: Each sub-agent runs in its own context window
   - **Specialized Tools**: Sub-agents can have limited tool access
   - **Dynamic Discovery**: New sub-agents can be created and used on the fly
+  - **Markdown Integration**: LLMunix agents are mapped to Claude's sub-agent system (see [CLAUDE_CODE_ARCHITECTURE.md](./CLAUDE_CODE_ARCHITECTURE.md) for details)
 
 - **Production-Ready Tools**: Leverage Claude's robust built-in tools
   - `WebFetch`: Direct web content access with smart processing
