@@ -1,4 +1,4 @@
-# LLMunix 🦄
+# LLMunix
 
 **The Pure Markdown Operating System with Dual Runtime Support**
 
@@ -14,10 +14,8 @@ LLMunix turns AI models into autonomous agents using a pure markdown architectur
 * Fast setup with minimal configuration
 
 ### [Gemini CLI](https://github.com/google-gemini/gemini-cli)
-* Requires the enhanced version with virtual tools support
-* Clone: `git clone https://github.com/EvolvingAgentsLabs/gemini-cli -b issue-1806`
-* Build following the repo instructions
-* Great for local development and customization
+* Alternative runtime for experimental use
+* See documentation in GEMINI.md for setup instructions
 
 ## Core Concepts
 
@@ -35,6 +33,7 @@ LLMunix implements **Adaptive Behavior Management** - the system's behavior dyna
     -   **State Sharing**: Sub-agents share state through workspace files
 -   **Dynamic Evolution**: The SystemAgent can write new sub-agent files to create new capabilities on the fly.
 -   **Dual Runtime Support**: Run on either Claude Code or Gemini CLI with the same codebase through runtime-specific manifest files.
+-   **Native Sub-Agent Integration**: When using Claude Code, LLMunix maps its markdown-defined agents to Claude's built-in sub-agent system (see [CLAUDE_CODE_ARCHITECTURE.md](./CLAUDE_CODE_ARCHITECTURE.md) for details).
 
 ---
 
@@ -45,9 +44,7 @@ LLMunix supports two AI runtimes: Claude Code and Gemini CLI. Choose the one tha
 ### Prerequisites
 
 - **For Claude Code**: You need [Claude Code](https://anthropic.com/claude-code) installed
-- **For Gemini CLI**: You need the enhanced version with virtual tools support:
-  - Clone: `git clone https://github.com/EvolvingAgentsLabs/gemini-cli -b issue-1806`
-  - Build: Follow instructions in the README of that repository
+- **For Gemini CLI**: See documentation in GEMINI.md
 
 ### Installation
 
@@ -116,9 +113,17 @@ This creates the `.claude/agents/` directory and copies the agent markdown files
 After initialization, boot LLMunix with proper permissions:
 
 ```bash
+# Recommended: Run with verbose output and permission bypass for best experience
+claude --dangerously-skip-permissions --verbose "boot llmunix"
+
+# Basic version (if you prefer to confirm permissions):
+claude "boot llmunix"
+
 # From the llmunix project root directory:
 claude --dangerously-skip-permissions "boot llmunix"
 ```
+
+The `--dangerously-skip-permissions` flag prevents permission prompts for file operations, and `--verbose` provides detailed visibility into sub-agent execution and tool calls.
 
 You'll see the ASCII art welcome message and example commands.
 
@@ -127,6 +132,15 @@ You'll see the ASCII art welcome message and example commands.
 Use the `llmunix execute:` command followed by your goal in quotes, ensuring proper permissions:
 
 ```bash
+# Basic execution with recommended flags
+claude --dangerously-skip-permissions --verbose "llmunix execute: \"Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.\""
+
+# Research task example
+claude --dangerously-skip-permissions --verbose "llmunix execute: \"Get live content from https://huggingface.co/blog and create a research summary\""
+
+# Interactive mode (with user involvement)
+claude --dangerously-skip-permissions --verbose "llmunix execute: \"Create a Python calculator\" -i"
+
 # Basic execution with proper permissions
 claude --dangerously-skip-permissions "llmunix execute: 'Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.'"
 
@@ -140,11 +154,17 @@ claude --dangerously-skip-permissions "llmunix execute: 'Create a Python calcula
 claude-llmunix "llmunix execute: 'Your task here'"
 ```
 
-Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously.
+Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously. The `--verbose` flag shows detailed sub-agent execution and tool usage, while `--dangerously-skip-permissions` avoids permission prompts during execution.
 
 ### 3. Other Commands
 
 ```bash
+# Interactive session
+claude --dangerously-skip-permissions --verbose "./llmunix-llm interactive"
+
+# Simulate a task (for training data generation)
+claude --dangerously-skip-permissions --verbose "llmunix simulate: \"Research task workflow for fine-tuning dataset\""
+
 # Interactive session with proper permissions
 claude --dangerously-skip-permissions "./llmunix-llm interactive"
 
@@ -155,56 +175,15 @@ claude --dangerously-skip-permissions "llmunix simulate: 'Research task workflow
 claude --permission-mode plan "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
 ```
 
+Always use the `--verbose` flag for better visibility into sub-agent execution and debugging information.
+
 ## Running LLMunix with Gemini CLI
 
-### 1. Initialize and Boot the System
+For detailed instructions on using LLMunix with Gemini CLI, please refer to the GEMINI.md file. The Gemini CLI implementation is experimental and provides an alternative runtime for advanced users.
 
-Before using LLMunix with Gemini CLI, you must initialize the environment. This needs to be done once per session:
-
-```bash
-# From the llmunix project root:
-./llmunix-boot
-```
-
-This script prepares the workspace for execution by setting up the required directory structure and copying files to their appropriate locations.
-
-### 2. Start Gemini CLI
-
-Start the enhanced Gemini CLI from your terminal:
-
-```bash
-# If using the compiled version from EvolvingAgentsLabs fork:
-/path/to/gemini
-```
-
-### 3. Execute a Task
-
-Simply type your goal at the Gemini CLI prompt:
-
-```
-> Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.
-```
-
-Or for a research task:
-
-```
-> Get live content from https://huggingface.co/blog and create a research summary
-```
-
-Gemini CLI reads the `GEMINI.md` manifest and executes your goal autonomously.
-
-### 4. Interactive Commands
-
-During an interactive session, you can use these commands:
-
-```
-🎯 llmunix> refine     # Refine the last executed goal
-🎯 llmunix> status     # Show current workspace status
-🎯 llmunix> history    # Display execution history
-🎯 llmunix> clear      # Reset workspace (with confirmation)
-🎯 llmunix> help       # Show available commands
-🎯 llmunix> exit       # Exit interactive mode
-```
+Basic usage involves:
+1. Initialize the environment with `./llmunix-boot`
+2. Start Gemini CLI and interact directly with natural language commands
 
 ## Example Use Cases & Commands
 
@@ -217,9 +196,6 @@ Here are practical examples of tasks you can ask LLMunix to perform:
 ```bash
 # Claude Code (with proper permissions)
 claude --dangerously-skip-permissions "llmunix execute: 'Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing'"
-
-# Gemini CLI
-> Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing
 ```
 
 #### Content Creation
@@ -227,9 +203,6 @@ claude --dangerously-skip-permissions "llmunix execute: 'Monitor 5 tech news sou
 ```bash
 # Claude Code (with proper permissions)
 claude --dangerously-skip-permissions "llmunix execute: 'Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona'"
-
-# Gemini CLI
-> Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona
 ```
 
 #### Web Research
@@ -237,9 +210,6 @@ claude --dangerously-skip-permissions "llmunix execute: 'Create a marketing camp
 ```bash
 # Claude Code (with proper permissions)
 claude --dangerously-skip-permissions "llmunix execute: 'Get live content from https://huggingface.co/blog and create a research summary'"
-
-# Gemini CLI
-> Get live content from https://huggingface.co/blog and create a research summary
 ```
 
 #### Training Data Generation
@@ -247,9 +217,6 @@ claude --dangerously-skip-permissions "llmunix execute: 'Get live content from h
 ```bash
 # Claude Code (with proper permissions)
 claude --dangerously-skip-permissions "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
-
-# Gemini CLI
-> Simulate a research task workflow for fine-tuning dataset
 ```
 
 ---
@@ -526,6 +493,7 @@ LLMunix offers a flexible dual-runtime architecture that lets you choose the AI 
   - **Isolated Context**: Each sub-agent runs in its own context window
   - **Specialized Tools**: Sub-agents can have limited tool access
   - **Dynamic Discovery**: New sub-agents can be created and used on the fly
+  - **Markdown Integration**: LLMunix agents are mapped to Claude's sub-agent system (see [CLAUDE_CODE_ARCHITECTURE.md](./CLAUDE_CODE_ARCHITECTURE.md) for details)
 
 - **Production-Ready Tools**: Leverage Claude's robust built-in tools
   - `WebFetch`: Direct web content access with smart processing
@@ -545,22 +513,7 @@ LLMunix offers a flexible dual-runtime architecture that lets you choose the AI 
 
 ### Gemini CLI Runtime
 
-**Key Features:**
-
-- **Virtual Tool System:**
-  - Custom tools defined in markdown files
-  - Secure sandboxed execution environment
-  - Dynamic tool discovery without compilation
-
-- **Developer Experience:**
-  - More flexible deployment options
-  - Easy customization of tooling
-  - Simpler setup process for local development
-
-- **Ideal For:**
-  - Local development environments
-  - Custom toolchain integration
-  - Edge computing scenarios
+For detailed information about Gemini CLI runtime support, please refer to the GEMINI.md file.
 
 ### Benefits of Dual Runtime Support
 
@@ -580,10 +533,23 @@ The manifest-driven approach enables:
 4. **Edge Computing**: Run sophisticated AI workflows locally
 5. **Custom Domains**: Medical, legal, finance-specific tool libraries
 
+## Latest Research: Sakana AI Integration
+
+The LLMunix framework has been enhanced with insights from the Sakana AI Scientist-v2 architecture, integrating advanced capabilities while maintaining the pure markdown philosophy. Key components added from this analysis include:
+
+- **ReflectionAgent**: Analyzes execution traces to extract patterns and generate insights
+- **BeliefNetworkAgent**: Maintains coherent agent beliefs about world state
+- **CommunicationBrokerTool**: Facilitates structured multi-agent communication
+- **TreeSearchTool**: Implements tree-based exploration of solution spaces
+- **AdaptivePlanningTool**: Enables dynamic planning with continuous refinement
+
+For the complete analysis, see [SAKANA_AI_EXPERIMENT_OUTPUT.md](./SAKANA_AI_EXPERIMENT_OUTPUT.md).
+
 ## Acknowledgements
 
 *   **Original Concept & Research**: [Matias Molinas](https://github.com/matiasmolinas) and [Ismael Faro](https://github.com/ismaelfaro).
 *   **Manifest-Driven Virtual Tools**: Implemented in Claude Code natively and proposed in [Gemini CLI Issue #1806](https://github.com/google-gemini/gemini-cli/issues/1806) with implementation in the [Evolving Agents Labs fork](https://github.com/EvolvingAgentsLabs/gemini-cli).
 *   **Multi-Runtime Architecture**: Designed to work seamlessly across Claude Code and Gemini CLI with a unified component system.
+*   **Sakana AI Integration**: Incorporated research and architectural patterns from Sakana AI Scientist-v2.
 
 *This project is an experimental research prototype from **Evolving Agents Labs**.*
