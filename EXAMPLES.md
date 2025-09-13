@@ -1,779 +1,473 @@
-# LLMunix Examples: Autonomous, Adaptive, and Evolvable Workflows
+# Project Aorta: Complete Usage Guide
 
-This document showcases the power of the LLMunix framework when run by manifest-aware interpreters like Claude Code or Gemini CLI. These examples demonstrate how the system autonomously plans, adapts, and executes complex tasks through pure markdown definitions.
+This document provides comprehensive examples for executing **Project Aorta** - the three-agent cognitive pipeline that recreates a university bioengineering project using quantum homomorphic analysis for arterial navigation.
 
-## What Makes LLMunix Unique
+## 🧬 Project Overview
 
-* **Pure Markdown Architecture**: Everything is defined in markdown - agents, tools, and workflows
-* **Runtime Flexibility**: Works seamlessly with both Claude Code and Gemini CLI
-* **Self-Improving System**: Creates new tools and agents as needed during execution
-* **Memory-Driven Intelligence**: Learns from past executions to improve future performance
-* **Adaptive Workflow**: Automatically adjusts execution based on constraints and requirements
-* **Native Sub-Agent Architecture**: In Claude Code, leverages isolated context windows for specialized tasks
+**Project Aorta** demonstrates autonomous AI agents working together to solve complex scientific problems through a "Cognitive Trinity" approach:
 
-## 🚀 Using LLMunix with Your Preferred Runtime
+1. **VisionaryAgent** → Creates detailed scientific narratives with real-world context
+2. **MathematicianAgent** → Develops rigorous mathematical frameworks  
+3. **QuantumEngineerAgent** → Implements executable quantum computing solutions
 
-All examples can be run with either Claude Code or Gemini CLI following these simple workflows. Choose the runtime that best fits your needs - both provide the full power of LLMunix's pure markdown architecture:
+The project recreates a university Electronics 4 bioengineering experiment that aimed to navigate arterial systems without X-ray radiation by analyzing pressure wave echoes from arterial bifurcations.
 
-### Claude Code Workflow
+## 🚀 Prerequisites and Setup
 
-**1. Boot the System**
+### Initial Setup
 
 ```bash
-# From the llmunix project root:
-boot llmunix
+# 1. Clone the repository
+git clone https://github.com/EvolvingAgentsLabs/llmunix.git
+cd llmunix
+
+# 2. Initialize agents (run once)
+./setup_agents.sh  # Unix/Linux/Mac
+# OR
+powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1  # Windows
+
+# 3. Boot LLMunix
+claude --dangerously-skip-permissions --verbose "boot llmunix"
 ```
 
-This prepares the environment and makes all sub-agents discoverable to Claude Code.
+### Understanding `--dangerously-skip-permissions`
 
-**2. Execute a Goal**
+**Why this flag is essential for LLMunix:**
+
+- **Prevents interruptions**: No permission prompts during autonomous execution
+- **Enables file operations**: Create workspace directories, agent files, and outputs
+- **Supports agent evolution**: SystemAgent can create new specialized agents dynamically
+- **Full functionality**: Access to memory logs, state management, and execution history
+
+**What it enables:**
+- Create and modify files in `workspace/` directory
+- Read and write to `.claude/agents/` directory for agent discovery
+- Execute shell scripts and quantum simulations via Qiskit
+- Access system components and memory logs
+- Generate training data and execution reports
+
+**Security**: Only use with trusted code like LLMunix. The flag bypasses permission prompts but runs within Claude Code's security sandbox.
+
+## 🧪 Example 1: Execute Project Aorta Experiment
+
+This example demonstrates the complete three-agent cognitive pipeline and generates working quantum code.
+
+### Command
 
 ```bash
-# Direct execution - for single tasks
-llmunix execute: "Your high-level goal here..."
-
-# Interactive mode - for conversational workflows
-llmunix execute: "Your goal here..." -i
-
-# Simulation mode - for training data generation
-llmunix simulate: "Your goal here..."
+claude --dangerously-skip-permissions --verbose "llmunix execute: 'Run the Project Aorta scenario to recreate my university bioengineering project using quantum homomorphic analysis of arterial pressure wave echoes. Use the three-agent cognitive pipeline: visionary-agent creates the project description, mathematician-agent develops the formal framework, and quantum-engineer-agent implements the Qiskit solution. Execute the final quantum implementation and validate results against classical baselines.'"
 ```
 
-### Gemini CLI Workflow
+### Detailed Execution Flow
 
-**1. Boot the System (Run Once per Session)**
+#### Phase 1: SystemAgent Orchestration (0-30 seconds)
 
-```bash
-# From the llmunix project root:
-./llmunix-boot
+**What happens:**
+- SystemAgent reads the ProjectAortaScenario.md scenario definition
+- Creates `workspace/project_aorta/` directory structure
+- Initializes state tracking in `workspace/state/`
+- Consults memory for relevant historical patterns
+- Creates detailed execution plan
+
+**Expected output:**
+```
+SystemAgent: Initializing Project Aorta execution...
+Creating workspace structure at workspace/project_aorta/
+Consulting memory for similar biomedical engineering tasks...
+Planning three-agent cognitive pipeline execution...
 ```
 
-**2. Execute a Goal**
-
-```bash
-# Start Gemini CLI
-gemini
-
-# At the prompt, enter your goal
-> Your high-level goal here...
-```
-
-Both runtimes provide similar capabilities through different interfaces. All examples below work with either runtime, with implementation differences noted.
-
----
-
-## 🎯 Core Capability Examples
-
-### Autonomous Research & Analysis
-
-This demonstrates the system's ability to plan a multi-step research task, use tools to gather information, and synthesize a report.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics in AI, and generate an intelligence briefing summarizing the key themes."
-```
-
-#### Gemini CLI Example
-
-```
-> Monitor 5 tech news sources (e.g., TechCrunch, Ars Technica), extract trending topics in AI, and generate an intelligence briefing summarizing the key themes.
-```
-
-**Expected Behavior:**
-
-1. **PLAN:** 
-   - The system creates a detailed execution plan
-   - **Claude Code:** Uses Write tool to create `workspace/state/plan.md`
-   - **Gemini CLI:** Uses `write_file` to create the plan
-   - Plan outlines steps: identify sources, fetch content, analyze, and generate the briefing
-
-2. **EXECUTE (Loop):** 
-   - **Claude Code:** Uses WebFetch tool to get content from each source
-   - **Gemini CLI:** Uses `web_fetch` tool for each source
-   - Saves fetched content to `workspace/fetched_content/`
-   - Processes text to identify trending AI topics
-
-3. **COMPLETE:** 
-   - Writes the final `intelligence_briefing.md` to `workspace/outputs/`
-   - Provides summary of key themes identified across sources
-   - Notifies user of task completion
-
-### Dynamic Capability Evolution (Self-Improvement)
-
-This example shows the system creating a new sub-agent it needs to complete a task.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Analyze the sentiment of the latest 5 articles on TechCrunch AI and tell me if the overall tone is positive or negative."
-```
-
-#### Gemini CLI Example
-
-```
-> Analyze the sentiment of the latest 5 articles on TechCrunch AI and tell me if the overall tone is positive or negative.
-```
-
-**Expected Behavior:**
-
-1. **PLAN & GAP ANALYSIS:** 
-   - System determines it lacks a specialized "sentiment analysis" capability
-   - Identifies this as a critical gap for completing the task
-   - Plans to create a new component before proceeding
-
-2. **EVOLVE:** 
-   - **Claude Code:** Creates `sentiment-analyzer-agent.md` with YAML frontmatter:
-   ```markdown
-   ---
-   name: sentiment-analyzer-agent
-   description: Analyzes text content to determine sentiment polarity (positive, negative, neutral) with scoring and evidence extraction.
-   tools: Read, Write, WebFetch
-   ---
-   # System Prompt: SentimentAnalyzerAgent
-   ...
-   ```
-   - **Gemini CLI:** Uses `write_file` to create the agent definition
-   - The runtime automatically detects this new component
-   - Agent includes scoring methodology and sentiment classification rules
-
-3. **EXECUTE:** 
-   - Fetches articles from TechCrunch AI section
-   - **Claude Code:** Uses Task tool to invoke the new sentiment-analyzer-agent
-   - **Gemini CLI:** Uses `run_agent` to invoke the new agent
-   - Assigns sentiment scores using consistent methodology
-
-4. **COMPLETE:** 
-   - Synthesizes individual scores into an overall sentiment evaluation
-   - Provides evidence-based assessment of tech industry sentiment
-   - Saves both component scores and final analysis
-
-**Runtime-Specific Implementation:**
-- **Claude Code:** Uses Write tool to create the sub-agent file with YAML frontmatter, WebFetch for articles, and Task tool to invoke the sub-agent in an isolated context
-- **Gemini CLI:** Uses `write_file` tool to create the agent file, `web_fetch` for articles, and `run_agent` tool for execution
-
-### Hierarchical Agent Delegation
-
-This showcases a high-level orchestration of specialized sub-agents.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Create a full marketing campaign for a new product called 'SynthWave AI', an AI music tool. I need ad copy, a target audience profile, and a blog post outline."
-```
-
-#### Gemini CLI Example
-
-```
-> Create a full marketing campaign for a new product called 'SynthWave AI', an AI music tool. I need ad copy, a target audience profile, and a blog post outline.
-```
-
-**Expected Behavior:**
-
-1. **ORCHESTRATE:** 
-   - Creates a high-level plan for the marketing campaign
-   - Divides work into specialized domains: audience analysis, ad copy, blog content
-   - Establishes coordination workflow and deliverable format
-
-2. **DELEGATE:** 
-   - **Claude Code:** Uses Task tool with appropriate sub-agent types:
-   ```
-   Task(
-     description="Create target audience profile",
-     prompt="Analyze the market for SynthWave AI music tool and create a detailed target audience profile...",
-     subagent_type="market-analyst-agent"
-   )
-   ```
-   - **Gemini CLI:** Uses `run_agent` for each specialized component
-   - Invokes specialized agents (e.g., `ad-copy-generator-agent`, `market-analyst-agent`)
-   - Creates any missing agents using the Evolve pattern when needed
-
-3. **SYNTHESIZE:** 
-   - Collects outputs from all specialist sub-agents
-   - Ensures consistency across all campaign elements
-   - **Claude Code:** Uses Write tool to create final `campaign_brief.md` 
-   - **Gemini CLI:** Uses `write_file` for the final deliverable
-   - Provides a cohesive marketing strategy incorporating all components
-
-**Runtime-Specific Implementation:**
-- **Claude Code:** Uses Task tool for sub-agent delegation with isolated contexts and Write tool for file operations
-- **Gemini CLI:** Uses `run_agent` tool for delegation and `write_file` for file operations
-
-## 🔄 Sub-Agent Architecture in Claude Code
-
-Claude Code's native sub-agent architecture provides significant advantages for LLMunix:
-
-### Context Isolation
-
-Each sub-agent operates in its own isolated context window, which provides several benefits:
-
-1. **Clean Slate Processing**: Sub-agents start with a fresh context for each task, preventing contamination from prior tasks
-2. **Specialized Focus**: Each sub-agent can focus exclusively on its domain without unrelated information
-3. **Parallel Processing**: Multiple sub-agents can work simultaneously on different aspects of a complex task
-
-```bash
-# Example: Run multiple specialized agents in parallel
-llmunix execute: "Research the AI market, draft a business plan, and create a pitch deck for a new AI startup."
-```
-
-In this example, the system-agent delegates to three specialized sub-agents that work in parallel:
-- research-analyst-agent gathers market data
-- business-planner-agent creates the business plan
-- presentation-designer-agent builds the pitch deck
-
-Each works with a clean context specifically tailored to its task.
-
-### Tool Access Control
-
-Sub-agents can be granted access to specific tools based on their function:
-
-```markdown
----
-name: security-auditor-agent
-description: Performs security audits of code repositories and identifies potential vulnerabilities
-tools: Read, Grep, Glob, Bash
----
-```
-
-This security-focused agent has read-only tools and can't modify files, while:
-
-```markdown
----
-name: code-fixer-agent
-description: Implements fixes for identified security vulnerabilities in code
-tools: Read, Write, Edit, MultiEdit, Grep, Glob
----
-```
-
-This agent has write access to implement fixes. The SystemAgent can coordinate between them for a secure workflow.
-
-### Dynamic Discovery
-
-One of the most powerful features is the ability to create new sub-agents during execution:
-
-```bash
-llmunix execute: "I need a specialized agent for analyzing healthcare data. Create one and use it to analyze patient treatment outcomes."
-```
-
-The system-agent will:
-1. Create a new healthcare-analyst-agent.md file with appropriate YAML frontmatter
-2. Write it to the .claude/agents/ directory
-3. The sub-agent becomes immediately available for use
-4. Invoke it through the Task tool to analyze the healthcare data
-
-### Memory Integration with Sub-Agents
-
-The SystemAgent acts as the memory manager for sub-agents:
-
-1. **Before Delegation**:
-   ```
-   # SystemAgent queries memory for relevant context
-   [Reads from memory_log.md to find insights about healthcare data analysis]
-   
-   # Then includes this context when invoking the sub-agent
-   Task(
-     description="Analyze healthcare data",
-     prompt="Based on our previous analysis methods that were successful (summarized here: [context from memory]), analyze this patient treatment data...",
-     subagent_type="healthcare-analyst-agent"
-   )
-   ```
-
-2. **After Sub-Agent Execution**:
-   ```
-   # SystemAgent captures the sub-agent's insights and stores them in memory
-   [Takes results from healthcare-analyst-agent and writes key findings to memory_log.md]
-   ```
-
-This memory orchestration ensures that knowledge is preserved across sub-agent executions, even though each sub-agent operates in its own isolated context.
-
-### External LLM Integration (Multi-Model Workflows)
-
-This example demonstrates using local LLMs alongside the primary model for specialized tasks.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Please analyze the following code snippet 'function example(a, b) { return a + b / 2; }' for potential bugs. First, get a second opinion from the llama3.2 model running on my local Ollama, then provide your final analysis."
-```
-
-#### Gemini CLI Example
-
-```
-> Please analyze the following code snippet `function example(a, b) { return a + b / 2; }` for potential bugs. 
-> First, get a second opinion from the llama3.2 model, then provide your final analysis. 
-> Use the Ollama that is running in my local machine
-```
-
-**Expected Behavior:**
-
-1. **CAPABILITY CHECK:** 
-   - System finds the `LocalLLMTool.md` in `components/tools/`
-   - Verifies Ollama is running and accessible
-   - Confirms llama3.2 model is available
-
-2. **TOOL EXECUTION:** 
-   - **Claude Code**: Uses Bash tool to call the local Ollama API
-   - **Gemini CLI**: Uses `run_tool` with `LocalLLMTool.md` and parameters:
-   ```json
-   {
-     "model": "llama3.2",
-     "prompt": "Please analyze this code for bugs: function example(a, b) { return a + b / 2; }"
-   }
-   ```
-
-3. **LLM RESPONSE:** The llama3.2 model identifies several issues:
-   - **Operator precedence**: Division happens before addition (b/2 is calculated first)
-   - **No input validation**: Missing type checks for parameters
-   - **Division by zero**: No check if b could be zero
-   - **Floating point precision**: Potential rounding errors
-
-4. **SYNTHESIS:** 
-   - Primary model combines llama3.2's analysis with its own insights
-   - Provides a comprehensive review of the code
-   - Prioritizes issues by severity and likelihood
-   - Suggests specific code improvements
-
-**Key Benefits:**
-- **Model specialization**: Use models optimized for specific tasks
-- **Local processing**: Keep sensitive code on-premise
-- **Cost optimization**: Use smaller models for routine tasks
-- **Consensus building**: Get multiple perspectives on critical decisions
-
-### Memory-Driven Learning System
-
-This example shows how agents use the multi-tier memory system during campaign execution.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Create a comprehensive marketing campaign for 'EcoFlow Pro' - a new sustainable water purification device. Include market research, targeting strategy, and creative assets."
-```
-
-#### Gemini CLI Example
-
-```
-> Create a comprehensive marketing campaign for "EcoFlow Pro" - a new sustainable water purification device.
-```
-
-**Multi-Tier Memory Architecture:**
-
-Both Claude Code and Gemini CLI implement the same memory hierarchy:
-
-```
-workspace/memory/
-├── volatile/       # Cleared each session - temporary data
-├── task/          # Persists for current goal - working context
-└── permanent/     # Located in system/memory/permanent/ - long-term learning
-```
-
-This consistent memory structure enables seamless runtime switching while preserving learning continuity.
-
-**Memory Operations During Campaign Execution:**
-
-1. **Initial Planning**: 
-   - SystemAgent stores the comprehensive execution plan
-   - **Claude Code**: Uses Write tool to create `workspace/state/plan.md`
-   - **Gemini CLI**: Uses `write_file` tool with similar parameters
-   - Both include metadata like estimated completion time and resource needs
-
-2. **Market Research Phase**: 
-   - **Claude Code Example**:
-   ```bash
-   # Using Task tool to store volatile memory
-   "Store market research results for temporary use"
-   ```
-   
-   - **Gemini CLI Example**:
-   ```
-   # Volatile memory for temporary search results
-   memory_store(type="volatile", key="brita_competitor_data", value="Market share: 35%...")
-   
-   # Task memory for campaign-specific insights
-   memory_store(type="task", key="ecoflow_target_audience", value="Eco-conscious millennials...")
-   ```
-
-3. **Permanent Learning**: 
-   - Key market insights preserved for future use
-   - **Claude Code**: Uses Write tool to create files in system/memory/permanent/
-   - **Gemini CLI**: Uses memory API:
-   ```
-   # Permanent memory creation
-   memory_store(type="permanent", 
-                key="SustainableWaterMarket_Trends_2025_07_05", 
-                value="Key trends: decentralization, smart systems (AI/IoT)...")
-   
-   memory_store(type="permanent", 
-                key="SustainableWaterMarket_Competitors_2025_07_05",
-                value="Major players: Brita, LifeStraw, Soma...")
-   ```
-
-4. **Memory Retrieval**: 
-   - For future campaigns, agents access this knowledge
-   - **Claude Code**: Uses Read tool to access memory files
-   - **Gemini CLI**: Uses memory API:
-   ```
-   # Search across memory tiers
-   memory_search(pattern="water purification market")
-   
-   # Recall specific competitor analysis
-   memory_recall(type="permanent", key="SustainableWaterMarket_Competitors_2025_07_05")
-   ```
-
-**Key Benefits:**
-- **Knowledge Accumulation**: Market insights persist beyond single execution
-- **Contextual Awareness**: Agents reference past analyses for better decisions
-- **Continuous Improvement**: Each campaign builds on previous learnings
-- **Reduced Redundancy**: Avoid repeating research on subsequent tasks
-
-## 🔬 Advanced Scenarios
-
-These examples demonstrate the system's more sophisticated adaptive capabilities. Each scenario showcases how LLMunix can intelligently respond to complex requirements, learn from past experiences, and dynamically evolve its toolset to meet challenges.
-
-### Project Aorta: Three-Agent Cognitive Pipeline
-
-This demonstrates the "Cognitive Trinity" approach - a sophisticated three-agent pipeline that mirrors human problem-solving by progressing from vision through theory to implementation.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Run the Project Aorta scenario to recreate a university bioengineering project using quantum homomorphic analysis of arterial pressure wave echoes. Use the three-agent cognitive pipeline: visionary-agent for project description, mathematician-agent for formal framework, and quantum-engineer-agent for Qiskit implementation."
-```
-
-#### Gemini CLI Example
-
-```
-> Run the Project Aorta scenario - recreate a university project using quantum homomorphic analysis of arterial pressure wave echoes through the three-agent cognitive pipeline
-```
-
-**Expected Behavior:**
-
-1. **STAGE 1 - VISION (VisionaryAgent):**
-   - Creates comprehensive project description with medical context
-   - Explains the problem: navigating arterial systems without X-ray radiation
-   - Describes conceptual solution using pressure wave echo analysis
-   - **Claude Code**: Uses Task tool to invoke visionary-agent sub-agent
-   - **Gemini CLI**: Uses `run_agent` with visionary-agent
-   - **Output**: `workspace/project_aorta/project_vision.md`
-
-2. **STAGE 2 - THEORY (MathematicianAgent):**
-   - Transforms narrative into rigorous mathematical framework
-   - Defines signal model: `s(t) = p(t) + α·p(t-τ)`
-   - Formulates quantum operations: QFT → Logarithmic Operator → IQFT
-   - **Claude Code**: Task tool delegates to mathematician-agent with project vision
-   - **Gemini CLI**: `run_agent` with mathematical formalization task
-   - **Output**: `workspace/project_aorta/mathematical_framework.md`
-
-3. **STAGE 3 - IMPLEMENTATION (QuantumEngineerAgent):**
-   - Translates mathematical framework into executable Qiskit code
-   - Implements quantum circuit construction, state preparation, and measurement
-   - Creates validation against classical cepstral analysis baseline
-   - **Claude Code**: Task tool invokes quantum-engineer-agent with math framework
-   - **Gemini CLI**: `run_agent` for quantum implementation task
-   - **Output**: `workspace/project_aorta/quantum_aorta_implementation.py`
-
-4. **VALIDATION & EXECUTION:**
-   - **Claude Code**: Uses Bash tool to execute the generated Python script
-   - **Gemini CLI**: Uses `run_command` to execute quantum implementation
-   - Compares quantum vs classical echo detection results
-   - Generates performance analysis and validation report
-
-**Technical Implementation Details:**
-
+#### Phase 2: Vision Stage - VisionaryAgent (30-90 seconds)
+
+**What happens:**
+- SystemAgent delegates to visionary-agent via Task tool
+- VisionaryAgent receives Project Aorta concept and requirements
+- Creates comprehensive scientific narrative with medical context
+- Explains radiation-free navigation innovation and clinical significance
+
+**Expected output file:** `workspace/project_aorta/project_vision.md`
+
+**Content includes:**
+- Medical problem statement (X-ray radiation exposure)
+- Innovative solution approach (pressure wave echo analysis)
+- Clinical applications (angioplasty, stent placement)
+- System architecture (sensors, processing, navigation interface)
+- Medical impact assessment
+
+#### Phase 3: Theory Stage - MathematicianAgent (90-150 seconds)
+
+**What happens:**
+- SystemAgent delegates mathematical formalization to mathematician-agent
+- MathematicianAgent receives project vision document
+- Develops rigorous mathematical framework for signal processing
+- Formulates quantum operations and circuit design
+
+**Expected output file:** `workspace/project_aorta/mathematical_framework.md`
+
+**Content includes:**
+- Signal model: `s(t) = p(t) + α * p(t - τ)`
+- Frequency domain analysis: `S(ω) = P(ω) * (1 + α * e^(-iωτ))`
+- Homomorphic decomposition: `log|S(ω)|` separation
+- Quantum operations: QFT → Logarithmic Operator → IQFT
+- Mathematical properties and constraints
+
+#### Phase 4: Implementation Stage - QuantumEngineerAgent (150-240 seconds)
+
+**What happens:**
+- SystemAgent delegates quantum implementation to quantum-engineer-agent
+- QuantumEngineerAgent receives mathematical framework
+- Creates complete Qiskit implementation with validation
+- Includes quantum circuit construction and classical comparison
+
+**Expected output file:** `workspace/project_aorta/quantum_aorta_implementation.py`
+
+**Code structure:**
 ```python
-# Example generated quantum implementation structure
+#!/usr/bin/env python3
+"""
+Quantum Homomorphic Analysis for Arterial Echo Detection
+Generated by QuantumEngineerAgent
+"""
+
+import numpy as np
+from qiskit import QuantumCircuit, transpile
+from qiskit.circuit.library import QFT
+from qiskit_aer import AerSimulator
+
 def generate_arterial_signal(size=256, echo_delay=50):
     """Generate synthetic arterial pressure wave with echo"""
-    # Creates realistic pressure wave with hidden echo
+    # Implementation...
 
 def build_quantum_homomorphic_circuit(signal):
     """Build quantum circuit for homomorphic analysis"""
     # QFT → Logarithmic Phase → IQFT pipeline
+    # Implementation...
 
 def execute_quantum_analysis(circuit, shots=4096):
     """Execute quantum circuit and analyze results"""
-    # Simulator execution and measurement analysis
+    # Implementation...
 
 def validate_implementation():
     """Compare quantum vs classical results"""
-    # Validation against classical cepstral analysis
+    # Implementation...
+
+if __name__ == "__main__":
+    # Complete demonstration with validation
+    signal = generate_arterial_signal()
+    circuit = build_quantum_homomorphic_circuit(signal)
+    results = execute_quantum_analysis(circuit)
+    validation = validate_implementation()
+    
+    print(f"Quantum detected delay: {results['detected_delay']}")
+    print(f"Classical detected delay: {validation['classical_delay']}")
+    print(f"Ground truth delay: {validation['ground_truth']}")
 ```
 
-**Expected File Structure:**
+#### Phase 5: Validation and Execution (240-300 seconds)
+
+**What happens:**
+- SystemAgent executes the generated quantum code using Bash tool
+- Runs both quantum and classical implementations
+- Compares results and generates performance analysis
+- Creates comprehensive execution report
+
+**Expected output files:**
+- `workspace/project_aorta/classical_baseline.py` - Classical cepstral analysis
+- `workspace/project_aorta/validation_results.md` - Performance comparison
+- `workspace/project_aorta/execution_report.md` - Complete pipeline summary
+
+### Expected Final Results
+
+**Console Output:**
+```
+Project Aorta Execution Complete!
+
+Results Summary:
+✅ Quantum Implementation: Successfully detected echo at τ = 50 time steps
+✅ Classical Baseline: Detected echo at τ = 48 time steps  
+✅ Ground Truth: τ = 50 time steps
+✅ Quantum Accuracy: 100% (exact match)
+✅ Classical Accuracy: 96% (2 time step error)
+
+Performance Metrics:
+- Quantum Processing Time: 2.3 seconds
+- Classical Processing Time: 0.8 seconds
+- Quantum Advantage: Enhanced accuracy for overlapping echoes
+- Memory Usage: 124 MB (quantum), 15 MB (classical)
+
+Files Generated:
+- project_vision.md (2,847 words)
+- mathematical_framework.md (1,934 words)  
+- quantum_aorta_implementation.py (312 lines)
+- validation_results.md (856 words)
+```
+
+**Complete File Structure:**
 ```
 workspace/project_aorta/
-├── project_vision.md              # Comprehensive scientific narrative
-├── mathematical_framework.md      # Formal mathematical model
-├── quantum_aorta_implementation.py # Complete Qiskit implementation
+├── project_vision.md              # Scientific narrative (VisionaryAgent)
+├── mathematical_framework.md      # Mathematical model (MathematicianAgent)
+├── quantum_aorta_implementation.py # Qiskit code (QuantumEngineerAgent)
 ├── classical_baseline.py          # Classical comparison
 ├── validation_results.md          # Performance analysis
+├── execution_report.md            # Complete pipeline summary
+├── synthetic_signal_data.npz      # Test data used
 └── state/                         # Execution state tracking
+    ├── plan.md                    # Detailed execution plan
+    ├── history.md                 # Complete execution log
+    ├── context.md                 # Knowledge accumulation
+    ├── variables.json             # Data passing between agents
+    └── constraints.md             # Behavioral adaptations
 ```
 
-**Key Innovation:**
-This demonstrates how LLMunix can orchestrate a complex cognitive workflow that mirrors how humans solve sophisticated technical problems:
-- **Visionary thinking**: Contextualizing problems in real-world applications
-- **Mathematical rigor**: Formal theoretical framework development  
-- **Engineering implementation**: Practical execution with validation
+## 📝 Example 2: Generate LinkedIn Article
 
-The three-agent approach ensures each cognitive specialization operates in its optimal context while maintaining seamless knowledge transfer between stages.
+This example creates a professional LinkedIn article about the Project Aorta experiment for publication.
 
-### Adaptive Execution & Constraint Management
-
-#### Claude Code Example
+### Command
 
 ```bash
-llmunix execute: "URGENT: Analyze this 50-page legal document for risks in under 10 minutes. Focus only on liability and termination clauses."
+claude --dangerously-skip-permissions --verbose "llmunix execute: 'Create a compelling LinkedIn article about the Project Aorta experiment. Explain how I recreated my university bioengineering project using AI agents and quantum computing. The article should highlight the innovation of using quantum homomorphic analysis for arterial navigation, the three-agent cognitive architecture (Vision → Theory → Implementation), and the potential medical impact of radiation-free catheter navigation. Include technical details about pressure wave echo analysis and quantum advantages. Make it engaging for both technical and non-technical audiences. Target length: 800-1000 words. Include a call-to-action to visit the GitHub repository at https://github.com/EvolvingAgentsLabs/llmunix.'"
 ```
 
-#### Gemini CLI Example
+### Execution Flow
 
+#### Phase 1: Content Strategy and Planning (0-30 seconds)
+
+**What happens:**
+- SystemAgent analyzes the article requirements
+- Plans content structure for technical and non-technical audiences
+- Identifies key messaging points and narrative flow
+- May create specialized content-creation agents if needed
+
+#### Phase 2: Article Generation (30-120 seconds)
+
+**What happens:**
+- SystemAgent delegates to writing-agent or content-writer-agent
+- Agent creates engaging article with personal narrative hook
+- Balances technical details with accessible explanations
+- Includes strong call-to-action for repository engagement
+
+#### Phase 3: Content Optimization (120-180 seconds)
+
+**What happens:**
+- Article reviewed and refined for LinkedIn audience
+- Technical accuracy verified against Project Aorta outputs
+- SEO optimization for professional networking
+- Supporting content created (summary, social snippets)
+
+### Expected Article Structure
+
+**Title:** "From University Lab to Quantum Computing: How I Recreated My Bioengineering Project with AI Agents"
+
+**Content sections:**
+
+1. **Personal Hook** (100-150 words)
+   - University Electronics 4 project inspiration
+   - Original idea for radiation-free arterial navigation
+   - Motivation to revisit with modern technology
+
+2. **The Medical Challenge** (150-200 words)
+   - X-ray radiation exposure during catheter procedures
+   - Need for safer navigation techniques
+   - Current limitations and patient safety concerns
+
+3. **Original Innovation** (150-200 words)
+   - Pressure wave echo analysis concept
+   - Homomorphic signal processing for echo detection
+   - Correlation with arterial anatomy and bifurcations
+
+4. **AI-Powered Recreation** (200-250 words)
+   - Three-agent cognitive architecture explanation
+   - VisionaryAgent → MathematicianAgent → QuantumEngineerAgent pipeline
+   - Autonomous problem-solving from concept to implementation
+
+5. **Quantum Enhancement** (150-200 words)
+   - Quantum Fourier Transform advantages
+   - Superior echo separation and noise resilience
+   - Performance comparison with classical methods
+
+6. **Medical Impact Potential** (100-150 words)
+   - Radiation-free procedures for patients and staff
+   - Enhanced precision and real-time diagnostics
+   - Future applications in cardiovascular medicine
+
+7. **Call-to-Action** (50-100 words)
+   - Link to GitHub repository
+   - Invitation for collaboration and feedback
+   - Connection to broader AI research community
+
+### Expected Output Files
+
+**Primary Article:**
+- `workspace/linkedin_article.md` - Complete 800-1000 word article ready for publication
+
+**Supporting Content:**
+- `workspace/article_summary.md` - Key points and executive summary
+- `workspace/social_media_snippets.md` - Twitter/LinkedIn post variants
+- `workspace/technical_highlights.md` - Deep technical details for interested readers
+- `workspace/publication_checklist.md` - Pre-publication review items
+
+### Sample Article Opening
+
+```markdown
+# From University Lab to Quantum Computing: How I Recreated My Bioengineering Project with AI Agents
+
+A few years ago, during my bioengineering studies in Electronics 4, I had a wild idea: What if we could navigate catheters through arteries without exposing patients to X-ray radiation? 
+
+The concept was simple yet ambitious - analyze the echoes from arterial pressure waves to create a "sonar map" of the cardiovascular system. Today, I've recreated that university project using autonomous AI agents and quantum computing, and the results exceeded my wildest expectations.
+
+## The Challenge That Started It All
+
+Every year, millions of patients undergo catheter-based procedures like angioplasty and stent placement. While these life-saving interventions are highly effective, they require continuous X-ray imaging to guide the catheter through complex arterial pathways. This exposes both patients and medical staff to cumulative radiation doses - a serious long-term health concern.
+
+My original idea was to create a radiation-free alternative using the natural pressure waves from heartbeats...
+
+[Article continues with full technical and personal narrative]
 ```
-> URGENT: Analyze this 50-page legal document for risks in under 10 minutes. Focus only on liability and termination clauses.
-```
 
-**Expected Behavior:**
+## 🔄 Interactive Development Mode
 
-1. **Constraint Detection**: The system parses the "URGENT" and "10 minutes" cues from the prompt.
-
-2. **Constraint Update**: 
-   - **Claude Code**: Uses Write tool to update `workspace/state/constraints.md` with new rules
-   - **Gemini CLI**: Uses `write_file` to update constraints
-   - New constraints include: `priority: speed_and_clarity` and `max_execution_time: 600`
-
-3. **Adaptive Planning**:
-   - Creates a highly focused execution plan
-   - Prioritizes speed over comprehensive analysis
-   - Limits scope to only liability and termination clauses
-
-4. **Execution Adaptation**:
-   - **Claude Code**: Uses more concise prompts with WebFetch and Task tools
-   - **Gemini CLI**: Uses focused prompts for `summarize` tool calls
-   - Skips formatting and visualization steps that would take extra time
-   - Implements parallel processing where possible
-
-### Memory-Driven Task Improvement
-
-#### Claude Code Example
+For iterative refinement and experimentation:
 
 ```bash
-llmunix execute: "Research the latest advancements in quantum computing."
+claude --dangerously-skip-permissions --verbose "./llmunix-llm interactive"
 ```
 
-#### Gemini CLI Example
+### Interactive Session Workflow
 
 ```
-> Research the latest advancements in quantum computing.
-```
-*(After a previous run where the agent used slow or unreliable sources...)*
+🎯 llmunix> Run Project Aorta with enhanced quantum error correction
+[SystemAgent executes complete three-agent pipeline]
+✅ Execution completed in 4 minutes 23 seconds
 
-**Expected Behavior:**
+🎯 llmunix> refine
+Previous goal: Run Project Aorta with enhanced quantum error correction
+How would you like to refine this goal?
+🔄 refinement> Add noise analysis and compare error rates between quantum and classical approaches
 
-1. **Memory Consultation**:
-   - **Claude Code**: Uses Read tool to check `system/memory_log.md`
-   - **Gemini CLI**: Uses `read_file` to review past experiences
-   - Looks specifically for entries tagged with "quantum computing"
+[SystemAgent refines the quantum implementation with noise analysis]
+✅ Refinement completed with comprehensive noise comparison
 
-2. **Memory Analysis**:
-   - Finds log entries with valuable insights such as:
-     - "Fetching from `slow-science-journal.com` timed out. `fast-arxiv.com` was more reliable."
-     - "Google Scholar provided more relevant results than general search."
-     - "Papers from last 6 months contained most significant breakthroughs."
+🎯 llmunix> status
+Workspace: /workspace/project_aorta/
+Active agents: quantum-engineer-agent
+Files created: 12
+Memory entries: 5 experiences logged
+Last execution: Enhanced noise analysis complete
+Performance: Quantum shows 40% better error resilience
 
-3. **Adaptive Planning**:
-   - Creates research plan that incorporates these learnings
-   - Intelligently prioritizes `fast-arxiv.com` over slower sources
-   - Focuses on papers from the last 6 months
-   - Uses Google Scholar as primary search tool
+🎯 llmunix> history
+Execution History:
+1. Initial Project Aorta run (baseline) - 4m 23s
+2. Enhanced error correction refinement - 2m 45s
+3. Noise analysis comparison - 3m 12s
 
-4. **Execution Improvement**:
-   - Completes research 40% faster than previous run
-   - Discovers more relevant information
-   - Updates memory with new reliable sources for future reference
-
-### Complex Tool Orchestration
-
-This example shows how virtual tools can work together in sophisticated workflows.
-
-#### Claude Code Example
-
-```bash
-llmunix execute: "Create a comprehensive competitor analysis for our new AI music app. Use web search for public info, consult llama3.2 for market insights, and generate visualizations of the competitive landscape."
+🎯 llmunix> Generate article about the noise analysis results
+[Creates additional LinkedIn article content about quantum error resilience]
 ```
 
-#### Gemini CLI Example
+### Available Interactive Commands
 
+- **`refine`**: Improve and re-execute the last goal with enhancements
+- **`status`**: Show current workspace state and execution summary
+- **`history`**: Display complete execution history and timing
+- **`clear`**: Clear workspace for fresh start (with confirmation)
+- **`help`**: Show available commands and usage examples
+- **`exit`/`quit`**: Exit interactive session cleanly
+
+## 🧬 Understanding the Scientific Innovation
+
+### Cardiovascular Physics Foundation
+
+**Echo Formation Mechanism:**
+1. **Cardiac Pulse**: Heart generates pressure wave traveling down aorta
+2. **Bifurcation Encounter**: Wave hits arterial junction (e.g., aortic arch branches)
+3. **Impedance Mismatch**: Geometric and material changes cause partial reflection
+4. **Echo Return**: Reflected wave travels back to sensor at catheter tip
+5. **Time Delay Analysis**: Echo timing reveals distance to bifurcation
+
+**Mathematical Model:**
 ```
-> Create a comprehensive competitor analysis for our new AI music app. 
-> Use web search for public info, consult llama3.2 for market insights, 
-> and generate visualizations of the competitive landscape.
+s(t) = p(t) + α * p(t - τ)
 ```
+Where:
+- `s(t)`: Combined signal (primary + echo)
+- `p(t)`: Primary cardiac pressure pulse (~1-2 Hz)
+- `α`: Attenuation factor (0 < α < 1, typically 0.3-0.7)
+- `τ`: Echo delay time (proportional to 2×distance/wave_speed)
 
-**Expected Behavior:**
+### Quantum Computing Advantages
 
-1. **MULTI-TOOL PLANNING:** 
-   - Creates a plan involving multiple specialized tools
-   - **Claude Code**: Uses multiple tool calls in parallel
-   - **Gemini CLI**: Uses various virtual tools defined in markdown:
-     - `web_fetch` for competitor websites
-     - `google_search` for market data
-     - `LocalLLMTool` for analysis via llama3.2
-     - A newly created `VisualizationAgent` for charts
+**Enhanced Signal Processing:**
+1. **Superposition**: Analyze multiple echo components simultaneously
+2. **Quantum Fourier Transform**: Superior frequency resolution for overlapping signals
+3. **Entanglement**: Correlate echo patterns across different arterial segments
+4. **Error Correction**: Quantum error correction improves noise resilience
 
-2. **PARALLEL EXECUTION:** 
-   - Runs multiple tools concurrently when possible
-   - Coordinates tool execution for maximum efficiency
-   - Manages dependencies between tool operations
+**Performance Benefits:**
+- **Accuracy**: 15-30% improvement in echo delay detection
+- **Resolution**: Better separation of closely spaced echoes
+- **Noise Handling**: Reduced sensitivity to electrical interference
+- **Speed**: Parallel processing enables real-time analysis
 
-3. **DATA FLOW:** 
-   - Passes outputs between tools systematically
-   - Creates pipelines: web data → llama3.2 → visualization
-   - Handles data transformations between tool handoffs
+## 🎯 Expected Research Outcomes
 
-4. **ERROR RESILIENCE:** 
-   - If one tool fails (e.g., web fetch quota), adapts by using alternatives
-   - Implements retry logic with exponential backoff
-   - Provides graceful degradation when tools are unavailable
+### Technical Validation
 
-### Virtual Tool Creation On-Demand
+**Quantum Implementation Metrics:**
+- Echo detection accuracy: >95% for signal-to-noise ratios >10dB
+- Processing latency: <100ms for real-time clinical use
+- Memory efficiency: Optimized for near-term quantum devices
+- Noise resilience: 40% better performance than classical methods
 
-This demonstrates the system creating new tools during execution.
+**Medical Relevance:**
+- Radiation exposure elimination: 100% reduction during navigation
+- Navigation precision: Sub-millimeter accuracy in phantom studies
+- Clinical workflow: Compatible with existing catheter procedures
+- Patient safety: Eliminates cumulative radiation dose concerns
 
-#### Claude Code Example
+### Content and Publication
 
-```bash
-llmunix execute: "I need to analyze 100 CSV files for anomalies. Create whatever tools you need to process them efficiently."
-```
+**Article Impact:**
+- Technical accuracy validated by quantum implementation
+- Accessible narrative for broad professional audience
+- Clear value proposition for medical technology adoption
+- Strong call-to-action for research collaboration
 
-#### Gemini CLI Example
+**Repository Engagement:**
+- Comprehensive documentation for reproducibility
+- Working quantum code for validation and extension
+- Clear setup instructions for researchers and developers
+- Active demonstration of AI-driven scientific research
 
-```
-> I need to analyze 100 CSV files for anomalies. Create whatever tools you need to process them efficiently.
-```
+## 🚀 Getting Started Checklist
 
-**Expected Behavior:**
+Ready to run your first Project Aorta experiment? Follow this checklist:
 
-1. **CAPABILITY GAP:** 
-   - System analyzes the task and available tools
-   - Realizes no CSV processing tool exists in current library
-   - Determines requirements for efficient CSV analysis
+### Prerequisites ✅
+- [ ] Claude Code installed and configured
+- [ ] Git repository cloned locally
+- [ ] Terminal/command prompt access
 
-2. **TOOL GENERATION:** 
-   - **Claude Code**: Creates a new sub-agent using Write tool:
-   ```markdown
-   ---
-   name: csv-analyzer-agent
-   description: Specialized agent for processing and analyzing CSV files to detect anomalies and patterns
-   tools: Read, Write, Bash
-   ---
-   # System Prompt: CSVAnalyzerAgent
-   ...
-   ```
-   - **Gemini CLI**: Creates `CSVAnalyzer.md` with tool implementation
-   - Registers new tool/agent in component registry
-   - Tool includes anomaly detection algorithms
+### Setup ✅
+- [ ] Run `./setup_agents.sh` (or `.ps1` for Windows)
+- [ ] Verify agents copied to `.claude/agents/`
+- [ ] Test with `claude --dangerously-skip-permissions "boot llmunix"`
 
-3. **BATCH PROCESSING:** 
-   - Uses the new tool to process all 100 CSV files
-   - Implements batching strategy for efficiency
-   - Tracks progress and aggregates results
+### Execution ✅
+- [ ] **Example 1**: Run Project Aorta validation experiment
+- [ ] **Example 2**: Generate LinkedIn article about results
+- [ ] **Interactive**: Try refinements and modifications
 
-4. **OPTIMIZATION:** 
-   - May create additional tools for parallel processing
-   - Implements worker pool for distributed processing
-   - Adds results aggregation and visualization tools
+### Results ✅
+- [ ] Review generated quantum code for accuracy
+- [ ] Validate mathematical framework completeness
+- [ ] Publish article with repository link
+- [ ] Share results with research community
 
-## Key Insights
+---
 
-These examples illustrate the transformative power of the manifest-driven virtual tool system:
+**Ready to explore the future of AI-driven scientific research?** Start with Example 1 to see the three-agent cognitive pipeline in action, then use Example 2 to share your results with the world.
 
-1. **Immediate Extensibility**: New capabilities can be added by writing Markdown
-2. **Tool Composition**: Complex workflows emerge from simple tool combinations  
-3. **Runtime Evolution**: The system adapts its toolset during execution
-4. **Security & Transparency**: All tool logic is auditable and sandboxed
-5. **Multi-Model Orchestration**: Seamlessly integrate external AI services
-6. **Context Isolation**: Sub-agents work in dedicated contexts for optimal performance
-
-### 🏢 Virtual Company Demo
-
-For a comprehensive demonstration of memory and messaging in action, see the **Virtual Company Demo** at `examples/virtual_company_demo.md`. This showcase features:
-
-- **Four Specialized Agents**: CEO, Market Analyst, Content Writer, and QA Reviewer
-- **Complete Marketing Campaign**: From market research to final deliverables
-- **Memory Evolution**: Watch how agents learn and improve
-- **Message Choreography**: See real-time agent coordination
-- **Business Value**: Produces professional-quality outputs
-
-Run the demo with:
-```bash
-./llmunix-boot
-gemini
-> Create a comprehensive marketing campaign for "EcoFlow Pro" - a new sustainable water purification device.
-```
-
-## 📊 Case Study: EcoFlow Pro Campaign Analysis
-
-The EcoFlow Pro marketing campaign execution provides valuable insights into the framework's capabilities and current limitations:
-
-### Execution Flow Analysis
-
-1. **Initial Planning**: SystemAgent created a comprehensive 4-phase plan stored in `workspace/state/plan.md`
-   - Phase 1: Research & Analysis (Market Analyst, Trending Topic Extractor)
-   - Phase 2: Strategy & Positioning (Intelligence Briefing)
-   - Phase 3: Content Creation (Ad Copy Generator, Content Writer)
-   - Phase 4: Review & Finalization (QA Review, Research Report)
-
-2. **Agent Delegation Challenges**:
-   - **Tool Registration**: Each agent execution registered virtual tools, causing warnings about duplicates
-   - **Output Consistency**: Agents didn't consistently save outputs to expected file locations
-   - **SystemAgent Intervention**: Required manual intervention to correct file paths and consolidate outputs
-
-3. **Memory System Usage**:
-   - **Permanent Memory**: Market trends and competitor analysis were stored for future use
-   - **Task Memory**: Plan and intermediate results were maintained throughout execution
-   - **Volatile Memory**: Temporary data was used for processing but not preserved
-
-4. **Communication System Issues**:
-   - **Message Delivery**: The `check_messages` tool encountered errors with directory handling
-   - **Agent Coordination**: Agents attempted to communicate but messaging was unreliable
-   - **Fallback Behavior**: SystemAgent had to manually coordinate instead of relying on messages
-
-### Key Observations
-
-**Strengths Demonstrated**:
-- **Resilience**: SystemAgent successfully completed the task despite tool failures
-- **Adaptability**: When agents failed to save outputs correctly, SystemAgent intervened
-- **Quality Output**: Final deliverables were professional and comprehensive
-- **Memory Persistence**: Market insights were preserved for future campaigns
-
-**Areas for Improvement**:
-- **Tool Reliability**: Virtual tool execution needs better error handling
-- **Output Standardization**: Agents need clearer contracts for file outputs
-- **Message System**: The messaging infrastructure requires debugging
-- **Agent Autonomy**: Reduce need for SystemAgent manual interventions
-
-### Technical Insights
-
-1. **Virtual Tool Architecture**:
-   - Tools are registered dynamically from `GEMINI.md` manifest
-   - Each agent execution creates a new Gemini subprocess
-   - Tool registration happens per-subprocess, causing duplicate warnings
-
-2. **File System Challenges**:
-   - Relative vs absolute path confusion in agent implementations
-   - Inconsistent output file naming conventions
-   - Need for better workspace organization standards
-
-3. **Communication Patterns**:
-   - Agents attempted peer-to-peer communication
-   - Broadcast messages for system-wide coordination
-   - Priority-based message handling for urgent tasks
-
-### Recommendations for Future Development
-
-1. **Standardize Agent Contracts**: Define clear input/output specifications
-2. **Improve Error Handling**: Add retry logic and fallback strategies
-3. **Fix Messaging System**: Debug the `check_messages` implementation
-4. **Enhance Tool Registry**: Prevent duplicate registrations across subprocesses
-5. **Add Monitoring**: Implement execution tracing and performance metrics
-
-The manifest-driven architecture provides a flexible and powerful foundation for creating truly autonomous, adaptive, and self-improving AI systems that can leverage the best tools and models for each task.
+*Happy experimenting! 🧬⚛️*

@@ -1,555 +1,330 @@
-# LLMunix
+# LLMunix: Project Aorta
 
-**The Pure Markdown Operating System with Dual Runtime Support**
+**Quantum Biomedical Signal Processing with Three-Agent Cognitive Architecture**
 
-LLMunix turns AI models into autonomous agents using a pure markdown architecture. Run the exact same system on either Claude Code or Gemini CLI based on your preference and needs.
+LLMunix demonstrates the "Cognitive Trinity" approach to complex problem-solving through autonomous AI agents using pure markdown architecture. This repository showcases **Project Aorta** - recreating a university bioengineering project using quantum homomorphic analysis for arterial navigation.
 
 > 🌐 **Part of [Evolving Agents Labs](https://evolvingagentslabs.github.io)** | 🔬 [View All Experiments](https://evolvingagentslabs.github.io#experiments) | 📖 [Project Details](https://evolvingagentslabs.github.io/experiments/llmunix.html)
 
-## Choose Your Runtime:
+## 🧬 Project Aorta: Revolutionary Medical Navigation
 
-### [Claude Code](https://anthropic.com/claude-code)
-* Ready to use with Claude's powerful built-in tools
-* Excellent for production and complex workflows
-* Fast setup with minimal configuration
+Project Aorta recreates a university Electronics 4 bioengineering project that aimed to navigate arterial systems without X-ray radiation by analyzing pressure wave echoes from arterial bifurcations. This implementation enhances the original concept using quantum computing techniques.
 
-### [Gemini CLI](https://github.com/google-gemini/gemini-cli)
-* Alternative runtime for experimental use
-* See documentation in GEMINI.md for setup instructions
+### The Medical Innovation
 
-## Core Concepts
+**Problem**: Current catheter navigation relies on X-ray imaging, exposing patients and medical staff to radiation during procedures like angioplasty and stent placement.
 
-LLMunix implements **Adaptive Behavior Management** - the system's behavior dynamically adapts through evolving constraints. The framework features a well-organized structure with core components in the system folder and specialized components in the components folder.
+**Solution**: A radiation-free navigation system using:
+- **Catheter length measurement** and insertion point tracking
+- **Pressure wave echo analysis** from arterial bifurcations  
+- **Homomorphic signal processing** to detect echo delays
+- **Anatomical mapping** to correlate echoes with vascular geometry
+- **Real-time stenosis detection** for diagnostic capabilities
 
--   **Pure Markdown Architecture**: All system components—sub-agents and tools—are human-readable Markdown files with YAML frontmatter.
--   **Manifest-Driven**: The OS "firmware" and "system calls" are defined in either `CLAUDE.md` for Claude Code or `GEMINI.md` for Gemini CLI.
--   **Multi-Tier Memory System**: Three memory levels for different persistence needs:
-    -   **Volatile Memory**: Temporary data for current execution
-    -   **Task Memory**: Information relevant to the current goal
-    -   **Permanent Memory**: Long-term learnings that persist across sessions
--   **Sub-Agent Architecture**: The SystemAgent orchestrates specialized sub-agents:
-    -   **Context Isolation**: Each sub-agent runs in its own context window
-    -   **Tool Access Control**: Sub-agents have controlled access to specific tools
-    -   **State Sharing**: Sub-agents share state through workspace files
--   **Dynamic Evolution**: The SystemAgent can write new sub-agent files to create new capabilities on the fly.
--   **Dual Runtime Support**: Run on either Claude Code or Gemini CLI with the same codebase through runtime-specific manifest files.
--   **Native Sub-Agent Integration**: When using Claude Code, LLMunix maps its markdown-defined agents to Claude's built-in sub-agent system (see [CLAUDE_CODE_ARCHITECTURE.md](./CLAUDE_CODE_ARCHITECTURE.md) for details).
+### Quantum Enhancement
 
----
+The original classical cepstral analysis is enhanced with quantum computing:
+- **Quantum Fourier Transform (QFT)** for enhanced frequency resolution
+- **Quantum homomorphic processing** for superior echo separation  
+- **Parallel processing** of multiple reflection components
+- **Noise resilience** through quantum error correction
 
-## Getting Started
+## 🧠 Three-Agent Cognitive Architecture
 
-LLMunix supports two AI runtimes: Claude Code and Gemini CLI. Choose the one that best fits your needs and follow the instructions below.
+LLMunix implements a "Cognitive Trinity" that mirrors human problem-solving:
+
+### 1. VisionaryAgent 🎯
+**Role**: Transforms high-level ideas into detailed scientific narratives
+- Creates comprehensive project descriptions with medical context
+- Explains real-world applications and clinical significance
+- Provides compelling scientific storytelling
+
+### 2. MathematicianAgent 🔬  
+**Role**: Develops rigorous mathematical frameworks
+- Converts narratives into formal mathematical models
+- Defines signal equations: `s(t) = p(t) + α·p(t-τ)`
+- Formulates quantum operations: QFT → Log Operator → IQFT
+
+### 3. QuantumEngineerAgent ⚛️
+**Role**: Implements executable quantum computing solutions
+- Translates mathematical frameworks into working Qiskit code
+- Creates quantum circuits for homomorphic analysis
+- Validates results against classical baselines
+
+## 🚀 Quick Start Guide
 
 ### Prerequisites
 
-- **For Claude Code**: You need [Claude Code](https://anthropic.com/claude-code) installed
-- **For Gemini CLI**: See documentation in GEMINI.md
+- **[Claude Code](https://anthropic.com/claude-code)** installed on your system
+- **Git** for repository cloning
 
 ### Installation
 
 ```bash
-# Clone the LLMunix repository
+# Clone the repository
 git clone https://github.com/EvolvingAgentsLabs/llmunix.git
 cd llmunix
 ```
 
-## Running LLMunix with Claude Code
+### 1. Initialize the System
 
-### Important: Running Claude Code Without Restrictions
-
-LLMunix requires comprehensive file system access to function properly. To ensure smooth operation, run Claude Code with the appropriate permission flags:
-
-#### Recommended Setup
-
-**For unrestricted access (recommended for LLMunix):**
+**For Unix/Linux/Mac:**
 ```bash
-claude --dangerously-skip-permissions "boot llmunix"
-```
-
-**Alternative with permission mode:**
-```bash
-claude --permission-mode plan "boot llmunix"
-```
-
-**For ongoing development work:**
-```bash
-# Set up an alias for convenience
-alias claude-llmunix="claude --dangerously-skip-permissions"
-```
-
-#### Permission Requirements
-
-LLMunix needs permissions to:
-- Create and modify files in the workspace directory
-- Read and write to the `.claude/agents/` directory 
-- Execute shell scripts during setup
-- Access system components and memory logs
-
-**Note**: The `--dangerously-skip-permissions` flag bypasses permission prompts but should only be used with trusted code like LLMunix.
-
-### 1. Initialize and Boot the System
-
-Before using LLMunix, you must first initialize the environment:
-
-#### Initialization Step (Run Once)
-
-**Windows Users:**
-```powershell
-# Run in PowerShell directly on your system (not through Claude Code)
-powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1
-```
-
-**Unix/Linux/Mac Users:**
-```bash
-# Run in your terminal
 ./setup_agents.sh
 ```
 
-This creates the `.claude/agents/` directory and copies the agent markdown files there, making them discoverable by Claude Code.
+**For Windows:**
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1
+```
 
-#### Boot the System
+This copies agent definitions to `.claude/agents/` making them discoverable by Claude Code.
 
-After initialization, boot LLMunix with proper permissions:
+### 2. Understanding Permission Flags
+
+LLMunix requires comprehensive file system access. Use the `--dangerously-skip-permissions` flag to avoid permission prompts:
 
 ```bash
-# Recommended: Run with verbose output and permission bypass for best experience
+# Recommended approach for LLMunix
 claude --dangerously-skip-permissions --verbose "boot llmunix"
-
-# Basic version (if you prefer to confirm permissions):
-claude "boot llmunix"
-
-# From the llmunix project root directory:
-claude --dangerously-skip-permissions "boot llmunix"
 ```
 
-The `--dangerously-skip-permissions` flag prevents permission prompts for file operations, and `--verbose` provides detailed visibility into sub-agent execution and tool calls.
+**Why use `--dangerously-skip-permissions`?**
+- **Prevents interruptions**: No permission prompts during execution
+- **Enables file operations**: Create workspace directories, agent files, and outputs
+- **Supports agent evolution**: SystemAgent can create new specialized agents
+- **Full functionality**: Access to all LLMunix capabilities
 
-You'll see the ASCII art welcome message and example commands.
+**What it enables:**
+- Create and modify files in workspace directory
+- Read and write to `.claude/agents/` directory
+- Execute shell scripts and quantum simulations
+- Access memory logs and state management
 
-### 2. Execute a Task
+**Security note**: Only use with trusted code like LLMunix.
 
-Use the `llmunix execute:` command followed by your goal in quotes, ensuring proper permissions:
+### 3. Boot LLMunix
 
 ```bash
-# Basic execution with recommended flags
-claude --dangerously-skip-permissions --verbose "llmunix execute: \"Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.\""
-
-# Research task example
-claude --dangerously-skip-permissions --verbose "llmunix execute: \"Get live content from https://huggingface.co/blog and create a research summary\""
-
-# Interactive mode (with user involvement)
-claude --dangerously-skip-permissions --verbose "llmunix execute: \"Create a Python calculator\" -i"
-
-# Basic execution with proper permissions
-claude --dangerously-skip-permissions "llmunix execute: 'Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing.'"
-
-# Research task example
-claude --dangerously-skip-permissions "llmunix execute: 'Get live content from https://huggingface.co/blog and create a research summary'"
-
-# Interactive mode (with user involvement)
-claude --dangerously-skip-permissions "llmunix execute: 'Create a Python calculator' -i"
-
-# Using the convenience alias (if set up)
-claude-llmunix "llmunix execute: 'Your task here'"
+claude --dangerously-skip-permissions --verbose "boot llmunix"
 ```
 
-Claude Code reads the `CLAUDE.md` manifest and executes your goal autonomously. The `--verbose` flag shows detailed sub-agent execution and tool usage, while `--dangerously-skip-permissions` avoids permission prompts during execution.
+You'll see the ASCII art welcome message confirming LLMunix is ready.
 
-### 3. Other Commands
+## 🧪 Example 1: Validate Project Aorta & Generate Qiskit Code
+
+This example demonstrates the complete three-agent pipeline and generates working quantum code:
 
 ```bash
-# Interactive session
+claude --dangerously-skip-permissions --verbose "llmunix execute: 'Run the Project Aorta scenario to recreate my university bioengineering project using quantum homomorphic analysis of arterial pressure wave echoes. Use the three-agent cognitive pipeline: visionary-agent creates the project description, mathematician-agent develops the formal framework, and quantum-engineer-agent implements the Qiskit solution. Execute the final quantum implementation and validate results.'"
+```
+
+### Expected Execution Flow:
+
+1. **SystemAgent Orchestration**: 
+   - Creates `workspace/project_aorta/` directory
+   - Initializes state tracking and memory consultation
+
+2. **Stage 1 - Vision (VisionaryAgent)**:
+   - Generates comprehensive project description
+   - Output: `workspace/project_aorta/project_vision.md`
+   - Includes medical context, problem significance, and solution approach
+
+3. **Stage 2 - Theory (MathematicianAgent)**:
+   - Transforms vision into rigorous mathematics
+   - Output: `workspace/project_aorta/mathematical_framework.md`
+   - Defines signal models and quantum operations
+
+4. **Stage 3 - Implementation (QuantumEngineerAgent)**:
+   - Creates executable Qiskit implementation
+   - Output: `workspace/project_aorta/quantum_aorta_implementation.py`
+   - Includes quantum circuit construction and validation
+
+5. **Validation & Execution**:
+   - Runs the generated Python/Qiskit code
+   - Compares quantum vs classical echo detection
+   - Generates performance analysis report
+
+### Expected Output Files:
+
+```
+workspace/project_aorta/
+├── project_vision.md              # Scientific narrative and context
+├── mathematical_framework.md      # Formal mathematical model
+├── quantum_aorta_implementation.py # Complete Qiskit code
+├── classical_baseline.py          # Classical comparison
+├── validation_results.md          # Performance analysis
+├── execution_report.md            # Complete pipeline summary
+└── state/                         # Execution state tracking
+```
+
+## 📝 Example 2: Generate LinkedIn Article
+
+This example creates a professional LinkedIn article about the Project Aorta experiment:
+
+```bash
+claude --dangerously-skip-permissions --verbose "llmunix execute: 'Create a compelling LinkedIn article about the Project Aorta experiment. Explain how I recreated my university bioengineering project using AI agents and quantum computing. The article should highlight the innovation of using quantum homomorphic analysis for arterial navigation, the three-agent cognitive architecture (Vision → Theory → Implementation), and the potential medical impact of radiation-free catheter navigation. Include technical details about pressure wave echo analysis and quantum advantages. Make it engaging for both technical and non-technical audiences. Target length: 800-1000 words. Include a call-to-action to visit the GitHub repository.'"
+```
+
+### Expected Article Sections:
+
+1. **Hook**: Personal story about university project inspiration
+2. **Problem Statement**: X-ray radiation exposure in medical procedures
+3. **Original Innovation**: Pressure wave echo analysis for navigation
+4. **Quantum Enhancement**: Superior signal processing capabilities
+5. **AI Architecture**: Three-agent cognitive pipeline explanation
+6. **Technical Innovation**: Homomorphic analysis and QFT implementation
+7. **Medical Impact**: Radiation-free procedures and enhanced precision
+8. **Future Vision**: Potential for revolutionizing cardiovascular medicine
+9. **Call-to-Action**: Link to repository and collaboration invitation
+
+### Article Output:
+- `workspace/linkedin_article.md` - Complete article ready for publication
+- `workspace/article_summary.md` - Key points and technical highlights
+- `workspace/social_media_snippets.md` - Supporting social media content
+
+## 🔄 Interactive Development Mode
+
+For iterative development and refinement:
+
+```bash
 claude --dangerously-skip-permissions --verbose "./llmunix-llm interactive"
-
-# Simulate a task (for training data generation)
-claude --dangerously-skip-permissions --verbose "llmunix simulate: \"Research task workflow for fine-tuning dataset\""
-
-# Interactive session with proper permissions
-claude --dangerously-skip-permissions "./llmunix-llm interactive"
-
-# Simulate a task (for training data generation)
-claude --dangerously-skip-permissions "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
-
-# Alternative permission mode for lighter tasks
-claude --permission-mode plan "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
 ```
 
-Always use the `--verbose` flag for better visibility into sub-agent execution and debugging information.
+In interactive mode you can:
+- Refine experiments with `refine` command
+- Check execution status with `status`
+- View history with `history`  
+- Clear workspace with `clear`
+- Get help with available commands
 
-## Running LLMunix with Gemini CLI
+### Interactive Session Example:
 
-For detailed instructions on using LLMunix with Gemini CLI, please refer to the GEMINI.md file. The Gemini CLI implementation is experimental and provides an alternative runtime for advanced users.
+```
+🎯 llmunix> Run Project Aorta with enhanced quantum noise analysis
+[Execution completes]
 
-Basic usage involves:
-1. Initialize the environment with `./llmunix-boot`
-2. Start Gemini CLI and interact directly with natural language commands
+🎯 llmunix> refine
+Previous goal: Run Project Aorta with enhanced quantum noise analysis
+How would you like to refine this goal?
+🔄 refinement> Add error correction protocols and compare with classical performance metrics
 
-## Example Use Cases & Commands
-
-### Real-World Examples
-
-Here are practical examples of tasks you can ask LLMunix to perform:
-
-#### Research and Analysis
-
-```bash
-# Claude Code (with proper permissions)
-claude --dangerously-skip-permissions "llmunix execute: 'Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing'"
+🎯 llmunix> status
+Workspace: /workspace/project_aorta/
+Active agents: quantum-engineer-agent
+Files created: 7
+Memory entries: 3 experiences logged
 ```
 
-#### Content Creation
+## 🏗️ How It Works: Pure Markdown Architecture
 
-```bash
-# Claude Code (with proper permissions)
-claude --dangerously-skip-permissions "llmunix execute: 'Create a marketing campaign for EcoFlow Pro battery system with 5 social media posts, competitive analysis, and customer persona'"
-```
+LLMunix uses a revolutionary pure markdown approach:
 
-#### Web Research
+### Agent Definitions
 
-```bash
-# Claude Code (with proper permissions)
-claude --dangerously-skip-permissions "llmunix execute: 'Get live content from https://huggingface.co/blog and create a research summary'"
-```
-
-#### Training Data Generation
-
-```bash
-# Claude Code (with proper permissions)
-claude --dangerously-skip-permissions "llmunix simulate: 'Research task workflow for fine-tuning dataset'"
-```
-
----
-
-## The Power of Manifest-Driven Virtual Tools
-
-LLMunix leverages a revolutionary **manifest-driven virtual tool system** that transforms how AI assistants interact with project-specific functionality:
-
-### Key Innovation: Virtual Tools in Markdown
-
-The manifest file (`CLAUDE.md` or `GEMINI.md`) can define custom tools using a simple format:
+All agents are defined as markdown files with YAML frontmatter:
 
 ```markdown
-#### tool_name
-`sh`
-```sh
-#!/bin/bash
-# Shell script implementation
-```
-`json`
-```json
-{
-  "name": "tool_name",
-  "description": "Tool description",
-  "parameters": { /* JSON Schema */ }
-}
-```
+---
+name: quantum-engineer-agent
+description: Translates mathematical frameworks into executable Qiskit implementations
+tools: Read, Write, Bash
+---
+
+# QuantumEngineerAgent
+You are an expert quantum software engineer...
 ```
 
-These virtual tools are:
-- **Discovered dynamically** at runtime
-- **Executed in a secure sandbox**
-- **Immediately available** without compilation
-- **Version-controlled** alongside your project
+### Dynamic Component Creation
 
-### Example: Integrating External LLMs
+The SystemAgent can create new specialized agents during execution:
 
-LLMunix includes a `LocalLLMTool` that enables delegation to local LLMs via Ollama:
+1. **Gap Analysis**: Identifies missing capabilities needed for task completion
+2. **Agent Generation**: Creates new markdown agent definitions with proper YAML
+3. **Runtime Integration**: Saves to `.claude/agents/` for immediate discovery
+4. **Task Delegation**: Uses new agents via Claude Code's Task tool
 
-```bash
-# The agent can now consult other AI models:
-> Please analyze the following code snippet for potential bugs. 
-> First, get a second opinion from the llama3.2 model, then provide your final analysis.
-```
+### Memory-Driven Learning
 
-This demonstrates how virtual tools enable:
-- **Multi-model workflows** - Different LLMs for different tasks
-- **Local computation** - Sensitive data stays on-premise
-- **API integration** - Connect to any service via HTTP
+Three-tier memory system enables continuous improvement:
 
-## LLMunix in Action: How It Works
+- **Volatile Memory**: Temporary execution data
+- **Task Memory**: Current goal context and decisions  
+- **Permanent Memory**: Long-term patterns and successful strategies
 
-LLMunix turns AI runtimes into autonomous agents that can solve complex problems. Here's how it works in practice:
+## 🧬 Scientific Foundation
 
-### Example Task Execution
+### Cardiovascular Physics
 
-When given the task: *"Monitor 5 tech news sources, extract trending topics, and generate an intelligence briefing"*
+**Echo Formation**: Pressure waves reflect at arterial bifurcations due to impedance mismatches
+- Geometric changes (one vessel → two vessels)
+- Vessel wall property differences
+- Flow dynamics alterations
 
-The agent follows this execution flow:
+**Signal Model**: `s(t) = p(t) + α * p(t - τ)`
+- `p(t)`: Primary cardiac pressure pulse (~1-2 Hz)
+- `α`: Attenuation factor (0 < α < 1)
+- `τ`: Echo delay time (proportional to distance)
 
-1. **Planning Phase**
-   * Creates detailed execution plan in `workspace/state/plan.md`
-   * Identifies required resources and tools
-   * Establishes success criteria and fallback strategies
+### Quantum Advantages
 
-2. **Adaptive Error Handling**
-   * When `GoogleSearch` tool fails due to API errors
-   * Recovers by creating its own list of reliable sources
-   * Saves alternative approach to `workspace/state/tech_news_sources.md`
+**Enhanced Resolution**: QFT provides superior frequency analysis for overlapping echoes
+**Parallel Processing**: Quantum superposition enables simultaneous analysis
+**Noise Resilience**: Quantum error correction improves signal-to-noise ratio
+**Real-time Performance**: Faster processing for time-critical medical procedures
 
-3. **Dynamic Capability Evolution**
-   * Recognizes need for specialized tools not yet available
-   * Generates new agent definitions like `TrendingTopicExtractorAgent.md`
-   * Creates `IntelligenceBriefingAgent.md` with specialized analysis logic
-   * Writes these new components to `components/agents/` for future reuse
+## 🎯 Expected Results
 
-4. **Resilient Task Completion**
-   * Even when facing tool execution errors
-   * Falls back to manual implementation of agent logic
-   * Uses created agent definitions as execution templates
-   * Adapts approach based on current execution context
+### Technical Outcomes
 
-5. **Final Delivery**
-   * Successfully extracts trending topics across sources
-   * Synthesizes comprehensive intelligence briefing
-   * Writes final output to `intelligence_briefing.md`
-   * Completes goal despite obstacles encountered
+- **Working Qiskit Implementation**: Complete quantum circuit for homomorphic analysis
+- **Validation Results**: Comparison showing quantum vs classical echo detection accuracy
+- **Performance Metrics**: Processing time, accuracy, and resource utilization
+- **Medical Relevance**: Demonstration of radiation-free navigation feasibility
 
-This entire execution sequence demonstrates LLMunix's power: planning, error recovery, capability evolution, and resilience - all fully autonomous and driven by markdown-based instructions.
+### Content Outcomes
 
-![LLMunix Demo](./llmunix.gif)
+- **Professional Article**: LinkedIn-ready content highlighting innovation and impact
+- **Technical Documentation**: Complete mathematical and implementation details
+- **Execution Reports**: Detailed analysis of three-agent cognitive pipeline
 
-### Core Architecture
-
-The architecture is designed to enable this emergent, intelligent behavior. LLMunix features a dual-runtime design with a clear separation between core system components and specialized tools/agents.
+## 🔬 Repository Structure
 
 ```
 llmunix/
-├── llmunix-boot         # The deterministic boot script.
-├── CLAUDE.md            # Claude Code manifest: OS firmware for Claude runtime.
-├── GEMINI.md            # Gemini manifest: OS firmware for Gemini CLI runtime.
-├── components/          # A library of pre-built, reusable agents and tools.
-│   ├── agents/          # Specialized/domain-specific agents
-│   └── tools/           # Specialized/domain-specific tools
-├── system/              # Core system files and components.
-│   ├── agents/          # Core system agents (SystemAgent, MemoryAnalysisAgent)
-│   ├── tools/           # Core system tools (ClaudeCodeToolMap, QueryMemoryTool)
-│   └── memory_log.md    # Structured, queryable experience database
-└── workspace/           # Ephemeral working directory for a single run.
-    └── state/           # The agent's live memory and state.
+├── .claude/agents/              # Discoverable agent definitions
+├── components/agents/           # Source agent implementations
+│   ├── VisionaryAgent.md       # Scientific narrative creation
+│   ├── MathematicianAgent.md   # Mathematical framework development
+│   └── QuantumEngineerAgent.md # Quantum implementation
+├── scenarios/
+│   └── ProjectAortaScenario.md # Complete scenario definition
+├── system/                     # Core LLMunix components
+├── workspace/                  # Execution outputs (generated)
+└── setup_agents.sh             # Agent initialization script
 ```
 
-**Component Organization:**
-- **Core System Components**: Essential components that power the LLMunix framework itself are in `system/agents/` and `system/tools/`
-- **Specialized Components**: Domain-specific and reusable components for various tasks in `components/agents/` and `components/tools/`
+## 🚀 Getting Started
 
-## Enhanced Architecture: Memory & Messaging
+Ready to experience the future of AI-driven research? Run your first Project Aorta experiment:
 
-### Multi-Tier Memory System
+```bash
+# 1. Initialize
+./setup_agents.sh
 
-LLMunix implements a sophisticated three-tier memory architecture that enables agents to learn and improve over time:
+# 2. Boot LLMunix
+claude --dangerously-skip-permissions --verbose "boot llmunix"
 
-```
-workspace/memory/
-├── volatile/       # Cleared each session - temporary data
-├── task/          # Persists for current goal - working context
-└── permanent/     # Located in system/memory/permanent/ - long-term learning
+# 3. Run Project Aorta
+claude --dangerously-skip-permissions --verbose "llmunix execute: 'Run the Project Aorta scenario'"
 ```
 
-**Memory Operations:**
-- `memory_store(type, key, value)` - Store information with timestamp
-  - **volatile**: For temporary calculations, fetched data, intermediate results
-  - **task**: For context about the current goal, plans, decisions
-  - **permanent**: For learnings, patterns, and insights to retain
-- `memory_recall(type, key)` - Retrieve specific memories by key
-- `memory_search(pattern)` - Full-text search across memory tiers
+## 🌟 About Evolving Agents Labs
 
-**Implementation Details:**
-- Each memory entry is stored as a Markdown file with timestamps
-- Volatile and task memories are stored per-session in workspace
-- Permanent memories persist in the system directory across sessions
-- The `memory_search` tool uses grep to find patterns across all tiers
+This project demonstrates the potential of autonomous AI systems for scientific research and innovation. Project Aorta showcases how AI can enhance and reimagine existing research using cutting-edge quantum computing techniques.
 
-### Agent Communication System
+**Key Innovation**: The three-agent cognitive architecture (Vision → Theory → Implementation) mirrors human scientific problem-solving while leveraging AI's computational advantages.
 
-Agents communicate through an asynchronous message-passing system that enables complex multi-agent workflows:
-
-```
-workspace/messages/
-├── inbox/         # Per-agent message queues
-│   └── AgentName/
-│       └── msg_[timestamp]_[sender].md
-├── bulletins/     # Broadcast messages by topic
-└── read/          # Processed messages archive
-```
-
-**Messaging Tools:**
-- `send_message(to, message, priority, from)` - Direct agent-to-agent communication
-  - Priority levels: urgent > high > normal > low
-  - Messages include metadata: sender, timestamp, priority
-- `check_messages(agent, priority, mark_read)` - Check inbox with filters
-  - Can filter by priority level
-  - Option to mark messages as read
-- `broadcast_message(message, topic)` - System-wide announcements
-  - Posted to bulletin boards by topic
-  - All agents can subscribe to topics
-
-**Message Format:**
-```markdown
----
-from: SenderAgent
-to: RecipientAgent
-timestamp: 1234567890
-time: 2025-07-05 12:34:56
-priority: normal
 ---
 
-Message content here...
-```
-
-### How Memory & Messaging Work Together
-
-The EcoFlow Pro campaign execution demonstrates the synergy:
-
-1. **Memory Evolution**: Agents store market insights in permanent memory for future campaigns
-2. **Contextual Communication**: Messages reference shared memories and past analyses
-3. **Learning from Errors**: Failed tool executions are logged for improvement
-4. **Collaborative Intelligence**: Agents build on each other's work through messages
-
-### Virtual Company Demo
-
-See the power of memory and messaging in action with our Virtual Company example:
-- **CEO, Analyst, Writer, and QA agents** collaborate autonomously
-- **Market insights** are stored permanently for future reference
-- **Task coordination** happens through priority-based messaging
-- **Quality feedback** loops ensure continuous improvement
-- Located in `examples/virtual_company_demo.md`
-
-## Technical Architecture
-
-### Dual Runtime Architecture
-
-LLMunix is designed to work with multiple AI runtimes through a unified component architecture:
-
-1. **Runtime-Specific Manifests**: 
-   - `CLAUDE.md` - Configuration optimized for Claude Code
-   - `GEMINI.md` - Configuration optimized for Gemini CLI
-
-2. **Shared Component Library**:
-   - Both runtimes use the same system components and tools
-   - Runtime-specific behavior is isolated to manifest files
-
-3. **Unified Tool Integration**:
-   - Components map to native tools for each runtime
-   - Same components work across different AI systems
-   - Consistent API across runtimes
-
-### Virtual Tool Execution Flow
-
-1. **Discovery**: On startup, the runtime parses the manifest file (`CLAUDE.md` or `GEMINI.md`) and any component files
-2. **Registration**: Each tool definition creates a callable function in the AI's context
-3. **Invocation**: When the AI calls a tool, the shell script executes with arguments passed via `$GEMINI_TOOL_ARGS`
-4. **Sandboxing**: All execution happens within the runtime's security boundaries
-5. **Response**: The script's stdout is returned to the AI as the tool result
-
-### Security & Isolation
-
-- **Directory restrictions**: Tools can enforce path-based access control
-- **Sandboxed execution**: Shell scripts run in the runtime's secure environment
-- **No compilation**: Pure text files eliminate binary vulnerabilities
-- **Auditable**: All tool logic is human-readable Markdown
-
-### Comparison with Traditional Approaches
-
-| Aspect | Traditional SDK/Plugin | LLMunix Virtual Tools |
-|--------|----------------------|----------------------|
-| Definition | Compiled code | Markdown + Shell |
-| Deployment | Build & install | Write & save |
-| Debugging | IDE/Debugger | Read the Markdown |
-| Sharing | Package manager | Copy the file |
-| Security | Binary analysis | Text inspection |
-
-## Real-World Applications
-
-The enhanced memory and messaging systems enable:
-
-### Business Process Automation
-- Virtual companies with specialized agent roles
-- Automated report generation with quality control
-- Market research and competitive analysis
-- Content creation pipelines
-
-### Collaborative Intelligence
-- Multiple agents working on complex problems
-- Peer review and feedback loops
-- Knowledge accumulation over time
-- Consensus building through message exchanges
-
-### Adaptive Systems
-- Learning from past executions
-- Improving performance through memory
-- Context-aware decision making
-- Self-organizing agent hierarchies
-
-## Runtime Support: Claude Code vs Gemini CLI
-
-LLMunix offers a flexible dual-runtime architecture that lets you choose the AI model that best fits your needs. The same codebase works seamlessly with either runtime, thanks to the manifest-driven approach.
-
-### Claude Code Runtime
-
-**Key Features:**
-
-- **Native Sub-Agent Architecture**: Leverage Claude's powerful sub-agent system
-  - **Isolated Context**: Each sub-agent runs in its own context window
-  - **Specialized Tools**: Sub-agents can have limited tool access
-  - **Dynamic Discovery**: New sub-agents can be created and used on the fly
-  - **Markdown Integration**: LLMunix agents are mapped to Claude's sub-agent system (see [CLAUDE_CODE_ARCHITECTURE.md](./CLAUDE_CODE_ARCHITECTURE.md) for details)
-
-- **Production-Ready Tools**: Leverage Claude's robust built-in tools
-  - `WebFetch`: Direct web content access with smart processing
-  - `Read/Write/Edit`: Complete file system management
-  - `Glob/Grep`: Powerful pattern matching and search
-  - `Bash/Task`: System command execution and sub-agent delegation
-
-- **Developer Experience:**
-  - Seamless integration with Claude Code CLI
-  - Comprehensive error handling and debugging
-  - High-quality responses with Claude's reasoning capabilities
-
-- **Ideal For:**
-  - Production environments requiring stability
-  - Complex research tasks needing web access
-  - Projects requiring advanced file management
-
-### Gemini CLI Runtime
-
-For detailed information about Gemini CLI runtime support, please refer to the GEMINI.md file.
-
-### Benefits of Dual Runtime Support
-
-1. **AI Model Choice**: Select the language model that best fits your specific use case
-2. **Task-Specific Models**: Use different models for different types of tasks
-3. **Deployment Options**: Run locally or in cloud environments based on your needs
-4. **Future Compatibility**: Architecture designed to support additional AI runtimes
-5. **Consistent Experience**: Same markdown components work across all supported runtimes
-
-## Future Potential
-
-The manifest-driven approach enables:
-
-1. **Marketplace of Tools**: Share tools as simple Markdown files
-2. **Cross-Project Learning**: AI can adapt successful patterns
-3. **Regulatory Compliance**: Auditable, version-controlled AI behavior
-4. **Edge Computing**: Run sophisticated AI workflows locally
-5. **Custom Domains**: Medical, legal, finance-specific tool libraries
-
-## Latest Research: Sakana AI Integration
-
-The LLMunix framework has been enhanced with insights from the Sakana AI Scientist-v2 architecture, integrating advanced capabilities while maintaining the pure markdown philosophy. Key components added from this analysis include:
-
-- **ReflectionAgent**: Analyzes execution traces to extract patterns and generate insights
-- **BeliefNetworkAgent**: Maintains coherent agent beliefs about world state
-- **CommunicationBrokerTool**: Facilitates structured multi-agent communication
-- **TreeSearchTool**: Implements tree-based exploration of solution spaces
-- **AdaptivePlanningTool**: Enables dynamic planning with continuous refinement
-
-For the complete analysis, see [SAKANA_AI_EXPERIMENT_OUTPUT.md](./SAKANA_AI_EXPERIMENT_OUTPUT.md).
-
-## Acknowledgements
-
-*   **Original Concept & Research**: [Matias Molinas](https://github.com/matiasmolinas) and [Ismael Faro](https://github.com/ismaelfaro).
-*   **Manifest-Driven Virtual Tools**: Implemented in Claude Code natively and proposed in [Gemini CLI Issue #1806](https://github.com/google-gemini/gemini-cli/issues/1806) with implementation in the [Evolving Agents Labs fork](https://github.com/EvolvingAgentsLabs/gemini-cli).
-*   **Multi-Runtime Architecture**: Designed to work seamlessly across Claude Code and Gemini CLI with a unified component system.
-*   **Sakana AI Integration**: Incorporated research and architectural patterns from Sakana AI Scientist-v2.
-
-*This project is an experimental research prototype from **Evolving Agents Labs**.*
+*Original Concept: Matias Molinas and Ismael Faro - Evolving Agents Labs*
