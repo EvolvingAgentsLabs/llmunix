@@ -49,6 +49,14 @@ This file defines how LLMunix framework components map to Claude Code's native t
 - High cost (human time)
 - Very high latency (minutes-hours)
 
+### QuantumComputingTool → Bash + Write + Read
+- Specialized quantum computing environment management
+- Qiskit dependency installation and execution
+- Quantum circuit simulation and analysis
+- Medium cost (package installation + computation)
+- Variable latency (30s-5min depending on circuit complexity)
+- Potential errors like import failures, simulation timeouts, memory limits
+
 ## Cost Model
 - Token cost estimates range from 50-50,000 tokens per operation
 - Time estimates vary from immediate to interactive
