@@ -78,14 +78,53 @@ PARAMETERS:
 ```
 traces/
 ├── session_[timestamp]/
-│   ├── session_metadata.yaml
+│   ├── session_metadata.md      # Session info in markdown
 │   ├── communication_log.jsonl  # Line-delimited JSON for streaming
-│   ├── agent_states.yaml        # Agent state snapshots
+│   ├── agent_states.md          # Agent state snapshots in markdown
 │   ├── context_evolution.md     # How context changed during session
-│   └── execution_flow.yaml      # Step-by-step execution trace
+│   └── execution_flow.md        # Step-by-step execution trace in markdown
 ```
 
-**Communication Log Entry Format**:
+**Session Metadata Format** (session_metadata.md):
+```markdown
+# Session Metadata
+
+**Session ID**: sess_20240321_143022
+**Project**: Project_aorta
+**Goal**: Generate quantum cardiac monitoring vision
+**Start Time**: 2024-03-21T14:30:22Z
+**Status**: active
+
+## Participating Agents
+- SystemAgent (orchestrator)
+- VisionaryAgent (vision_creator)
+- MathematicianAgent (framework_developer)
+- QuantumEngineerAgent (implementer)
+
+## Configuration
+**Mode**: EXECUTION
+**Priority**: high
+**Constraints**: Standard computational limits
+```
+
+**Execution Flow Format** (execution_flow.md):
+```markdown
+# Execution Flow
+
+## Step 1: Initialization
+**Time**: 2024-03-21T14:30:22Z
+**Agent**: SystemAgent
+**Action**: Initialize session and load project context
+**Result**: ✅ Success
+
+## Step 2: Vision Request
+**Time**: 2024-03-21T14:30:25Z
+**Agent**: SystemAgent → VisionaryAgent
+**Action**: Request vision generation
+**Status**: ⏳ In Progress
+```
+
+**Communication Log Entry Format** (communication_log.jsonl):
 ```json
 {
   "timestamp": "2024-03-21T14:30:22Z",
@@ -106,11 +145,12 @@ traces/
 **File Structure**:
 ```
 memory/
-├── learned_patterns.yaml       # Consolidated interaction patterns
-├── agent_collaboration_map.yaml # Effective agent combinations
-├── knowledge_discoveries.md    # New insights from sessions
-├── communication_templates.yaml # Successful communication patterns
-└── session_summaries/         # Digested session learnings
+├── learned_patterns.md          # Consolidated interaction patterns
+├── agent_collaboration_map.md   # Effective agent combinations
+├── knowledge_discoveries.md     # New insights from sessions
+├── communication_templates.md   # Successful communication patterns
+├── session_template.md          # Template for session recording
+└── session_summaries/           # Digested session learnings
     ├── 2024-03-21_session_analysis.md
     └── ...
 ```
@@ -162,6 +202,12 @@ PARAMETERS:
   session_id: "aorta_vision_generation_001"
   consolidation_criteria: ["successful_handoffs", "knowledge_creation", "communication_efficiency"]
 ```
+
+**Consolidation Output**: Updates the following markdown files:
+- `learned_patterns.md` - New patterns discovered
+- `agent_collaboration_map.md` - Updated collaboration metrics
+- `communication_templates.md` - Refined message templates
+- Creates new session summary in `session_summaries/`
 
 ## Learning Patterns Captured
 
