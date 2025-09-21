@@ -10,6 +10,7 @@ This is LLMunix, a Pure Markdown Operating System where everything is either an 
 - **Markdown-Driven Execution**: LLM interpreter reads and sends full markdown specifications to LLM for interpretation and execution
 - **No Code Generation**: System behavior emerges from LLM interpreting markdown documents sent at runtime
 - **Agent/Tool Duality**: Every component is either an agent (decision maker) or tool (executor) defined in markdown
+- **Flexible Architecture**: Projects can define any agent configuration - single agents, multi-agent pipelines, or custom patterns
 - **Real Tool Integration**: Markdown components map to actual tool execution via TOOL_CALL format
 - **Sentient State Architecture**: Behavioral constraints evolve dynamically to enable adaptive decision-making
 - **Memory-Driven Learning**: Historical experiences become actionable intelligence for continuous improvement
@@ -21,6 +22,27 @@ This is LLMunix, a Pure Markdown Operating System where everything is either an 
 2. **SIMULATION MODE**: Training data generation through markdown-defined simulation patterns
 
 The OS "boots" when Claude reads the markdown system files and begins interpreting them as a functional operating system.
+
+## Agent Architecture Flexibility
+
+**IMPORTANT: LLMunix supports any agent architecture pattern.**
+
+### Supported Configurations:
+
+**🎯 Single-Agent Projects**: Simple tasks handled by one specialized agent
+**🔄 Multi-Agent Pipelines**: Sequential processing through multiple specialized agents
+**🌐 Collaborative Networks**: Complex orchestration with multiple agents working in parallel
+**🧠 Custom Architectures**: Project-specific patterns tailored to domain requirements
+
+### Example Agent Patterns:
+
+- **Research Projects**: WebFetch → Analysis → Summarization → Report Generation
+- **Development Projects**: Planning → Implementation → Testing → Documentation
+- **Content Creation**: Research → Writing → Review → Publishing
+- **Data Processing**: Collection → Cleaning → Analysis → Visualization
+- **Project Aorta Pattern**: Vision → Mathematical Framework → Implementation (specialized three-agent cognitive pipeline)
+
+Each project in the `projects/` directory can define its own optimal agent configuration based on its specific requirements.
 
 ## How to Boot LLMunix
 
@@ -62,6 +84,8 @@ Examples:
 llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing"
 
 llmunix execute: "Get live content from https://huggingface.co/blog and create a research summary"
+
+llmunix execute: "Run the Project Aorta scenario from projects/Project_aorta/"
 
 llmunix simulate: "Research task workflow for fine-tuning dataset"
 ```
@@ -115,27 +139,29 @@ llmunix simulate: "Research task workflow for fine-tuning dataset"
 
 ```
 llmunix/
-├── system/                                # Core system files and components
-│   ├── agents/                        # Core system agents
-│   │   ├── SystemAgent.md            # Sentient state machine orchestrator
-│   │   └── MemoryAnalysisAgent.md     # Intelligent memory querying 
-│   ├── tools/                         # Core system tools
-│   │   ├── ClaudeCodeToolMap.md      # Tool mapping and metadata
-│   │   └── QueryMemoryTool.md        # Memory consultation interface
+├── system/                                # Core LLMunix framework components
+│   ├── agents/                        # System-wide orchestration agents
+│   │   ├── SystemAgent.md            # Core orchestration and workflow management
+│   │   └── MemoryAnalysisAgent.md     # Cross-project learning and pattern recognition
+│   ├── tools/                         # Framework-level tools
+│   │   ├── ClaudeCodeToolMap.md      # Integration with Claude Code's native tools
+│   │   └── QueryMemoryTool.md        # Framework-level memory consultation
 │   ├── SmartLibrary.md               # Component registry with real tools and memory components
 │   ├── memory_log.md                 # Structured, queryable experience database
-│   ├── components/                           # Specialized reusable components
-│   ├── tools/                         # Specialized reusable tools
-│   │   ├── RealWebFetchTool.md       # [REAL] Live web content
-│   │   ├── RealFileSystemTool.md     # [REAL] File operations 
-│   │   └── [Other specialized tools]
-│   └── agents/                        # Specialized reusable agents
-│       ├── RealSummarizationAgent.md   # [REAL] Content analysis
-│       └── [Other specialized agents]
-├── scenarios/                             # Task scenarios
+│   └── components/                   # Core framework components
+├── projects/                             # Individual projects with specialized components
+│   ├── Project_aorta/                # Biomedical quantum computing project
+│   │   ├── components/               # Project-specific components
+│   │   │   ├── agents/              # Project agents (VisionaryAgent, MathematicianAgent, etc.)
+│   │   │   └── tools/               # Project tools (QuantumComputingTool, WebFetcherTool, etc.)
+│   │   ├── input/                   # Project input docs and instructions
+│   │   ├── output/                  # Generated outputs and results
+│   │   └── workspace/               # Project workspace during execution
+│   └── [Other projects]/            # Additional projects with their own components
+├── scenarios/                             # Generic task scenarios
 │   ├── RealWorld_Research_Task.md     # Live web research demo
 │   └── [Other scenarios]
-├── workspace/                            # Active execution environment
+├── workspace/                            # Global execution environment
 │   ├── state/                        # Modular execution state
 │   │   ├── plan.md                  # Execution steps and metadata
 │   │   ├── context.md               # Knowledge accumulation
@@ -143,9 +169,29 @@ llmunix/
 │   │   ├── history.md               # Execution log
 │   │   └── constraints.md           # Behavioral modifiers (sentient state)
 │   └── [Output files from tasks]
-├── LLM-OS-BLUEPRINT.md                  # Architecture documentation
+├── .claude/agents/                       # Auto-populated agent definitions for Claude Code discovery
 └── CLAUDE.md                            # This configuration file
 ```
+
+### Component Management and Discovery
+
+**Static Components**: Pre-defined agents and tools in project directories
+- **System Components**: Framework-level agents/tools in `system/`
+- **Project Components**: Domain-specific agents/tools in `projects/[project]/components/`
+
+**Dynamic Component Creation**: New agents created during execution
+1. **Gap Analysis**: SystemAgent identifies missing capabilities for task completion
+2. **Agent Generation**: Creates new markdown agent definitions with proper YAML frontmatter
+3. **Project-Specific Storage**: Saves new agents to appropriate `projects/[project]/components/agents/`
+4. **Runtime Integration**: Auto-copies to `.claude/agents/` with project prefix for immediate discovery
+5. **Task Delegation**: Uses new agents via Claude Code's Task tool
+
+**Agent Discovery Process**:
+- **Initial Setup**: Run `setup_agents.sh/ps1` to populate `.claude/agents/` directory
+- **System Agents**: Copied directly (e.g., `SystemAgent.md`)
+- **Project Agents**: Copied with project prefix (e.g., `Project_aorta_VisionaryAgent.md`)
+- **Namespace Isolation**: Project prefixes prevent naming conflicts between projects
+- **Auto-Discovery**: Claude Code automatically discovers agents in `.claude/agents/`
 
 ### Execution Commands
 

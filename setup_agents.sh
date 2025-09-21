@@ -38,13 +38,21 @@ if [ -d "system/agents" ]; then
     done
 fi
 
-# Process component agents
-echo "Processing component agents..."
-if [ -d "components/agents" ]; then
-    for agent in components/agents/*.md; do
-        if [ -f "$agent" ]; then
-            dest_path=".claude/agents/$(basename "$agent")"
-            process_agent_file "$agent" "$dest_path"
+# Process project-specific agents
+echo "Processing project-specific agents..."
+if [ -d "projects" ]; then
+    for project_dir in projects/*/; do
+        if [ -d "$project_dir/components/agents" ]; then
+            project_name=$(basename "$project_dir")
+            echo "  Processing agents for project: $project_name"
+            for agent in "$project_dir/components/agents"/*.md; do
+                if [ -f "$agent" ]; then
+                    # Add project prefix to avoid naming conflicts
+                    agent_name=$(basename "$agent" .md)
+                    dest_path=".claude/agents/${project_name}_${agent_name}.md"
+                    process_agent_file "$agent" "$dest_path"
+                fi
+            done
         fi
     done
 fi

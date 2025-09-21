@@ -1,16 +1,18 @@
 # Project Aorta: Complete Usage Guide
 
-This document provides comprehensive examples for executing **Project Aorta** - the three-agent cognitive pipeline that recreates a university bioengineering project using quantum homomorphic analysis for arterial navigation.
+This document provides comprehensive examples for executing **Project Aorta** - a specialized LLMunix project that implements a custom three-agent cognitive pipeline for biomedical research.
 
 ## 🧬 Project Overview
 
-**Project Aorta** demonstrates autonomous AI agents working together to solve complex scientific problems through a "Cognitive Trinity" approach:
+**Project Aorta** demonstrates how LLMunix's flexible architecture can be customized with a specialized "Cognitive Trinity" agent configuration for complex scientific problems:
 
 1. **VisionaryAgent** → Creates detailed scientific narratives with real-world context
 2. **MathematicianAgent** → Develops rigorous mathematical frameworks  
 3. **QuantumEngineerAgent** → Implements executable quantum computing solutions
 
-The project recreates a university Electronics 4 bioengineering experiment that aimed to navigate arterial systems without X-ray radiation by analyzing pressure wave echoes from arterial bifurcations.
+This specific agent architecture was designed for recreating a university Electronics 4 bioengineering experiment that aimed to navigate arterial systems without X-ray radiation by analyzing pressure wave echoes from arterial bifurcations.
+
+> **Note**: This three-agent pattern is project-specific. LLMunix supports any agent architecture - single agents, different multi-agent patterns, or custom configurations tailored to your project needs.
 
 ## 🚀 Prerequisites and Setup
 
