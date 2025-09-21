@@ -37,12 +37,21 @@ foreach ($agent in $systemAgents) {
     Process-AgentFile -sourcePath $agent.FullName -destPath $destPath
 }
 
-# Process component agents
-Write-Host "Processing component agents..."
-$componentAgents = Get-ChildItem -Path "components\agents\*.md" -ErrorAction SilentlyContinue
-foreach ($agent in $componentAgents) {
-    $destPath = ".\.claude\agents\$($agent.Name)"
-    Process-AgentFile -sourcePath $agent.FullName -destPath $destPath
+# Process project-specific agents
+Write-Host "Processing project-specific agents..."
+$projectDirs = Get-ChildItem -Path "projects" -Directory -ErrorAction SilentlyContinue
+foreach ($projectDir in $projectDirs) {
+    $agentsPath = Join-Path $projectDir.FullName "components\agents"
+    if (Test-Path $agentsPath) {
+        Write-Host "  Processing agents for project: $($projectDir.Name)"
+        $projectAgents = Get-ChildItem -Path "$agentsPath\*.md" -ErrorAction SilentlyContinue
+        foreach ($agent in $projectAgents) {
+            # Add project prefix to avoid naming conflicts
+            $agentName = $agent.BaseName
+            $destPath = ".\.claude\agents\$($projectDir.Name)_$($agentName).md"
+            Process-AgentFile -sourcePath $agent.FullName -destPath $destPath
+        }
+    }
 }
 
 Write-Host "Agent setup complete. Agents are now discoverable by Claude Code."

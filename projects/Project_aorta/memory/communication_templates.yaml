@@ -1,0 +1,379 @@
+# Project Aorta - Communication Templates
+# Proven formats and patterns for effective agent communication
+
+version: "1.0"
+last_updated: "2024-03-21T15:00:00Z"
+templates_tested: 0
+
+# Agent Request Templates
+request_templates:
+  vision_generation_request:
+    from_agent: "SystemAgent"
+    to_agent: "VisionaryAgent"
+    template: |
+      **Vision Generation Request**
+
+      **Project Context**: {project_name} - {domain_description}
+      **Goal**: {high_level_goal}
+      **Constraints**: {known_constraints}
+      **Success Criteria**: {success_metrics}
+
+      **Specific Requirements**:
+      - Innovation level: {innovation_requirement}
+      - Feasibility considerations: {feasibility_constraints}
+      - Integration needs: {integration_requirements}
+
+      **Expected Deliverable**: Comprehensive vision document including problem analysis, innovative approach, expected outcomes, and implementation pathway.
+
+      **Timeline**: {expected_completion_time}
+
+    success_rate: null
+    refinement_iterations: []
+
+  mathematical_framework_request:
+    from_agent: "SystemAgent"
+    to_agent: "MathematicianAgent"
+    template: |
+      **Mathematical Framework Development Request**
+
+      **Vision Context**: {vision_summary}
+      **Mathematical Requirements**: {mathematical_needs}
+      **Constraints**: {mathematical_constraints}
+      **Performance Requirements**: {performance_targets}
+
+      **Specific Deliverables**:
+      - Formal mathematical model
+      - Algorithm specifications
+      - Complexity analysis
+      - Validation methodology
+
+      **Integration Requirements**: Framework must be implementable by QuantumEngineerAgent using {available_tools}
+
+      **Timeline**: {expected_completion_time}
+
+    success_rate: null
+    refinement_iterations: []
+
+  implementation_request:
+    from_agent: "SystemAgent"
+    to_agent: "QuantumEngineerAgent"
+    template: |
+      **Implementation Request**
+
+      **Mathematical Framework**: {framework_summary}
+      **Implementation Platform**: {target_platform}
+      **Performance Requirements**: {performance_targets}
+      **Validation Criteria**: {validation_requirements}
+
+      **Technical Specifications**:
+      - Programming language: {preferred_language}
+      - Libraries/frameworks: {available_libraries}
+      - Resource constraints: {computational_limits}
+
+      **Expected Deliverable**: Working implementation with documentation, tests, and performance validation.
+
+      **Timeline**: {expected_completion_time}
+
+    success_rate: null
+    refinement_iterations: []
+
+# Agent Response Templates
+response_templates:
+  vision_delivery:
+    from_agent: "VisionaryAgent"
+    to_agent: "SystemAgent"
+    template: |
+      **Vision Document Delivered**
+
+      **Executive Summary**: {vision_summary}
+      **Innovation Score**: {innovation_assessment}
+      **Feasibility Assessment**: {feasibility_rating}
+
+      **Key Components Delivered**:
+      - Problem analysis and opportunity identification
+      - Innovative approach description
+      - Expected outcomes and success metrics
+      - Implementation pathway and considerations
+
+      **Recommendations for Next Phase**:
+      - Mathematical modeling priorities
+      - Critical assumptions to validate
+      - Potential implementation challenges
+
+      **Confidence Level**: {confidence_percentage}
+      **Ready for Handoff**: {ready_status}
+
+    success_rate: null
+    clarity_score: null
+
+  framework_delivery:
+    from_agent: "MathematicianAgent"
+    to_agent: "SystemAgent"
+    template: |
+      **Mathematical Framework Delivered**
+
+      **Framework Summary**: {framework_overview}
+      **Complexity Assessment**: {complexity_analysis}
+      **Implementation Readiness**: {implementation_score}
+
+      **Key Deliverables**:
+      - Formal mathematical model with proofs
+      - Algorithm specifications and pseudocode
+      - Performance analysis and optimization notes
+      - Validation methodology and test cases
+
+      **Implementation Guidance**:
+      - Critical algorithmic components
+      - Performance bottlenecks and optimizations
+      - Validation checkpoints
+
+      **Confidence Level**: {confidence_percentage}
+      **Ready for Implementation**: {ready_status}
+
+    success_rate: null
+    precision_score: null
+
+  implementation_delivery:
+    from_agent: "QuantumEngineerAgent"
+    to_agent: "SystemAgent"
+    template: |
+      **Implementation Delivered**
+
+      **Implementation Summary**: {implementation_overview}
+      **Performance Results**: {performance_metrics}
+      **Validation Status**: {validation_results}
+
+      **Deliverables**:
+      - Working implementation with full source code
+      - Comprehensive test suite with results
+      - Performance benchmarks and analysis
+      - Documentation and usage examples
+
+      **Technical Notes**:
+      - Optimization strategies applied
+      - Known limitations and workarounds
+      - Future enhancement opportunities
+
+      **Confidence Level**: {confidence_percentage}
+      **Production Readiness**: {production_status}
+
+    success_rate: null
+    quality_score: null
+
+# Status Update Templates
+status_templates:
+  progress_update:
+    template: |
+      **Progress Update**
+
+      **Agent**: {agent_name}
+      **Current Task**: {current_task_description}
+      **Progress**: {completion_percentage}%
+      **Status**: {status_indicator}
+
+      **Completed This Cycle**:
+      {completed_work_list}
+
+      **Next Steps**:
+      {planned_next_steps}
+
+      **Blockers/Issues**:
+      {current_blockers}
+
+      **Estimated Completion**: {estimated_completion_time}
+
+    frequency: "milestone_based"
+    trigger_conditions: []
+
+  milestone_achieved:
+    template: |
+      **Milestone Achieved**
+
+      **Agent**: {agent_name}
+      **Milestone**: {milestone_name}
+      **Achievement Date**: {completion_timestamp}
+
+      **Deliverables Completed**:
+      {deliverable_list}
+
+      **Quality Metrics**:
+      {quality_assessment}
+
+      **Ready for Next Phase**: {handoff_readiness}
+      **Recommendations**: {next_phase_recommendations}
+
+    success_indicators: []
+
+# Error Communication Templates
+error_templates:
+  blocking_error:
+    template: |
+      **Blocking Error Encountered**
+
+      **Agent**: {agent_name}
+      **Error Type**: {error_category}
+      **Severity**: {severity_level}
+
+      **Error Description**:
+      {detailed_error_description}
+
+      **Context**:
+      {error_context_information}
+
+      **Attempted Solutions**:
+      {attempted_resolution_steps}
+
+      **Assistance Needed**:
+      {specific_help_request}
+
+      **Impact Assessment**:
+      - Timeline impact: {timeline_delay}
+      - Quality impact: {quality_risk}
+      - Scope impact: {scope_changes_needed}
+
+    escalation_levels: []
+    recovery_strategies: []
+
+  clarification_request:
+    template: |
+      **Clarification Request**
+
+      **Agent**: {agent_name}
+      **Request Type**: {clarification_type}
+      **Urgency**: {urgency_level}
+
+      **Context**: {current_task_context}
+
+      **Specific Questions**:
+      {question_list}
+
+      **Current Understanding**:
+      {current_interpretation}
+
+      **Impact of Delay**: {delay_consequences}
+      **Preferred Response Time**: {response_timeline}
+
+    response_expectations: []
+
+# Knowledge Sharing Templates
+knowledge_sharing:
+  insight_sharing:
+    template: |
+      **Knowledge Insight Shared**
+
+      **From Agent**: {source_agent}
+      **To Agents**: {target_agents}
+      **Insight Type**: {insight_category}
+
+      **Discovery**: {insight_description}
+
+      **Context**: {discovery_context}
+
+      **Relevance**: {relevance_to_recipients}
+
+      **Suggested Actions**: {recommended_actions}
+
+      **Confidence Level**: {insight_confidence}
+
+    sharing_criteria: []
+    relevance_scoring: null
+
+  cross_domain_connection:
+    template: |
+      **Cross-Domain Connection Identified**
+
+      **Agent**: {discovering_agent}
+      **Connection Type**: {connection_category}
+
+      **Domain A**: {first_domain}
+      **Domain B**: {second_domain}
+      **Connection**: {connection_description}
+
+      **Potential Applications**:
+      {application_opportunities}
+
+      **Exploration Recommendations**:
+      {suggested_exploration_steps}
+
+    validation_process: []
+
+# Handoff Templates
+handoff_templates:
+  vision_to_math_handoff:
+    template: |
+      **Vision to Mathematical Framework Handoff**
+
+      **Handoff Status**: {handoff_stage}
+      **Vision Completeness**: {vision_completion_score}
+
+      **Key Vision Elements for Mathematical Modeling**:
+      - Core problem formulation: {problem_statement}
+      - Key variables and relationships: {variable_relationships}
+      - Constraints and limitations: {constraint_list}
+      - Success metrics: {quantifiable_metrics}
+
+      **Mathematical Modeling Priorities**:
+      {modeling_priority_list}
+
+      **Known Challenges**: {anticipated_mathematical_challenges}
+      **Support Available**: {ongoing_vision_support}
+
+    success_criteria: []
+    handoff_quality_metrics: []
+
+  math_to_implementation_handoff:
+    template: |
+      **Framework to Implementation Handoff**
+
+      **Handoff Status**: {handoff_stage}
+      **Framework Completeness**: {framework_completion_score}
+
+      **Implementation-Ready Components**:
+      - Algorithm specifications: {algorithm_readiness}
+      - Performance requirements: {performance_specs}
+      - Validation criteria: {validation_specs}
+      - Integration points: {integration_requirements}
+
+      **Implementation Priority Order**:
+      {implementation_priorities}
+
+      **Critical Considerations**: {implementation_warnings}
+      **Mathematical Support Available**: {ongoing_math_support}
+
+    success_criteria: []
+    handoff_quality_metrics: []
+
+# Template Quality Metrics
+template_metrics:
+  effectiveness_measures:
+    clarity_rating: null          # How clearly templates communicate intent
+    completeness_rating: null    # How completely templates capture requirements
+    efficiency_rating: null      # How efficiently templates convey information
+    adoption_rate: null          # How frequently templates are used successfully
+
+  refinement_tracking:
+    original_version: []         # Track template evolution
+    refinement_reasons: []       # Why templates were modified
+    improvement_metrics: []      # How refinements improved effectiveness
+
+  context_sensitivity:
+    high_stakes_variations: []   # Template variants for critical communications
+    routine_variations: []       # Streamlined versions for standard communications
+    error_recovery_variations: [] # Specialized templates for error scenarios
+
+# Template Usage Guidelines
+usage_guidelines:
+  template_selection:
+    criteria: []                 # How to choose appropriate template
+    customization_guidance: []   # How to adapt templates to specific contexts
+    quality_checks: []          # How to verify template effectiveness
+
+  communication_protocols:
+    response_timeframes: []      # Expected response times for different template types
+    escalation_procedures: []    # When and how to escalate communication issues
+    feedback_mechanisms: []      # How to improve template effectiveness
+
+  continuous_improvement:
+    feedback_collection: []      # How to gather template effectiveness data
+    refinement_process: []       # How to improve templates based on usage
+    validation_methods: []       # How to test template modifications
