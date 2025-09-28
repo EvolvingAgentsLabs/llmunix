@@ -2,7 +2,13 @@
 
 **A Revolutionary Framework for Multi-Project AI Development**
 
-LLMunix is a Pure Markdown Operating System where everything is either an agent or tool defined in markdown documents. Claude Code serves as the runtime engine interpreting these markdown specifications to execute complex multi-step tasks across different projects.
+LLMunix is a Pure Markdown Operating System where everything is either an agent or tool defined in markdown documents.
+
+**🎯 QUICK ANSWER**: Use **`qwen_runtime.py`** - the unified script with all features: interactive mode, sequential execution, corrected cepstral analysis, and multiple Project Aorta variants.
+
+LLMunix can run with two different AI engines:
+- **Claude Code Runtime**: Professional-grade with Claude 3.5 Sonnet (recommended for complex projects)
+- **Qwen Runtime**: Lightweight with Qwen 3 4B model (perfect for local development and learning)
 
 > 🌐 **Part of [Evolving Agents Labs](https://evolvingagentslabs.github.io)** | 🔬 [View All Experiments](https://evolvingagentslabs.github.io#experiments) | 📖 [Framework Details](https://evolvingagentslabs.github.io/experiments/llmunix.html)
 
@@ -47,6 +53,7 @@ LLMunix supports any agent configuration that fits your project needs:
 
 - **[Claude Code](https://anthropic.com/claude-code)** installed on your system
 - **Git** for repository cloning
+- **Python 3.7+** for Qwen Runtime
 
 ### Installation
 
@@ -56,21 +63,204 @@ git clone https://github.com/EvolvingAgentsLabs/llmunix.git
 cd llmunix
 ```
 
-### 1. Initialize the System
+## 🎯 Two Ways to Use LLMunix
 
-**For Unix/Linux/Mac:**
+LLMunix can be used in two powerful ways, depending on your needs and resources:
+
+### Option 1: 🧠 Claude Code Runtime (Recommended)
+**Best for**: Professional development, complex projects, maximum capability
+- Uses Claude Opus 4.1 (state-of-the-art AI)
+- Full integration with native development tools
+- Advanced debugging and error handling
+- Real-time web access and file operations
+
+### Option 2: 🚀 Qwen Runtime (Self-Hosted)
+**Best for**: Local development, minimal resources, learning, experimentation
+- Uses Qwen 3 4B model (lightweight, efficient)
+- Runs on OpenRouter (free tier) or local Ollama
+- Self-contained Python environment
+- Minimal hardware requirements
+
+---
+
+## 🚀 Option 1: Claude Code Runtime
+
+### Prerequisites
+- **[Claude Code](https://anthropic.com/claude-code)** installed on your system
+- **Git** for repository cloning
+
+### Quick Start
+
 ```bash
-./setup_agents.sh
+# 1. Clone and initialize
+git clone https://github.com/EvolvingAgentsLabs/llmunix.git
+cd llmunix
+
+# 2. Initialize agents (one-time setup)
+./setup_agents.sh  # Unix/Linux/Mac
+# OR
+powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1  # Windows
+
+# 3. Boot LLMunix
+claude --dangerously-skip-permissions --verbose "boot llmunix"
+
+# 4. Execute projects
+claude --dangerously-skip-permissions --verbose "llmunix execute: 'Run the Project Aorta scenario'"
 ```
 
-**For Windows:**
-```powershell
-powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1
+---
+
+## 🧠 Option 2: Qwen Runtime (Self-Hosted)
+
+### Prerequisites
+- **Python 3.7+**
+- **OpenRouter API Key** (free tier available) OR **Ollama** for local hosting
+
+### Quick Start (3 Steps)
+
+```bash
+# 1. Install dependencies
+pip install openai python-dotenv requests qiskit matplotlib
+
+# 2. Test the system
+python test_qwen_runtime.py
+
+# 3. Run Project Aorta demo (default mode)
+python qwen_runtime.py
 ```
 
-This copies agent definitions to `.claude/agents/` making them discoverable by Claude Code.
+### Unified Qwen Runtime
 
-### 2. Understanding Permission Flags
+**`qwen_runtime.py`** ⭐ **PURE GENERIC RUNTIME** - No hardcoded solutions:
+- ✅ **Interactive Mode**: REPL-like experience for any goal
+- ✅ **Generic Goal Execution**: Handles any problem through agent delegation
+- ✅ **Agent-Driven Architecture**: Automatically selects and uses appropriate agents
+- ✅ **Flexible Problem Solving**: Solves Project Aorta, calculators, research, or any goal
+- ✅ **Command Line Flexibility**: Any text becomes an executable goal
+- ✅ **Demo Mode**: Architecture testing without API calls
+
+### Usage Modes
+
+**🎯 Command Line Options:**
+
+```bash
+# Default: Run Project Aorta (using generic runtime)
+python qwen_runtime.py
+
+# Interactive mode with REPL interface
+python qwen_runtime.py interactive
+
+# Any goal as command line argument
+python qwen_runtime.py "Create a web scraper using Python"
+python qwen_runtime.py "Research quantum computing and write a report"
+python qwen_runtime.py "Build a machine learning model for sentiment analysis"
+
+# System testing
+python qwen_runtime.py demo         # Architecture demo (no API calls)
+python qwen_runtime.py test         # Quick functionality test
+```
+
+**🎮 Interactive Mode Commands:**
+```
+🎯 llmunix> help                              # Show all commands
+🎯 llmunix> status                            # Check workspace status
+🎯 llmunix> demo                              # Architecture demo
+🎯 llmunix> clear                             # Clear workspace
+🎯 llmunix> Create a Python calculator        # Any goal execution
+🎯 llmunix> Execute Project Aorta using quantum cepstral analysis  # Complex projects
+🎯 llmunix> Build a REST API with authentication  # Development tasks
+🎯 llmunix> exit                              # Quit interactive mode
+```
+
+### Alternative: Local Ollama Setup
+
+For completely local execution:
+
+```bash
+# Install Ollama (one-time)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Download Qwen model
+ollama pull qwen:4b
+
+# Update qwen_runtime.py to use local endpoint
+# Change base_url to "http://localhost:11434/v1"
+```
+
+### What's Included
+
+✅ **API Key Configured**: OpenRouter API key ready in `.env`
+✅ **Model Selected**: `qwen/qwen3-4b:free` (completely free)
+✅ **Tools Ready**: 10+ native Python tools compiled
+✅ **Agent System**: Full LLMunix agent architecture
+✅ **Project Aorta**: Corrected cepstral analysis implementation
+
+### 📖 Quick Usage Guide
+
+**For Beginners:**
+```bash
+python qwen_runtime.py demo          # Test without API calls
+python qwen_runtime.py test          # Quick functionality test
+python qwen_runtime.py interactive   # Explore interactively
+```
+
+**For Development:**
+```bash
+python qwen_runtime.py               # Project Aorta (default example)
+python qwen_runtime.py "Create a simple calculator"  # Custom goal
+python qwen_runtime.py "Build a web scraper for news" # Development task
+```
+
+**For Complex Projects:**
+```bash
+python qwen_runtime.py "Execute Project Aorta using quantum-enhanced cepstral analysis for arterial navigation"
+python qwen_runtime.py "Research quantum computing trends and create a comprehensive technical report"
+python qwen_runtime.py "Build a machine learning pipeline for sentiment analysis with data preprocessing"
+```
+
+**For Interactive Exploration:**
+```bash
+python qwen_runtime.py interactive
+🎯 llmunix> Create a web scraper for news articles
+🎯 llmunix> Build a machine learning model for sentiment analysis
+🎯 llmunix> Generate a technical report on quantum computing
+🎯 llmunix> Execute Project Aorta using the three-agent pipeline
+```
+
+### Example Goals to Try
+
+```python
+# Simple tasks
+"Create a Python script that generates fibonacci numbers"
+
+# Multi-step projects
+"Build a web scraper for news articles with error handling and JSON output"
+
+# Research tasks
+"Analyze latest trends in quantum computing and create a summary report"
+
+# Project Aorta (corrected cepstral analysis)
+# Automatically runs with: python qwen_runtime.py
+```
+
+### Troubleshooting
+
+```bash
+# Verify dependencies
+pip list | grep -E "(openai|qiskit)"
+
+# Check API key
+python -c "import os; from dotenv import load_dotenv; load_dotenv(); print('API Key loaded:', bool(os.getenv('OPENROUTER_API_KEY')))"
+
+# Run test suite
+python test_qwen_runtime.py
+```
+
+---
+
+## 🔧 Advanced Claude Code Configuration
+
+### Understanding Permission Flags
 
 LLMunix requires comprehensive file system access. Use the `--dangerously-skip-permissions` flag to avoid permission prompts:
 
@@ -93,7 +283,9 @@ claude --dangerously-skip-permissions --verbose "boot llmunix"
 
 **Security note**: Only use with trusted code like LLMunix.
 
-### 3. Boot LLMunix
+### Boot Process
+
+After setting up permissions, boot LLMunix:
 
 ```bash
 claude --dangerously-skip-permissions --verbose "boot llmunix"
