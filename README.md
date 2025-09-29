@@ -218,6 +218,98 @@ python qwen_runtime.py "Build a complete web scraping system with scheduling, da
 python qwen_runtime.py "Research quantum computing applications in medicine and create a detailed report"
 ```
 
+## 🎓 Demo Project: Chaos & Bifurcation Tutorial
+
+**Location:** `projects/Project_chaos_bifurcation_tutorial_v2/`
+
+A complete demonstration of LLMunix's multi-agent architecture, showcasing chaos theory and bifurcation analysis in discrete prey-predator models.
+
+### What's Included
+
+**📁 Project Structure:**
+```
+projects/Project_chaos_bifurcation_tutorial_v2/
+├── components/agents/          # 3 specialized markdown agents
+│   ├── MathematicalFoundationsAgent.md
+│   ├── PythonCodeGeneratorAgent.md
+│   └── TutorialWriterAgent.md
+├── output/                     # Final deliverables
+│   ├── chaos_bifurcation_tutorial.md          (Comprehensive tutorial)
+│   └── chaos_bifurcation_implementation.py    (1,051 lines of code)
+├── workspace/
+│   └── mathematical_foundations.md    (Rigorous mathematical theory)
+└── memory/                     # Learning and tracking
+    ├── short_term/             (Execution logs)
+    └── long_term/              (Reusable patterns)
+```
+
+### Run the Python Simulation
+
+```bash
+# Navigate to output directory
+cd projects/Project_chaos_bifurcation_tutorial_v2/output
+
+# Install dependencies
+pip install numpy matplotlib scipy
+
+# Run the simulation
+python chaos_bifurcation_implementation.py
+```
+
+**Generates 12 publication-quality figures:**
+- Stable equilibrium dynamics (r=1.8)
+- Periodic oscillations (r=2.3)
+- Chaotic dynamics (r=2.9)
+- Bifurcation diagrams (route to chaos)
+- Lyapunov exponent spectra
+- Sensitivity analysis (butterfly effect)
+- Multi-regime comparisons
+
+### Read the Tutorial
+
+Open the comprehensive tutorial:
+```bash
+# View the integrated tutorial
+cat projects/Project_chaos_bifurcation_tutorial_v2/output/chaos_bifurcation_tutorial.md
+
+# Or view mathematical foundations
+cat projects/Project_chaos_bifurcation_tutorial_v2/workspace/mathematical_foundations.md
+```
+
+### Explore the Architecture
+
+This project demonstrates:
+- ✅ **Multi-agent orchestration** (3 specialized agents)
+- ✅ **Markdown agent definitions** (reusable components)
+- ✅ **Memory-driven learning** (short-term + long-term)
+- ✅ **Theory-Implementation-Integration** (TII pattern)
+- ✅ **Complete project structure** (agents, tools, memory, output)
+
+**View the learning:**
+```bash
+# See execution logs
+cat projects/Project_chaos_bifurcation_tutorial_v2/memory/short_term/2025-09-29_agent_execution_log.md
+
+# See extracted patterns for reuse
+cat projects/Project_chaos_bifurcation_tutorial_v2/memory/long_term/project_learnings.md
+```
+
+### How It Was Created
+
+This project was generated with a single LLMunix command:
+```bash
+claude --dangerously-skip-permissions "llmunix execute: 'Create a tutorial to explain chaos and bifurcation in discrete prey-predator model. Create the Tutorial and a sample python script to explain it with code, and mathematical foundations'"
+```
+
+LLMunix automatically:
+1. Created 3 specialized agents as markdown
+2. Orchestrated multi-agent collaboration
+3. Generated mathematical foundations
+4. Implemented Python simulation code
+5. Integrated everything into educational tutorial
+6. Logged all interactions to memory
+7. Extracted reusable patterns for future projects
+
 ## 🤔 Getting Help
 
 - **Documentation**: See `projects/` folder for example implementations
