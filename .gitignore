@@ -12,7 +12,7 @@ __pycache__/
 workspace/
 
 # OS files
-.DS_Store               # macOS Finder
+**/.DS_Store            # macOS Finder (all levels)
 Thumbs.db               # Windows Explorer
 
 # Editor / IDE files
