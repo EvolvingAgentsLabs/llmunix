@@ -66,20 +66,228 @@ boot llmunix
 
 This command activates the LLMunix kernel by having Claude read and interpret the markdown system files as a functional operating system.
 
+### CRITICAL EXECUTION RULES
+
+**⚠️ IMPORTANT: All LLMunix executions MUST follow this workflow:**
+
+1. **Boot LLMunix ONLY when:**
+   - First command in a conversation session
+   - User explicitly requests reboot with `boot llmunix` command
+   - System needs to reload configuration
+
+2. **ALWAYS identify or create the project structure** in `projects/[ProjectName]/`
+3. **ALWAYS organize outputs** in the project's directory structure
+
+**Boot Behavior:**
+- Boot displays welcome message and initializes system state
+- Boot persists throughout the conversation session
+- Subsequent `llmunix execute:` commands do NOT trigger boot
+- Only boot again if user explicitly requests it
+
+**Project Structure Requirements:**
+```
+projects/[ProjectName]/
+├── components/
+│   ├── agents/          # Project-specific agents (markdown definitions)
+│   └── tools/           # Project-specific tools (markdown definitions)
+├── input/               # Input documents and instructions
+├── output/              # Generated outputs and deliverables
+├── memory/              # Project memory for learning
+│   ├── short_term/      # Agent interactions, messages, context
+│   └── long_term/       # Consolidated insights and learnings
+└── workspace/           # Temporary execution state
+    └── state/           # Execution state (plan, context, variables, etc.)
+```
+
+**Execution Pattern:**
+
+**First execution in session:**
+1. User issues: `llmunix execute: "goal"`
+2. Claude performs:
+   - Display boot welcome message (ONE TIME ONLY)
+   - Identify project name from goal context
+   - Create/verify complete `projects/[ProjectName]/` structure (including memory/)
+   - **Analyze goal and create project-specific agents/tools as markdown**
+   - Invoke SystemAgent to orchestrate execution
+   - **Log all agent interactions to memory/short_term/**
+   - Create all outputs in `projects/[ProjectName]/output/`
+   - **Consolidate learnings to memory/long_term/**
+   - Execute the goal
+
+**Subsequent executions in same session:**
+1. User issues: `llmunix execute: "another goal"`
+2. Claude performs:
+   - NO boot message (system already booted)
+   - Identify project name from goal context
+   - Create/verify `projects/[ProjectName]/` structure
+   - **Check for existing agents/tools, create new ones if needed**
+   - **Log all agent interactions to memory/short_term/**
+   - Create all outputs in `projects/[ProjectName]/output/`
+   - **Update memory/long_term/ with new learnings**
+   - Execute the goal
+
+### Agent and Tool Creation Rules
+
+**CRITICAL: LLMunix is markdown-driven. All agents and tools MUST be markdown specifications.**
+
+**When to create project-specific agents:**
+1. Goal requires specialized domain knowledge (e.g., chaos theory, quantum computing)
+2. Task needs multi-step orchestration with distinct roles
+3. Complex workflows benefit from decomposition
+
+**Agent creation process:**
+1. Analyze goal and identify required capabilities
+2. Create markdown agent definitions in `projects/[ProjectName]/components/agents/`
+3. Use YAML frontmatter with agent metadata
+4. Include agent instructions, capabilities, and delegation patterns
+5. Copy to `.claude/agents/` with project prefix for discovery
+
+**Tool creation process:**
+1. Identify operations needed (computation, file manipulation, etc.)
+2. Create markdown tool specifications in `projects/[ProjectName]/components/tools/`
+3. Map to Claude Code native tools (Read, Write, Bash, etc.)
+4. Document tool parameters and expected outputs
+
+**Example agent structure:**
+```markdown
+---
+name: tutorial-writer-agent
+type: specialized-agent
+project: Project_chaos_bifurcation_tutorial
+capabilities:
+  - Technical writing
+  - Mathematical explanation
+  - Code documentation
+tools:
+  - Write
+  - Read
+  - Edit
+---
+
+# Tutorial Writer Agent
+
+## Purpose
+Create comprehensive educational tutorials with mathematical rigor...
+
+## Instructions
+1. Analyze topic and identify key concepts
+2. Structure content with clear progression
+3. Include mathematical foundations
+4. Provide examples and visualizations
+...
+```
+
+### Memory Management Rules
+
+**CRITICAL: All agent interactions MUST be logged for learning.**
+
+**Short-term memory (memory/short_term/):**
+- Log every agent invocation with timestamp
+- Record messages exchanged between agents
+- Capture context and decision rationale
+- Store intermediate results and state transitions
+- Format: `YYYY-MM-DD_HH-MM-SS_agent_interaction.md`
+
+**Long-term memory (memory/long_term/):**
+- Consolidate patterns and insights after execution
+- Record what worked well and what failed
+- Extract reusable strategies and approaches
+- Document parameter choices and their outcomes
+- Update project-level learnings summary
+
+**Memory log structure:**
+```markdown
+---
+timestamp: 2025-09-29T14:30:00Z
+agent: tutorial-writer-agent
+action: create_tutorial
+context: chaos_bifurcation_tutorial
+---
+
+# Agent Interaction Log
+
+## Request
+Create comprehensive tutorial on chaos and bifurcation...
+
+## Agent Response
+Analyzing requirements:
+- Mathematical foundations needed
+- Code examples required
+- Visualization strategy...
+
+## Outcome
+Tutorial created: chaos_bifurcation_tutorial.md
+Quality score: 9/10
+Execution time: 45s
+
+## Learnings
+- Mathematical depth improves tutorial quality
+- Code examples should align with theory
+- Visual aids enhance understanding
+```
+
+### Why This Architecture Matters
+
+**Pure Markdown Framework Benefits:**
+
+1. **Learning & Improvement**
+   - Memory logs capture what works and what doesn't
+   - Patterns emerge across multiple executions
+   - System gets smarter with each project
+   - Failures become training data
+
+2. **Reusability**
+   - Agents created for one project can be adapted for others
+   - Tools become a growing library of capabilities
+   - Successful patterns propagate across projects
+
+3. **Transparency**
+   - All agent decisions are logged and auditable
+   - Context is preserved for debugging and analysis
+   - Memory explains why choices were made
+
+4. **Composability**
+   - Small, focused agents combine for complex tasks
+   - Tools map cleanly to Claude Code native capabilities
+   - Markdown specs are human-readable and modifiable
+
+5. **Evolution**
+   - Dynamic agent creation during execution
+   - System adapts to new domains without reprogramming
+   - Memory guides future agent generation
+
+**Without proper architecture:**
+- ❌ No learning between executions
+- ❌ No reusable components
+- ❌ No transparency in decision-making
+- ❌ No ability to improve over time
+- ❌ Monolithic, non-composable solutions
+
+**With proper architecture:**
+- ✅ Continuous learning from experience
+- ✅ Growing library of reusable agents/tools
+- ✅ Full transparency and auditability
+- ✅ System improves with each execution
+- ✅ Modular, composable solutions
+
 ### Boot Welcome Message
 When LLMunix boots, display ASCII art welcome and example commands in this format:
 
 ```
 ██╗     ██╗     ███╗   ███╗██╗   ██╗███╗   ██╗██╗██╗  ██╗
 ██║     ██║     ████╗ ████║██║   ██║████╗  ██║██║╚██╗██╔╝
-██║     ██║     ██╔████╔██║██║   ██║██╔██╗ ██║██║ ╚███╔╝ 
-██║     ██║     ██║╚██╔╝██║██║   ██║██║╚██╗██║██║ ██╔██╗ 
-███████╗███████╗██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██║██╔╝ ██╗
+██║     ██║     ██╔████╔██║██║   ██║██╔██╗ ██║██║ ╚███╔╝
+██║     ██║     ██║╚██╔╝██║██║   ██║██║╚██╗██║██║ ██╔██╗
+███████╗███████╗██║ ╗═╝ ██║╚██████╔╝██║ ╚████║██║██╔╝ ██╗
 ╚══════╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
                 Pure Markdown Operating System v1.0
+
+🔧 System Status: READY
+📁 Project Structure: Verified
+🤖 Agent Discovery: Enabled
 ```
 
-Examples:
+**Example Commands:**
 ```bash
 llmunix execute: "Monitor 5 tech news sources (TechCrunch, Ars Technica, Hacker News, MIT Tech Review, Wired), extract trending topics, identify patterns, and generate a weekly intelligence briefing"
 
@@ -87,8 +295,18 @@ llmunix execute: "Get live content from https://huggingface.co/blog and create a
 
 llmunix execute: "Run the Project Aorta scenario from projects/Project_aorta/"
 
+llmunix execute: "Create a tutorial on chaos theory with Python examples"
+
 llmunix simulate: "Research task workflow for fine-tuning dataset"
 ```
+
+**Project Naming Rules:**
+- Goal content determines project name automatically
+- Format: `projects/Project_[descriptive_name]/`
+- Examples:
+  - "chaos theory tutorial" → `projects/Project_chaos_theory_tutorial/`
+  - "news intelligence" → `projects/Project_news_intelligence/`
+  - "web scraper" → `projects/Project_web_scraper/`
 
 ### Running the Real-World Research Scenario
 
