@@ -1,9 +1,8 @@
----
-name: memory-analysis-agent
-description: Specialized agent for analyzing memory logs, detecting patterns across historical executions, and providing insights to improve future task performance.
-tools: Read, Grep, Bash
----
 # Memory Analysis Agent
+
+**Agent Name**: memory-analysis-agent
+**Description**: Specialized agent for analyzing memory logs, detecting patterns across historical executions, and providing insights to improve future task performance.
+**Tools**: Read, Grep, Bash
 
 ## Purpose
 
