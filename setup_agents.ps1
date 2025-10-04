@@ -4,25 +4,18 @@
 # Create the .claude/agents directory if it doesn't exist
 New-Item -ItemType Directory -Force -Path ".\.claude\agents"
 
-# Function to process agent files with YAML frontmatter
+# Function to process agent files
 function Process-AgentFile {
     param (
         [string]$sourcePath,
         [string]$destPath
     )
-    
+
     Write-Host "Processing agent: $sourcePath -> $destPath"
-    
-    # Check if the file has YAML frontmatter
-    $content = Get-Content -Path $sourcePath -Raw
-    if ($content -match "^---\s*\n") {
-        # File already has frontmatter, copy it directly
-        Copy-Item -Path $sourcePath -Destination $destPath -Force
-        Write-Host "  Copied with existing frontmatter"
-    } else {
-        Write-Host "  WARNING: File lacks YAML frontmatter, skipping: $sourcePath"
-        # In a future version, we could add code to automatically generate frontmatter
-    }
+
+    # Copy the agent file directly (no YAML validation required)
+    Copy-Item -Path $sourcePath -Destination $destPath -Force
+    Write-Host "  Copied successfully"
 }
 
 # Clear existing agent files in the destination directory
