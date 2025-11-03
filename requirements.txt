@@ -1,0 +1,12 @@
+# LLMunix Memory Management Dependencies
+
+# Vector Database and Embeddings
+chromadb>=0.4.18
+sentence-transformers>=2.2.2
+
+# Data Processing
+pyyaml>=6.0
+sqlite3  # Built-in with Python
+
+# Utilities
+python-dotenv>=1.0.0
