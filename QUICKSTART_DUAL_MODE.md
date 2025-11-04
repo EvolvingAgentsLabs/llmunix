@@ -11,15 +11,14 @@ cd llmunix
 pip install -r requirements.txt
 ```
 
-### 2. Initialize Memory System
+### 2. Verify Installation
 
 ```bash
-# Create memory indexes
-python system/infrastructure/memory_indexer.py --index-all
+# Check core directories
+ls -lh system/memory_log.md
 
-# Verify installation
-ls -lh system/memory_index.sqlite
-ls -lh system/chroma_db/
+# LLMunix is ready! No database initialization needed.
+# Memory is stored in pure markdown files.
 ```
 
 ### 3. Run Your First Learning Task
@@ -109,18 +108,19 @@ scp projects/Project_quantum_research/memory/long_term/execution_trace_quantum_v
 # Same reliable output
 ```
 
-## 🔍 Query Memory Intelligence
+## 🔍 Query Memory
 
 ```bash
-# Find similar past experiences
-python system/infrastructure/memory_indexer.py \
-    --query "research tasks with web fetching"
+# Find past experiences using Grep
+grep -A 50 "task_type: research" system/memory_log.md | grep "outcome: success"
+
+# Find high-confidence traces
+find projects -name "execution_trace_*.md" -exec grep -l "confidence: 0.9" {} \;
 
 # Results show:
-# - experience_id
-# - similarity score
-# - goal description
-# - file path to full context
+# - File paths to matching experiences
+# - YAML frontmatter with metadata
+# - Full context in markdown
 ```
 
 ## 🎯 Use Cases
@@ -144,11 +144,11 @@ python system/infrastructure/memory_indexer.py \
 ### Check Trace Status
 
 ```bash
+# Find all traces and their confidence
+find projects -name "execution_trace_*.md" -exec grep -H "^confidence:" {} \;
+
 # View trace metadata
-sqlite3 system/memory_index.sqlite \
-    "SELECT trace_id, confidence, success_rate, usage_count
-     FROM execution_traces
-     ORDER BY confidence DESC"
+head -30 projects/Project_*/memory/long_term/traces/execution_trace_*.md
 ```
 
 ### View Execution Reports
@@ -162,8 +162,11 @@ cat edge_runtime/reports/execution_report.json | jq '.status, .execution_time_se
 
 ### Trace Not Found
 ```bash
-# Reindex memory
-python system/infrastructure/memory_indexer.py --index-all
+# Check if trace exists
+find projects -name "execution_trace_*.md" | head -10
+
+# Verify memory log has experiences
+grep -c "^## Experience:" system/memory_log.md
 ```
 
 ### Edge Execution Fails

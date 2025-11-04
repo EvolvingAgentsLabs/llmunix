@@ -2,9 +2,9 @@
 
 ## Executive Summary
 
-LLMunix has been upgraded from a single-mode markdown-based memory system to an **advanced dual-mode architecture** with:
+LLMunix has been upgraded to an **advanced dual-mode architecture** with:
 
-1. **Indexed Markdown Architecture**: Hybrid memory combining human-readable markdown with high-performance SQLite and vector databases
+1. **Pure Markdown Architecture**: 100% human-readable memory with zero database dependencies
 2. **Learner-Follower Pattern**: Intelligent mode selection between expensive creative problem-solving and cheap deterministic execution
 3. **Edge Deployment**: Standalone runtime for executing learned workflows on resource-constrained devices
 4. **Continuous Learning**: Traces evolve based on real-world execution feedback
@@ -13,69 +13,73 @@ LLMunix has been upgraded from a single-mode markdown-based memory system to an 
 - 20-80x cost reduction for repetitive tasks
 - 3-10x speed improvement
 - Offline edge deployment capability
-- Maintains markdown-first philosophy
+- Pure markdown philosophy (no databases)
 - Continuous improvement loop
+- Instant setup (<1 minute vs 5+ minutes)
 
 ## What Was Implemented
 
-### 1. Indexed Markdown Architecture
+### 1. Pure Markdown Architecture
 
-**Location**: `system/infrastructure/memory_indexer.py`
+**Location**: `system/memory_log.md`, `projects/*/memory/`
 
-**Purpose**: Augment pure markdown memory with performance-oriented indexes while keeping markdown as the source of truth.
+**Purpose**: Store all memory in human-readable markdown files with YAML frontmatter for structured queries.
 
 **Components**:
 
-#### SQLite Database (`system/memory_index.sqlite`)
-- **experiences table**: Stores structured metadata from memory logs
-- **execution_traces table**: Indexes execution traces for fast retrieval
-- **memory_relationships table**: Hierarchical memory with causal/temporal/conceptual links
-- **Indexes**: Optimized for outcome, task_type, sentiment, confidence queries
+#### Memory Log (`system/memory_log.md`)
+- **Central experience database**: All significant experiences in one file
+- **YAML frontmatter**: Structured metadata for each experience
+- **Human-readable**: Complete narrative context for every execution
+- **Git-versionable**: Full history tracking without database sync
 
-```sql
--- Example: Find successful research tasks
-SELECT * FROM experiences
-WHERE task_type = 'research'
-  AND outcome = 'success'
-  AND confidence_score >= 0.8
-ORDER BY timestamp DESC;
+```markdown
+## Experience: exp_20250103_143022_ai_research
 
--- Example: Find high-confidence execution traces
-SELECT * FROM execution_traces
-WHERE confidence >= 0.9
-  AND success_rate > 0.85
-ORDER BY usage_count DESC;
+---
+experience_id: exp_20250103_143022_ai_research
+timestamp: 2025-01-03T14:30:22Z
+outcome: success
+task_type: research
+confidence_score: 0.95
+tags:
+  - research
+  - ai_trends
+trace_generated: yes
+---
+
+### Summary
+Successfully researched AI trends...
 ```
 
-#### ChromaDB Vector Database (`system/chroma_db/`)
-- Semantic similarity search using sentence transformers
-- Embeddings of memory content for intelligent retrieval
-- Enables queries like: "Find memories similar to supply chain optimization"
+#### Project Memory (`projects/*/memory/long_term/`)
+- **experiences/**: Individual experience files (one per experience)
+- **traces/**: Execution trace files for Follower mode
+- **Project-specific**: Fine-grained version control and organization
 
-#### Hybrid Query System
-- Combines SQLite metadata filtering + ChromaDB semantic search
-- Returns ranked results based on both structured and semantic relevance
-- Used by QueryMemoryTool for intelligent memory consultation
+#### Query System (Native Tools)
+- **Glob**: Pattern matching for file discovery
+- **Grep**: Content search and metadata filtering
+- **Read**: YAML frontmatter parsing
+- Used by QueryMemoryTool via MemoryAnalysisAgent
 
 **Key Features**:
-- Content hashing for change detection
-- Automatic indexing on file update
-- Fast metadata queries (<10ms)
-- Semantic search with embeddings
-- Hierarchical memory relationships
-- Temporal consistency tracking
-- Confidence scoring for memories
+- Zero database dependencies
+- Instant setup (no indexing required)
+- 100% portable (Git clone and run)
+- Human-readable and auditable
+- Acceptable performance (<1s for typical queries)
+- No sync issues or corruption risks
 
 **Usage**:
 ```bash
-# Index all memory
-python system/infrastructure/memory_indexer.py --index-all
+# Query with Grep
+grep -A 50 "outcome: success" system/memory_log.md | grep "task_type: research"
 
-# Query semantically
-python system/infrastructure/memory_indexer.py --query "legal document analysis"
+# Find traces
+find projects -name "execution_trace_*.md" -exec grep -l "confidence: 0.9" {} \;
 
-# Find execution trace
-indexer.find_execution_trace(goal_signature="research task", min_confidence=0.9)
+# Agents use QueryMemoryTool which leverages Glob/Grep/Read
 ```
 
 ### 2. Execution Trace Format
@@ -179,8 +183,10 @@ Parameters:
 **Decision Algorithm**:
 ```yaml
 1. Parse user goal
-2. Query memory indexer for matching trace
-   - Semantic search on goal description
+2. Query memory for matching trace
+   - Glob: Find all execution trace files
+   - Read: Parse YAML frontmatter
+   - Match: goal_signature similarity to current goal
    - Filter: confidence >= 0.9, success_rate > 0.85
 3. Decision:
    IF high_confidence_trace_found:
@@ -250,49 +256,46 @@ else:
 - No LLM required for pure trace execution
 - Minimum 2GB RAM, 4-core CPU
 
-### 6. Memory Management Enhancements
+### 6. Memory Management Features
 
-**Advanced Features Implemented**:
+**Advanced Features in YAML Frontmatter**:
 
 #### Hierarchical Memory
-- `memory_relationships` table links parent/child experiences
+- `memory_links` field stores relationships between experiences
 - Relationship types: causal, temporal, conceptual, contextual
-- Enables graph-based memory traversal
+- Enables graph-based memory traversal via Grep queries
 
 #### Temporal Consistency
 - Timestamps on all memory entries
-- Causal links between events
+- Causal links between events in YAML
 - Evolution tracking over time
 
 #### Epistemic Memory (Confidence Scoring)
 - Every memory has confidence score (0-1)
-- Source tracking
+- Source tracking in metadata
 - Uncertainty quantification
 - Evidence-based confidence updates
 
 #### Cost-Aware Operations
-- Execution cost tracking in memory
-- Budget-aware query optimization
+- Execution cost tracking in YAML frontmatter
+- Query optimization based on performance patterns
 - Cost/benefit analysis for memory operations
 
-**Database Schema**:
-```sql
-CREATE TABLE experiences (
-    experience_id TEXT PRIMARY KEY,
-    timestamp TEXT,
-    confidence_score REAL,
-    execution_cost REAL,
-    components_used TEXT,  -- JSON
-    outcome TEXT,
-    file_path TEXT
-);
-
-CREATE TABLE memory_relationships (
-    parent_id TEXT,
-    child_id TEXT,
-    relationship_type TEXT,
-    strength REAL
-);
+**Example YAML Structure**:
+```yaml
+---
+experience_id: exp_20250103_143022_ai_research
+timestamp: 2025-01-03T14:30:22Z
+confidence_score: 0.95
+execution_cost: 1.24
+components_used:
+  - WebFetchAgent
+  - ResearchAnalysisAgent
+outcome: success
+memory_links:
+  causal_parent: exp_20241228_103022_quarterly_planning
+  temporal_previous: exp_20250102_121543_data_collection
+---
 ```
 
 ## Architecture Diagram
@@ -305,9 +308,10 @@ CREATE TABLE memory_relationships (
 │                                                                  │
 │  User Goal ──→ SystemAgent                                      │
 │                    │                                            │
-│                    ├─→ Query Memory Indexer                     │
-│                    │   ├─→ SQLite (structured)                  │
-│                    │   └─→ ChromaDB (semantic)                  │
+│                    ├─→ Query Memory (Pure Markdown)             │
+│                    │   ├─→ Glob (find trace files)              │
+│                    │   ├─→ Read (parse YAML frontmatter)        │
+│                    │   └─→ Match (goal similarity)              │
 │                    │                                            │
 │                    ├─→ Decision: Trace Found? (conf >= 0.9)    │
 │                    │                                            │
@@ -327,8 +331,8 @@ CREATE TABLE memory_relationships (
 │         ├─→ Execute Trace Deterministically                    │
 │         └─→ Update Trace Metadata                              │
 │                                                                  │
-│  Markdown Files ←→ Memory Indexer ←→ SQLite + ChromaDB         │
-│  (Source of Truth)   (Hybrid Query)   (Fast Retrieval)         │
+│  Markdown Files ←→ Native Tools (Glob/Grep/Read)               │
+│  (Single Source)     (Direct Queries, No Index)                │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
                              │
@@ -383,11 +387,15 @@ CREATE TABLE memory_relationships (
 
 ### Memory Query Performance
 
-| Query Type | Pure Markdown | Indexed Architecture |
-|------------|---------------|---------------------|
-| Metadata Filter | ~1-5s | ~5-10ms | 100-1000x faster |
-| Semantic Search | Not possible | ~50-100ms | ∞ improvement |
-| Hybrid Query | Not possible | ~100-200ms | ∞ improvement |
+| Query Type | Performance | Tool Used |
+|------------|-------------|-----------|
+| Metadata Filter | ~100-500ms | Grep with patterns |
+| File Discovery | ~50-100ms | Glob with patterns |
+| YAML Parsing | ~10-50ms per file | Read tool |
+| Full Query | ~500ms-2s | Combined Glob+Grep+Read |
+
+**Note**: Performance is acceptable for typical usage (<500 experiences).
+For larger scales, consider per-project memory logs or archiving old experiences.
 
 ## File Structure
 
@@ -395,25 +403,30 @@ CREATE TABLE memory_relationships (
 llmunix/
 ├── system/
 │   ├── infrastructure/
-│   │   ├── memory_indexer.py              # NEW: SQLite + ChromaDB indexer
-│   │   └── execution_trace_schema.md      # NEW: Trace format spec
+│   │   └── execution_trace_schema.md      # Trace format specification
 │   ├── agents/
 │   │   ├── SystemAgent.md                 # UPDATED: Learner-Follower dispatch
 │   │   ├── GraniteFollowerAgent.md        # NEW: Trace executor
-│   │   ├── MemoryConsolidationAgent.md    # (exists, needs update)
-│   │   └── MemoryAnalysisAgent.md         # (exists, works with indexer)
+│   │   ├── MemoryConsolidationAgent.md    # Generates traces from experiences
+│   │   └── MemoryAnalysisAgent.md         # Analyzes memory patterns
 │   ├── tools/
-│   │   └── QueryMemoryTool.md             # (exists, needs update for hybrid queries)
-│   ├── memory_index.sqlite                # NEW: Generated SQLite database
-│   └── chroma_db/                         # NEW: Generated vector database
+│   │   └── QueryMemoryTool.md             # Uses Glob/Grep/Read for queries
+│   └── memory_log.md                      # Central experience database
+├── projects/
+│   └── [ProjectName]/
+│       └── memory/
+│           ├── short_term/                # Agent interactions
+│           └── long_term/                 # Experiences and traces
+│               ├── experiences/           # Individual experience files
+│               └── traces/                # Execution trace files
 ├── edge_runtime/
 │   ├── run_follower.py                    # NEW: Standalone edge executor
-│   └── requirements.txt                   # NEW: Minimal dependencies
+│   └── requirements.txt                   # Minimal dependencies
 ├── doc/
-│   ├── DUAL_MODE_DEPLOYMENT_GUIDE.md      # NEW: Complete deployment guide
-│   └── IMPLEMENTATION_SUMMARY.md          # NEW: This document
-├── QUICKSTART_DUAL_MODE.md                # NEW: 5-minute quick start
-├── requirements.txt                        # UPDATED: Added indexer dependencies
+│   ├── DUAL_MODE_DEPLOYMENT_GUIDE.md      # Complete deployment guide
+│   └── IMPLEMENTATION_SUMMARY.md          # This document
+├── QUICKSTART_DUAL_MODE.md                # 5-minute quick start
+├── requirements.txt                        # Minimal dependencies (no databases)
 └── .claude/agents/
     ├── SystemAgent.md                     # UPDATED: Copied for discovery
     └── GraniteFollowerAgent.md            # NEW: Copied for discovery
@@ -423,20 +436,20 @@ llmunix/
 
 Based on the comprehensive analysis provided, these advanced features are **designed but not yet fully implemented**:
 
-### 1. QueryMemoryTool Upgrade ⏳
-**Status**: Needs update to use hybrid indexer queries
-**Action**: Modify QueryMemoryTool to call `memory_indexer.query_hybrid()` instead of file reading
+### 1. QueryMemoryTool Enhancement ⏳
+**Status**: Using Glob/Grep/Read, could be further optimized
+**Action**: Add caching and query pattern optimization for repeated queries
 
 ### 2. MemoryConsolidationAgent Enhancement ⏳
-**Status**: Needs update to generate execution traces
-**Action**: Add trace generation logic after successful executions
+**Status**: Generates experiences, needs trace generation logic
+**Action**: Add execution trace generation after successful Learner mode executions
 
 ### 3. Hierarchical Memory Full Implementation ⏳
-**Status**: Schema created, but relationship creation logic not automated
+**Status**: YAML fields exist, but relationship creation not automated
 **Action**: Add relationship detection during memory consolidation
 
 ### 4. Temporal Causal Reasoning ⏳
-**Status**: Fields exist, but causal link detection not automated
+**Status**: Fields exist in YAML, but causal link detection not automated
 **Action**: Implement causal relationship extraction from execution history
 
 These can be completed in a follow-up phase.
@@ -448,7 +461,7 @@ These can be completed in a follow-up phase.
 ```bash
 cd llmunix
 pip install -r requirements.txt
-python system/infrastructure/memory_indexer.py --index-all
+# That's it! No database initialization needed.
 ```
 
 ### 2. Run Tasks (Automatic Mode Selection)
@@ -477,21 +490,26 @@ cd llmunix/edge_runtime
 
 ## Testing Recommendations
 
-### Test 1: Memory Indexer
+### Test 1: Memory Queries
 ```bash
-# Create test memory entry
-echo "---
-experience_id: test_001
+# Create test experience in memory log
+cat >> system/memory_log.md <<EOF
+
+## Experience: exp_test_001
+
+---
+experience_id: exp_test_001
 outcome: success
 task_type: research
+confidence_score: 0.9
 ---
-Test content" > test_memory.md
 
-# Index it
-python system/infrastructure/memory_indexer.py --file test_memory.md
+### Summary
+Test experience for validation
+EOF
 
-# Query it
-python system/infrastructure/memory_indexer.py --query "research task"
+# Query with Grep
+grep -A 20 "outcome: success" system/memory_log.md | grep "task_type: research"
 ```
 
 ### Test 2: Edge Runtime
@@ -515,11 +533,12 @@ cd edge_runtime
 
 ## Key Innovations
 
-1. **Hybrid Memory Architecture**: Best of both worlds - human-readable + high-performance
+1. **Pure Markdown Architecture**: 100% human-readable with zero database overhead
 2. **Automatic Mode Selection**: System decides optimal execution strategy
 3. **True Edge Deployment**: No cloud dependency after learning phase
 4. **Continuous Evolution**: Traces improve with every execution
 5. **Cost-Aware Intelligence**: System optimizes for cost/performance automatically
+6. **Instant Setup**: Clone and run with no indexing or database initialization
 
 ## Conclusion
 

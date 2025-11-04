@@ -106,19 +106,23 @@ Network: Not required (offline)
 
 ### Three Core Components
 
-#### 1. Indexed Markdown Architecture
-- **Markdown files**: Source of truth, human-readable
-- **SQLite database**: Fast structured metadata queries
-- **ChromaDB**: Semantic similarity search with embeddings
-- **Hybrid queries**: Combine structured + semantic search
+#### 1. Pure Markdown Architecture
+- **Markdown files**: Single source of truth, 100% human-readable
+- **YAML frontmatter**: Structured metadata for efficient queries
+- **Native tools**: Glob, Grep, Read for fast file-based queries
+- **Git-versionable**: Full version control without database sync
 
 ```bash
-# Query memory intelligently
-python system/infrastructure/memory_indexer.py --query "legal document analysis"
+# Query memory using native tools
+grep -A 50 "task_type: legal" system/memory_log.md | grep "outcome: success"
 
-# Results combine:
-# - Structured filters (task_type, outcome, confidence)
-# - Semantic similarity (NLP understanding)
+# Find traces matching criteria
+find projects -name "execution_trace_*.md" -exec grep -l "confidence: 0.9" {} \;
+
+# Agents use Claude Code tools:
+# - Glob: Pattern matching for file discovery
+# - Grep: Content search and filtering
+# - Read: Parse YAML frontmatter
 ```
 
 #### 2. Execution Trace Format
@@ -163,11 +167,11 @@ else:
 git clone <repository>
 cd llmunix
 
-# Install dependencies
+# Install minimal dependencies
 pip install -r requirements.txt
 
-# Initialize memory system
-python system/infrastructure/memory_indexer.py --index-all
+# LLMunix is ready! No database initialization needed.
+# Memory is stored in markdown files with YAML frontmatter.
 ```
 
 ### 2. Run Your First Task
@@ -227,21 +231,22 @@ scp projects/Project_quantum/memory/long_term/execution_trace_quantum_v1.0.yaml 
 
 ## 🔧 Advanced Features
 
-### 1. Intelligent Memory System
+### 1. File-Based Memory System
 
-```python
-# Hybrid queries (structured + semantic)
-results = indexer.query_hybrid(
-    query_text="research with web fetching",
-    filters={'outcome': 'success', 'min_confidence': 0.8},
-    n_results=5
-)
+```bash
+# Query memory using Grep patterns
+grep -A 50 "outcome: success" system/memory_log.md | \
+  grep -B 50 "task_type: research" | \
+  grep "confidence_score: 0.[89]"
 
-# Find best execution trace for a goal
-trace = indexer.find_execution_trace(
-    goal_signature="research AI trends",
-    min_confidence=0.9
-)
+# Find execution traces
+find projects -name "execution_trace_*.md" | \
+  xargs grep -l "goal_signature.*research AI trends"
+
+# Agents use QueryMemoryTool which leverages:
+# - Glob for file pattern matching
+# - Grep for content filtering
+# - Read for YAML parsing
 ```
 
 ### 2. Trace Evolution
@@ -271,38 +276,40 @@ After failure: confidence = 0.67 → System re-learns
 - Phi-3 Mini
 ```
 
-### 4. Hierarchical Memory (Schema Created)
+### 4. Memory Relationships (In YAML)
 
-```sql
--- Memory relationships
-CREATE TABLE memory_relationships (
-    parent_id TEXT,
-    child_id TEXT,
-    relationship_type TEXT,  -- causal, temporal, conceptual
-    strength REAL
-);
+```yaml
+# Experience entries can include relationship metadata
+---
+experience_id: exp_20250103_143022_ai_research
+memory_links:
+  causal_parent: exp_20241228_103022_quarterly_planning
+  temporal_previous: exp_20250102_121543_data_collection
+  conceptual_similar:
+    - exp_20241201_143022_legal_research
+---
 
--- Enables:
--- "Show me all experiences that led to X"
--- "What typically follows Y?"
--- "Find conceptually related memories"
+# Enables queries like:
+# - "What led to this experience?" (causal_parent)
+# - "What happened before/after?" (temporal links)
+# - "Find similar approaches" (conceptual_similar)
 ```
 
 ## 🛣️ Roadmap
 
 ### ✅ Completed (Current Release)
-- [x] Indexed Markdown Architecture (SQLite + ChromaDB)
+- [x] Pure Markdown Architecture (Zero database dependencies)
 - [x] Execution trace format and schema
 - [x] Granite Follower Agent for trace execution
 - [x] SystemAgent Learner-Follower dispatch logic
 - [x] Standalone edge runtime (offline capable)
-- [x] Memory indexer with hybrid queries
+- [x] File-based memory queries with Glob/Grep/Read
 - [x] Comprehensive documentation
 
 ### ⏳ In Progress
-- [ ] QueryMemoryTool upgrade for hybrid queries
+- [ ] Enhanced QueryMemoryTool for pattern-based queries
 - [ ] MemoryConsolidationAgent trace generation
-- [ ] Automated hierarchical relationship detection
+- [ ] Automated relationship detection in YAML frontmatter
 - [ ] Temporal causal reasoning implementation
 
 ### 🔮 Future Enhancements
@@ -317,19 +324,27 @@ CREATE TABLE memory_relationships (
 
 ## 🧪 Testing
 
-### Test Memory Indexer
+### Test Memory Queries
 
 ```bash
-# Index test file
-echo "---
-experience_id: test_001
+# Create test experience in memory log
+cat >> system/memory_log.md <<EOF
+
+## Experience: exp_test_001
+
+---
+experience_id: exp_test_001
 outcome: success
 task_type: research
+confidence_score: 0.9
 ---
-Test content" > test_memory.md
 
-python system/infrastructure/memory_indexer.py --file test_memory.md
-python system/infrastructure/memory_indexer.py --query "research"
+### Summary
+Test experience for validation
+EOF
+
+# Query with Grep
+grep -A 20 "outcome: success" system/memory_log.md | grep "task_type: research"
 ```
 
 ### Test Edge Runtime
@@ -386,14 +401,17 @@ cat output/test.txt  # → "Hello from Edge"
 ### Memory System Flow
 
 ```
-Markdown Files (Source of Truth)
-    ↓ Index on update
-    ├─→ SQLite Database
-    │   └─→ Fast metadata queries (<10ms)
-    └─→ ChromaDB Vector Database
-        └─→ Semantic similarity search (~50ms)
+Markdown Files (Single Source of Truth)
+    ↓ Direct queries using native tools
+    ├─→ Glob: Pattern matching (~50ms)
+    │   └─→ Find files matching patterns
+    ├─→ Grep: Content search (~100-500ms)
+    │   └─→ Filter by structured fields and keywords
+    └─→ Read: Parse YAML (~10-50ms per file)
+        └─→ Extract metadata and structured data
 
-Both queried together → Hybrid Results (ranked by relevance)
+All queries → Direct file access (no sync, no index)
+Performance: Acceptable for typical usage (<500 experiences)
 ```
 
 ## 🌟 Key Benefits
@@ -439,8 +457,8 @@ Contributions welcome! Focus areas:
 Built on:
 - **Claude Sonnet 4.5** (Anthropic) - Learner mode intelligence
 - **IBM Granite Nano** - Edge execution model
-- **ChromaDB** - Vector similarity search
-- **SQLite** - Embedded database
+- **Pure Markdown** - Human-readable, Git-versionable storage
+- **YAML Frontmatter** - Structured metadata for queries
 
 ## 📞 Support
 

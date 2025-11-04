@@ -20,7 +20,7 @@ This architecture reduces operational costs by **20-80x** and execution time by 
 - **Claude Code**: Runtime environment
 - **Claude Sonnet 4.5**: Powerful reasoning model
 - **SystemAgent**: Orchestration and mode selection
-- **Memory Indexer**: SQLite + ChromaDB for fast retrieval
+- **Memory System**: Pure markdown files with bold text metadata for structured queries
 - **MemoryConsolidationAgent**: Generates execution traces
 
 **When Used**:
@@ -63,29 +63,18 @@ cd llmunix
 pip install -r requirements.txt
 ```
 
-#### Initialize Memory Infrastructure
-
-```bash
-# Create necessary directories
-mkdir -p system/chroma_db
-mkdir -p system/infrastructure
-mkdir -p projects
-
-# Run initial memory indexing
-python system/infrastructure/memory_indexer.py --index-all
-```
-
 #### Verify Installation
 
 ```bash
-# Check that SQLite database was created
-ls -lh system/memory_index.sqlite
+# Check that core directories exist
+ls -lh system/
+ls -lh projects/
 
-# Check that ChromaDB was initialized
-ls -lh system/chroma_db/
+# Verify memory log is present
+ls -lh system/memory_log.md
 
-# Test semantic search
-python system/infrastructure/memory_indexer.py --query "research task workflow"
+# LLMunix is ready - zero dependencies!
+# Memory is stored in pure markdown files (no parsing needed)
 ```
 
 ### Phase 2: Edge Deployment Environment
@@ -148,7 +137,7 @@ llmunix execute: "Research AI trends from TechCrunch and ArXiv, synthesize findi
 # 5. Index trace in memory system
 
 # Check that trace was created
-ls -lh projects/Project_ai_research/memory/long_term/execution_trace_*.yaml
+ls -lh projects/Project_ai_research/memory/long_term/execution_trace_*.md
 ```
 
 ### Workflow 2: Deploying Trace to Edge (Transfer)
@@ -156,15 +145,15 @@ ls -lh projects/Project_ai_research/memory/long_term/execution_trace_*.yaml
 ```bash
 # On cloud machine
 # Export the successful trace
-cp projects/Project_ai_research/memory/long_term/execution_trace_research_v1.0.yaml \
-   /tmp/research_trace.yaml
+cp projects/Project_ai_research/memory/long_term/execution_trace_research_v1.0.md \
+   /tmp/research_trace.md
 
 # Transfer to edge device
-scp /tmp/research_trace.yaml edge-device:/home/user/llmunix/edge_runtime/traces/
+scp /tmp/research_trace.md edge-device:/home/user/llmunix/edge_runtime/traces/
 
 # Alternative: Use Git for trace distribution
 cd projects/Project_ai_research
-git add memory/long_term/execution_trace_research_v1.0.yaml
+git add memory/long_term/execution_trace_research_v1.0.md
 git commit -m "Add research analysis trace"
 git push origin main
 
@@ -180,7 +169,7 @@ cd llmunix/edge_runtime
 
 # Execute the trace
 ./run_follower.py \
-    --trace traces/execution_trace_research_v1.0.yaml \
+    --trace traces/execution_trace_research_v1.0.md \
     --base-dir /home/user/llmunix \
     --output reports/execution_report.json
 
@@ -206,8 +195,8 @@ cat reports/execution_report.json
 llmunix execute: "Research AI trends from TechCrunch and ArXiv, synthesize findings, generate report"
 
 # SystemAgent will:
-# 1. Query memory indexer for matching trace
-# 2. Find execution_trace_research_v1.0.yaml (confidence: 0.95)
+# 1. Query memory for matching trace
+# 2. Find execution_trace_research_v1.0.md (confidence: 0.95)
 # 3. Decide: Use Follower mode
 # 4. Delegate to granite-follower-agent
 # 5. Execute trace deterministically
@@ -221,119 +210,140 @@ llmunix execute: "Research AI trends from TechCrunch and ArXiv, synthesize findi
 
 ## Memory Management
 
-### Indexed Markdown Architecture
+### Pure Markdown Architecture
 
-LLMunix uses a hybrid memory system:
+LLMunix uses a pure markdown-based memory system:
 
 ```
 system/
-├── memory_log.md              # Source of truth (Markdown)
-├── memory_index.sqlite        # Fast metadata queries
-└── chroma_db/                 # Semantic similarity search
+├── memory_log.md              # Centralized experience log (Source of truth)
+└── agents/                    # System-level agents
+    └── MemoryAnalysisAgent.md # Analyzes memory patterns
+
+projects/
+└── [ProjectName]/
+    └── memory/
+        ├── short_term/        # Agent interactions and context
+        └── long_term/         # Consolidated insights and traces
+            ├── experiences/   # Individual experience logs
+            └── traces/        # Execution traces
 ```
 
 **Benefits**:
-- Human-readable memory (Markdown)
-- Fast structured queries (SQLite)
-- Intelligent semantic search (ChromaDB)
-- Git-versionable and portable
+- **100% human-readable**: All memory in pure markdown (no parsing needed)
+- **Git-versionable**: Full version control and collaboration
+- **Zero dependencies**: No installation, no parsing libraries, no overhead
+- **Fully portable**: Clone and run anywhere with standard Unix tools
+- **Fast**: Grep-based queries typically <200ms for hundreds of experiences
 
 ### Querying Memory
 
-```python
-# In Python
-from system.infrastructure.memory_indexer import MemoryIndexer
-
-indexer = MemoryIndexer()
-
-# Hybrid query (recommended)
-results = indexer.query_hybrid(
-    query_text="research task with web fetching",
-    filters={
-        'outcome': 'success',
-        'min_confidence': 0.8
-    },
-    n_results=5
-)
-
-# Find execution trace for a goal
-trace = indexer.find_execution_trace(
-    goal_signature="research AI trends",
-    min_confidence=0.9
-)
-
-if trace:
-    print(f"Found trace: {trace['file_path']}")
-    print(f"Confidence: {trace['confidence']}")
-    print(f"Estimated cost: ${trace['estimated_cost']}")
-```
-
-### Memory Indexing
+LLMunix uses native tools for memory queries:
 
 ```bash
-# Reindex all memory after updates
-python system/infrastructure/memory_indexer.py --index-all
+# Find successful experiences
+grep -A 50 "**Outcome:** success" system/memory_log.md
 
-# Index a specific file
-python system/infrastructure/memory_indexer.py --file projects/Project_foo/memory/long_term/experience_001.md
+# Find experiences by task type
+grep -A 50 "**Task Type:** research" system/memory_log.md
 
-# Test semantic search
-python system/infrastructure/memory_indexer.py --query "legal document analysis"
+# Find high-confidence traces
+find projects -name "execution_trace_*.md" -exec grep -l "**Confidence:** 0.9" {} \;
+
+# Agents use Claude Code tools:
+# - Glob: Find files matching patterns
+# - Grep: Search content using pure markdown patterns
+# - Read: Extract metadata from bold text fields
+```
+
+### Memory Structure
+
+Each experience in `system/memory_log.md` uses pure markdown with bold text metadata:
+
+```markdown
+## Experience: exp_20250103_143022_ai_research
+
+**Experience ID:** exp_20250103_143022_ai_research
+**Timestamp:** 2025-01-03T14:30:22Z
+**Project Name:** Project_ai_trends_analysis
+**Goal Description:** Research AI trends and generate report
+**Outcome:** success
+**Task Type:** research
+**Confidence Score:** 0.95
+**Tags:** research, ai_trends, multi_source
+**Trace Generated:** yes
+**Trace ID:** research_ai_trends_v1.0
+
+---
+
+### Summary
+Successfully researched AI trends from three sources...
+
+### Learnings
+- Multi-source research pattern is highly effective
+- Parallel fetching reduces execution time
+...
 ```
 
 ## Execution Trace Management
 
 ### Trace Structure
 
-```yaml
-trace_id: research-ai-trends-v1.0
-goal_signature: "research AI trends and generate report"
-confidence: 0.95
-estimated_cost: 0.15
-estimated_time_secs: 120
-success_rate: 0.94
-usage_count: 17
+```markdown
+# Execution Trace: research-ai-trends-v1.0
 
-steps:
-  - step: 1
-    description: "Fetch AI news from TechCrunch"
-    tool_call:
-      tool: "WebFetch"
-      parameters:
-        url: "https://techcrunch.com/category/artificial-intelligence/"
-        prompt: "Extract top 5 AI trends"
-    validation:
-      - check: "Response contains AI topics"
-        type: "content_contains"
-        parameters:
-          substring: "AI"
+**Trace ID:** research-ai-trends-v1.0
+**Goal Signature:** research AI trends and generate report
+**Confidence:** 0.95
+**Estimated Cost:** 0.15
+**Estimated Time (seconds):** 120
+**Success Rate:** 0.94
+**Usage Count:** 17
+
+---
+
+## Step 1: Fetch AI news from TechCrunch
+
+**Description:** Fetch AI news from TechCrunch
+
+**Tool Call:**
+- **Tool:** WebFetch
+- **Parameters:**
+  - **URL:** https://techcrunch.com/category/artificial-intelligence/
+  - **Prompt:** Extract top 5 AI trends
+
+**Validation:**
+- **Check:** Response contains AI topics
+- **Type:** content_contains
+- **Parameters:**
+  - **Substring:** AI
 ```
 
 ### Trace Evolution
 
 Traces improve over time based on execution feedback:
 
-```yaml
-# Confidence evolution
-Initial creation: confidence = 0.75
-After 5 successes: confidence = 0.82
-After 10 successes: confidence = 0.89
-After 20 successes: confidence = 0.95
+```markdown
+**Confidence Evolution:**
+- Initial creation: 0.75
+- After 5 successes: 0.82
+- After 10 successes: 0.89
+- After 20 successes: 0.95
 
-# After a failure
-Confidence drops: 0.95 → 0.67
-SystemAgent falls back to Learner mode
-New improved trace generated: v1.1
+**After a failure:**
+- Confidence drops: 0.95 → 0.67
+- SystemAgent falls back to Learner mode
+- New improved trace generated: v1.1
 ```
 
 ### Versioning Strategy
 
 ```bash
 # Semantic versioning for traces
-execution_trace_research_v1.0.yaml  # Initial version
-execution_trace_research_v1.1.yaml  # Bug fix (failed step corrected)
-execution_trace_research_v1.2.yaml  # Optimization (steps reordered)
-execution_trace_research_v2.0.yaml  # Breaking change (new tools added)
+execution_trace_research_v1.0.md  # Initial version
+execution_trace_research_v1.1.md  # Bug fix (failed step corrected)
+execution_trace_research_v1.2.md  # Optimization (steps reordered)
+execution_trace_research_v2.0.md  # Breaking change (new tools added)
 ```
 
 ## Advanced Configurations
@@ -346,7 +356,7 @@ For completely air-gapped environments:
 # 1. Prepare offline package on cloud
 tar -czf llmunix-edge-offline.tar.gz \
     edge_runtime/ \
-    projects/Project_*/memory/long_term/execution_trace_*.yaml
+    projects/Project_*/memory/long_term/execution_trace_*.md
 
 # 2. Transfer via USB or physical media
 cp llmunix-edge-offline.tar.gz /media/usb/
@@ -356,7 +366,7 @@ tar -xzf llmunix-edge-offline.tar.gz
 cd edge_runtime
 
 # 4. Execute traces offline
-./run_follower.py --trace traces/execution_trace_research_v1.0.yaml
+./run_follower.py --trace traces/execution_trace_research_v1.0.md
 ```
 
 ### Multi-Device Edge Fleet
@@ -370,8 +380,8 @@ cd trace-repository/traces/
 
 # Automated deployment script
 for device in edge-01 edge-02 edge-03; do
-    scp execution_trace_*.yaml $device:/home/user/llmunix/edge_runtime/traces/
-    ssh $device "cd llmunix/edge_runtime && ./run_follower.py --trace traces/execution_trace_research_v1.0.yaml"
+    scp execution_trace_*.md $device:/home/user/llmunix/edge_runtime/traces/
+    ssh $device "cd llmunix/edge_runtime && ./run_follower.py --trace traces/execution_trace_research_v1.0.md"
 done
 ```
 
@@ -397,7 +407,7 @@ jq 'select(.status=="failed") | .failed_step' *.json | sort | uniq -c
 
 ```bash
 # Check trace validation
-./run_follower.py --trace traces/failing_trace.yaml --output debug.json
+./run_follower.py --trace traces/failing_trace.md --output debug.json
 cat debug.json | jq '.step_results[] | select(.status=="failed")'
 
 # Common causes:
@@ -406,25 +416,31 @@ cat debug.json | jq '.step_results[] | select(.status=="failed")'
 # 3. Permissions: Check file write permissions
 ```
 
-### Issue: Memory Index Out of Sync
+### Issue: Memory Query Slow
 
 ```bash
-# Rebuild memory index
-rm system/memory_index.sqlite
-rm -rf system/chroma_db/
-python system/infrastructure/memory_indexer.py --index-all
+# For large memory logs (>500 experiences), consider:
+# 1. Split memory into project-specific logs
+# 2. Use more specific Grep patterns
+# 3. Archive old experiences to separate files
+
+# Typical query performance:
+# - <100 experiences: <500ms
+# - 100-500 experiences: <2s
+# - >500 experiences: Consider archiving
 ```
 
 ### Issue: Low Trace Confidence
 
 ```bash
-# Query trace metadata
-sqlite3 system/memory_index.sqlite "SELECT trace_id, confidence, success_rate, usage_count FROM execution_traces WHERE confidence < 0.9"
+# Find low-confidence traces
+find projects -name "execution_trace_*.md" -exec grep -H "**Confidence:** 0\.[0-8]" {} \;
 
 # Analyze failures
-grep -r "failed_step" projects/*/memory/long_term/*.md
+grep -r "**Outcome:** failure" projects/*/memory/long_term/*.md
 
 # Solution: Let SystemAgent re-learn the task in Learner mode
+# The system will generate an improved trace after successful execution
 ```
 
 ## Performance Benchmarks
