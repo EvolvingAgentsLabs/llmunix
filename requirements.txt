@@ -1,0 +1,8 @@
+# LLMunix Memory Management Dependencies
+
+# ZERO dependencies required for pure markdown architecture!
+# All memory and trace storage uses pure markdown (headers + bold text)
+# No YAML parsing, no database libraries, no external dependencies
+
+# Optional utilities (if needed for specific projects)
+python-dotenv>=1.0.0  # For environment variable management (optional)

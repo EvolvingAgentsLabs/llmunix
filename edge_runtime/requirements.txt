@@ -1,0 +1,8 @@
+# LLMunix Edge Runtime Dependencies
+# Minimal dependencies for standalone execution on edge devices
+
+pyyaml>=6.0
+# Note: No LLM dependencies needed for pure trace execution
+# Add optional LLM client if you want to run small models locally:
+# ollama-python>=0.1.0
+# huggingface-hub>=0.19.0

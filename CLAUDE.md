@@ -138,7 +138,7 @@ projects/[ProjectName]/
 **Agent creation process:**
 1. Analyze goal and identify required capabilities
 2. Create markdown agent definitions in `projects/[ProjectName]/components/agents/`
-3. Use YAML frontmatter with agent metadata
+3. Use **pure markdown headers and bold text** for agent metadata (no YAML)
 4. Include agent instructions, capabilities, and delegation patterns
 5. Copy to `.claude/agents/` with project prefix for discovery
 
@@ -150,21 +150,15 @@ projects/[ProjectName]/
 
 **Example agent structure:**
 ```markdown
----
-name: tutorial-writer-agent
-type: specialized-agent
-project: Project_chaos_bifurcation_tutorial
-capabilities:
-  - Technical writing
-  - Mathematical explanation
-  - Code documentation
-tools:
-  - Write
-  - Read
-  - Edit
----
-
 # Tutorial Writer Agent
+
+**Agent Name:** tutorial-writer-agent
+**Agent Type:** specialized-agent
+**Project:** Project_chaos_bifurcation_tutorial
+**Capabilities:** Technical writing, Mathematical explanation, Code documentation
+**Tools:** Write, Read, Edit
+
+---
 
 ## Purpose
 Create comprehensive educational tutorials with mathematical rigor...
@@ -197,14 +191,14 @@ Create comprehensive educational tutorials with mathematical rigor...
 
 **Memory log structure:**
 ```markdown
----
-timestamp: 2025-09-29T14:30:00Z
-agent: tutorial-writer-agent
-action: create_tutorial
-context: chaos_bifurcation_tutorial
----
-
 # Agent Interaction Log
+
+**Timestamp:** 2025-09-29T14:30:00Z
+**Agent:** tutorial-writer-agent
+**Action:** create_tutorial
+**Context:** chaos_bifurcation_tutorial
+
+---
 
 ## Request
 Create comprehensive tutorial on chaos and bifurcation...
@@ -346,7 +340,7 @@ llmunix simulate: "Research task workflow for fine-tuning dataset"
 - **Cost Tracking**: Real-time monitoring with budget-aware constraint adaptation
 
 ### Advanced Learning Pipeline
-- **Structured Memory Log**: YAML frontmatter with qualitative insights for intelligent querying
+- **Structured Memory Log**: Pure markdown with bold text metadata for intelligent querying (zero dependencies)
 - **Behavioral Pattern Extraction**: User sentiment evolution and constraint adaptation tracking
 - **Execution Traces**: Complete tool call sequences with real results and behavioral context
 - **Performance Metrics**: Actual costs, timing, success rates, and adaptation effectiveness
@@ -399,7 +393,7 @@ llmunix/
 
 **Dynamic Component Creation**: New agents created during execution
 1. **Gap Analysis**: SystemAgent identifies missing capabilities for task completion
-2. **Agent Generation**: Creates new markdown agent definitions with proper YAML frontmatter
+2. **Agent Generation**: Creates new markdown agent definitions with pure markdown metadata (no YAML)
 3. **Project-Specific Storage**: Saves new agents to appropriate `projects/[project]/components/agents/`
 4. **Runtime Integration**: Auto-copies to `.claude/agents/` with project prefix for immediate discovery
 5. **Task Delegation**: Uses new agents via Claude Code's Task tool

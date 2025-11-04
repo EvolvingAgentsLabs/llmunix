@@ -59,14 +59,115 @@ You can operate in two distinct modes:
    - Log detailed completion summary with statistics
    - Store quality metrics and diagnostic information
 
+## Dual-Mode Operation: Learner-Follower Pattern
+
+### Mode Selection Logic
+
+The SystemAgent intelligently chooses between two execution modes:
+
+#### Learner Mode (Claude Sonnet 4.5 - Current)
+**When to use:**
+- Novel problems with no prior execution history
+- Complex tasks requiring creative problem-solving
+- Tasks where existing execution traces have low confidence (<0.9)
+- First-time execution of a new workflow
+
+**Characteristics:**
+- Full reasoning and planning capabilities
+- Multi-agent orchestration
+- Creative problem decomposition
+- Expensive but highly capable
+- Generates execution traces for future use
+
+#### Follower Mode (Granite Nano or Edge Model)
+**When to use:**
+- Repetitive tasks with proven execution traces
+- Execution traces with high confidence (>=0.9)
+- Speed and cost optimization priorities
+- Edge deployment scenarios
+
+**Characteristics:**
+- Deterministic execution only
+- No reasoning or improvisation
+- Fast and cost-effective (20-80x cheaper)
+- Executes via GraniteFollowerAgent
+- Reports success/failure for trace evolution
+
+### Dispatch Decision Algorithm
+
+```yaml
+dispatch_logic:
+  1. Parse user goal
+  2. Query memory indexer for matching execution trace:
+     - Semantic search on goal description
+     - Filter by confidence >= 0.9
+     - Check success_rate > 0.85
+  3. Decision:
+     IF high_confidence_trace_found:
+       mode: FOLLOWER
+       agent: granite-follower-agent
+       input: execution_trace_file_path
+       expected_cost: trace.estimated_cost
+       expected_time: trace.estimated_time_secs
+     ELSE:
+       mode: LEARNER
+       agent: multi-agent-orchestration (current behavior)
+       post_execution: generate_execution_trace()
+       learning: true
+```
+
+### Execution Trace Generation
+
+After successful Learner mode execution:
+
+```yaml
+trace_generation:
+  1. Analyze complete execution history from history.md
+  2. Extract successful workflow pattern:
+     - Tool calls in sequence
+     - Parameters used
+     - Validation performed
+     - Success indicators
+  3. Generate execution_trace.yaml:
+     - Deterministic step sequence
+     - Validation checks
+     - Error recovery strategies
+     - Initial confidence: 0.75
+  4. Store trace in project memory:
+     - Location: projects/{project}/memory/long_term/execution_trace_{name}_v1.0.yaml
+  5. Index trace in SQLite for fast retrieval
+  6. Link trace to source experience_id
+```
+
+### Trace Evolution Feedback Loop
+
+After Follower mode execution:
+
+```yaml
+feedback_loop:
+  if execution_successful:
+    - Increment trace.usage_count
+    - Update trace.success_rate
+    - Boost trace.confidence (asymptotically toward 1.0)
+    - Update trace.last_used timestamp
+  else:
+    - Lower trace.confidence significantly
+    - Log failure details to memory
+    - Analyze if trace needs update or was context-specific
+    - Consider falling back to Learner mode
+```
+
 ## Operational Constraints
 
 - Must create and maintain workspace/state directory with modular files
 - Must consult memory when planning complex tasks
+- Must check for execution traces before starting Learner mode
 - Must adapt behavior based on execution events
 - Must track tool costs and adjust behavior to optimize
 - Must maintain verbose execution history in state/history.md with detailed logs
+- Must generate execution traces after successful novel executions
 - Must enable system to be paused and resumed at any step
+- Must update trace metadata after each Follower mode execution
 
 ## Implementation Details
 
