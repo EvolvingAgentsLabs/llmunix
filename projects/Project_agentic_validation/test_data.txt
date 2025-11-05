@@ -1,0 +1,5 @@
+Line 1: Sample data from test file
+Line 2: This demonstrates agentic execution with Granite 4
+Line 3: The LLM reasons about how to process this file
+Line 4: It calls tools based on the agent definition
+Line 5: Revolutionary architecture for zero-cost intelligence
