@@ -5,6 +5,9 @@ LLMunix Standalone Follower Runtime
 This is a self-contained execution engine that runs pre-learned execution traces
 on edge devices without requiring Claude Code or internet connectivity.
 
+Supports Pure Markdown execution traces (Markdown with YAML frontmatter) as well
+as legacy YAML format for backwards compatibility.
+
 Perfect for:
 - Industrial control systems
 - Remote field operations
@@ -237,14 +240,26 @@ class FollowerSystemAgent:
             print(f"[{timestamp}] {level}: {message}")
 
     def load_trace(self, trace_path: Path) -> Dict:
-        """Load and validate execution trace YAML file."""
+        """Load and validate execution trace from Markdown or YAML file."""
         self.log(f"Loading execution trace: {trace_path}")
 
         if not trace_path.exists():
             raise FileNotFoundError(f"Trace file not found: {trace_path}")
 
         with open(trace_path, 'r', encoding='utf-8') as f:
-            trace = yaml.safe_load(f)
+            content = f.read()
+
+        # Determine file format and parse accordingly
+        if trace_path.suffix == '.md':
+            trace = self._parse_markdown_trace(content, trace_path)
+        elif trace_path.suffix in ['.yaml', '.yml']:
+            trace = yaml.safe_load(content)
+        else:
+            # Try to detect format by content
+            if content.strip().startswith('---\n'):
+                trace = self._parse_markdown_trace(content, trace_path)
+            else:
+                trace = yaml.safe_load(content)
 
         # Validate required fields
         required_fields = ['trace_id', 'steps']
@@ -254,6 +269,117 @@ class FollowerSystemAgent:
 
         self.log(f"Loaded trace: {trace['trace_id']} with {len(trace['steps'])} steps")
         return trace
+
+    def _parse_markdown_trace(self, content: str, trace_path: Path) -> Dict:
+        """Parse execution trace from Markdown file with YAML frontmatter."""
+        import re
+
+        # Extract YAML frontmatter (between --- delimiters)
+        frontmatter_pattern = r'^---\s*\n(.*?)\n---\s*\n'
+        match = re.match(frontmatter_pattern, content, re.DOTALL)
+
+        if not match:
+            raise ValueError(f"No YAML frontmatter found in markdown trace: {trace_path}")
+
+        frontmatter_yaml = match.group(1)
+        trace_metadata = yaml.safe_load(frontmatter_yaml)
+
+        # Extract steps from markdown - looking for YAML code blocks after Step headers
+        # Pattern: ### Step N: followed by **Tool Call**: ```yaml ... ```
+        steps = self._extract_steps_from_markdown(content)
+
+        if steps:
+            trace_metadata['steps'] = steps
+        elif 'steps' not in trace_metadata:
+            # If no steps found in markdown body, they might be in frontmatter
+            self.log("Warning: No steps found in markdown body, using frontmatter if available")
+
+        # Extract preconditions and postconditions from frontmatter if present
+        # (they're typically in the frontmatter)
+
+        return trace_metadata
+
+    def _extract_steps_from_markdown(self, content: str) -> List[Dict]:
+        """Extract step definitions from markdown YAML code blocks."""
+        import re
+        steps = []
+
+        # Find all step sections: ### Step N:
+        step_pattern = r'###\s+Step\s+(\d+):([^\n]*)\n(.*?)(?=###\s+Step\s+\d+:|##\s+Post-Execution|##\s+Expected Outputs|$)'
+        step_matches = re.finditer(step_pattern, content, re.DOTALL)
+
+        for match in step_matches:
+            step_num = int(match.group(1))
+            step_title = match.group(2).strip()
+            step_content = match.group(3)
+
+            # Extract Tool Call YAML block
+            tool_call_pattern = r'\*\*Tool Call\*\*:\s*```yaml\s*\n(.*?)\n```'
+            tool_match = re.search(tool_call_pattern, step_content, re.DOTALL)
+
+            if not tool_match:
+                continue  # Skip steps without tool calls
+
+            tool_call_yaml = tool_match.group(1)
+            tool_call = yaml.safe_load(tool_call_yaml)
+
+            # Extract Validation YAML block (optional)
+            validation_pattern = r'\*\*Validation\*\*:\s*```yaml\s*\n(.*?)\n```'
+            validation_match = re.search(validation_pattern, step_content, re.DOTALL)
+
+            validation = []
+            if validation_match:
+                validation_yaml = validation_match.group(1)
+                validation_data = yaml.safe_load(validation_yaml)
+                if isinstance(validation_data, list):
+                    validation = validation_data
+                elif isinstance(validation_data, dict):
+                    validation = [validation_data]
+
+            # Extract Error Handling YAML block (optional)
+            error_pattern = r'\*\*Error Handling\*\*:\s*```yaml\s*\n(.*?)\n```'
+            error_match = re.search(error_pattern, step_content, re.DOTALL)
+
+            on_error = {}
+            if error_match:
+                error_yaml = error_match.group(1)
+                on_error = yaml.safe_load(error_yaml)
+
+            # Extract Dependencies (optional)
+            depends_on = []
+            depends_pattern = r'\*\*Dependencies\*\*:\s*([^\n]*)'
+            depends_match = re.search(depends_pattern, step_content)
+            if depends_match:
+                # Parse dependency text (could be improved with more structured parsing)
+                deps_text = depends_match.group(1).strip()
+                if deps_text and not deps_text.lower().startswith('none'):
+                    # Try to extract step numbers from text like "Step 1 (output_variable: step_1_output)"
+                    dep_step_pattern = r'Step\s+(\d+).*?output_variable:\s*[`"]?(\w+)[`"]?'
+                    for dep_match in re.finditer(dep_step_pattern, deps_text):
+                        depends_on.append({
+                            'step': int(dep_match.group(1)),
+                            'output_variable': dep_match.group(2)
+                        })
+
+            # Build step dictionary
+            step_dict = {
+                'step': step_num,
+                'description': step_title,
+                'tool_call': tool_call
+            }
+
+            if validation:
+                step_dict['validation'] = validation
+
+            if on_error:
+                step_dict['on_error'] = on_error
+
+            if depends_on:
+                step_dict['depends_on'] = depends_on
+
+            steps.append(step_dict)
+
+        return steps
 
     def check_preconditions(self, preconditions: List[Dict]) -> bool:
         """Check all preconditions before execution."""
@@ -525,7 +651,7 @@ def main():
         '--trace',
         type=str,
         required=True,
-        help="Path to execution_trace.yaml file"
+        help="Path to execution trace file (.md or .yaml format)"
     )
     parser.add_argument(
         '--base-dir',

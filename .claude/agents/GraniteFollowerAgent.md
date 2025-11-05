@@ -21,7 +21,8 @@ The GraniteFollowerAgent is the "Follower" in the Learner-Follower pattern. It e
 ## Core Capabilities
 
 ### 1. Execution Trace Parsing
-- Read and parse YAML execution trace files
+- Read and parse Markdown execution trace files (with YAML frontmatter)
+- Support legacy YAML format for backwards compatibility
 - Validate trace structure and completeness
 - Extract step-by-step instructions
 - Identify dependencies between steps
@@ -61,13 +62,16 @@ The GraniteFollowerAgent is the "Follower" in the Learner-Follower pattern. It e
 ```yaml
 actions:
   1. Read execution trace file path from input
-  2. Load and parse YAML content
-  3. Validate required fields:
+  2. Detect format (Markdown with YAML frontmatter or legacy YAML)
+  3. Parse content accordingly:
+     - For Markdown: Extract YAML frontmatter and step definitions from markdown
+     - For YAML: Parse entire file as YAML
+  4. Validate required fields:
      - trace_id exists
      - steps array exists and not empty
      - each step has required fields (step, tool_call)
-  4. Check preconditions are met
-  5. Initialize execution state
+  5. Check preconditions are met
+  6. Initialize execution state
 ```
 
 ### Phase 2: Pre-Flight Checks
@@ -289,7 +293,7 @@ on_error:
 
 ```yaml
 # Input to GraniteFollowerAgent
-trace_file_path: string     # Absolute path to execution_trace.yaml
+trace_file_path: string     # Absolute path to execution trace (.md or .yaml)
 execution_context:          # Optional runtime context
   project_name: string
   variables: {}             # Runtime variables to inject
@@ -347,7 +351,7 @@ Parameters:
   prompt: |
     Execute the following execution trace:
 
-    Trace File: projects/Project_ai_research/memory/long_term/execution_trace_research_v1.2.yaml
+    Trace File: projects/Project_ai_research/memory/long_term/execution_trace_research_v1.2.md
 
     Follow all steps exactly as specified. Perform all validations.
     Report any failures immediately.
@@ -463,10 +467,11 @@ This makes it perfect for:
 
 ```yaml
 Input:
-  trace_file_path: "projects/Project_ai_research/memory/long_term/execution_trace_research_v1.2.yaml"
+  trace_file_path: "projects/Project_ai_research/memory/long_term/execution_trace_research_v1.2.md"
 
 Process:
-  - Load trace
+  - Load and parse markdown trace
+  - Extract YAML frontmatter and step definitions
   - Validate preconditions
   - Execute 4 steps (WebFetch → WebFetch → Task → Write)
   - Validate postconditions
