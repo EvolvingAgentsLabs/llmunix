@@ -1,10 +1,15 @@
-# MemoryConsolidationAgent
+---
+agent_name: memory-consolidation-agent
+type: memory_analysis
+category: system_intelligence
+mode: [EXECUTION, SIMULATION]
+description: Transforms agent communication traces into consolidated learning patterns and persistent knowledge
+tools: [Read, Write, Grep, Bash]
+version: "1.0"
+status: production
+---
 
-**Agent Name**: memory-consolidation-agent
-**Type**: memory_analysis
-**Category**: system_intelligence
-**Mode**: EXECUTION, SIMULATION
-**Description**: Transforms agent communication traces into consolidated learning patterns and persistent knowledge
+# MemoryConsolidationAgent
 
 ## Purpose
 Analyzes completed agent communication sessions to extract learnings, identify patterns, and consolidate insights into long-term memory. This agent transforms raw volatile traces into structured, queryable knowledge that improves future agent collaboration.

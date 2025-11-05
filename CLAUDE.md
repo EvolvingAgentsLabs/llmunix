@@ -138,27 +138,30 @@ projects/[ProjectName]/
 **Agent creation process:**
 1. Analyze goal and identify required capabilities
 2. Create markdown agent definitions in `projects/[ProjectName]/components/agents/`
-3. Use **pure markdown headers and bold text** for agent metadata (no YAML)
+3. Use **YAML frontmatter** for agent metadata (consistent with framework standard)
 4. Include agent instructions, capabilities, and delegation patterns
 5. Copy to `.claude/agents/` with project prefix for discovery
 
 **Tool creation process:**
 1. Identify operations needed (computation, file manipulation, etc.)
 2. Create markdown tool specifications in `projects/[ProjectName]/components/tools/`
-3. Map to Claude Code native tools (Read, Write, Bash, etc.)
-4. Document tool parameters and expected outputs
+3. Use **YAML frontmatter** for tool metadata (consistent with framework standard)
+4. Map to Claude Code native tools (Read, Write, Bash, etc.)
+5. Document tool parameters and expected outputs
 
 **Example agent structure:**
 ```markdown
-# Tutorial Writer Agent
-
-**Agent Name:** tutorial-writer-agent
-**Agent Type:** specialized-agent
-**Project:** Project_chaos_bifurcation_tutorial
-**Capabilities:** Technical writing, Mathematical explanation, Code documentation
-**Tools:** Write, Read, Edit
-
 ---
+agent_name: tutorial-writer-agent
+type: specialized
+project: Project_chaos_bifurcation_tutorial
+capabilities: [Technical writing, Mathematical explanation, Code documentation]
+tools: [Write, Read, Edit]
+version: "1.0"
+status: production
+---
+
+# Tutorial Writer Agent
 
 ## Purpose
 Create comprehensive educational tutorials with mathematical rigor...
@@ -168,6 +171,30 @@ Create comprehensive educational tutorials with mathematical rigor...
 2. Structure content with clear progression
 3. Include mathematical foundations
 4. Provide examples and visualizations
+...
+```
+
+**Example tool structure:**
+```markdown
+---
+component_type: tool
+tool_name: quantum-computing-tool
+version: "1.0"
+status: production
+claude_tools: [Bash, Read, Write]
+category: scientific_computing
+project: Project_chaos_bifurcation_tutorial
+---
+
+# Quantum Computing Tool
+
+## Purpose
+Execute quantum computing simulations and calculations...
+
+## Parameters
+- `algorithm`: string - Algorithm to execute
+- `qubits`: number - Number of qubits
+- `iterations`: number - Simulation iterations
 ...
 ```
 
@@ -191,14 +218,18 @@ Create comprehensive educational tutorials with mathematical rigor...
 
 **Memory log structure:**
 ```markdown
-# Agent Interaction Log
-
-**Timestamp:** 2025-09-29T14:30:00Z
-**Agent:** tutorial-writer-agent
-**Action:** create_tutorial
-**Context:** chaos_bifurcation_tutorial
-
 ---
+interaction_id: int_20250929_143000
+timestamp: "2025-09-29T14:30:00Z"
+agent: tutorial-writer-agent
+action: create_tutorial
+context: chaos_bifurcation_tutorial
+execution_time_secs: 45
+quality_score: 9.0
+outcome: success
+---
+
+# Agent Interaction Log
 
 ## Request
 Create comprehensive tutorial on chaos and bifurcation...
@@ -211,8 +242,8 @@ Analyzing requirements:
 
 ## Outcome
 Tutorial created: chaos_bifurcation_tutorial.md
-Quality score: 9/10
-Execution time: 45s
+- Quality score: 9/10
+- Execution time: 45s
 
 ## Learnings
 - Mathematical depth improves tutorial quality
