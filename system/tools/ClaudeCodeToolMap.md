@@ -1,3 +1,13 @@
+---
+component_type: tool
+tool_name: claude-code-tool-map
+version: "1.0"
+status: production
+category: infrastructure
+mode: [EXECUTION]
+description: Defines mappings between LLMunix framework components and Claude Code native tools
+---
+
 # Claude Code Tool Mapping
 
 This file defines how LLMunix framework components map to Claude Code's native tools and their real-world characteristics.

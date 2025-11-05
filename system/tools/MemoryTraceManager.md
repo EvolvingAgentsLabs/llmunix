@@ -1,16 +1,19 @@
+---
+component_type: tool
+tool_name: memory-trace-manager
+version: "1.0"
+status: production
+category: memory_management
+mode: [EXECUTION, SIMULATION]
+description: Tracks and manages agent communication traces and memory consolidation
+claude_tools: [Read, Write, Bash]
+---
+
 # MemoryTraceManager Tool
 
 ## Purpose
+
 Manages volatile memory traces of agent communications during LLMunix task execution sessions. Captures, analyzes, and consolidates agent interactions for learning and pattern recognition.
-
-## Tool Specification
-
-```yaml
-tool_name: "MemoryTraceManager"
-category: "memory_management"
-mode: ["EXECUTION", "SIMULATION"]
-description: "Tracks and manages agent communication traces and memory consolidation"
-```
 
 ## Core Functions
 

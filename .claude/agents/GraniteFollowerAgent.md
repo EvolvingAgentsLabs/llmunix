@@ -1,10 +1,16 @@
-# Granite Follower Agent
+---
+agent_name: granite-follower-agent
+type: execution_agent
+category: edge_runtime
+mode: [EXECUTION]
+description: Deterministic execution agent that follows pre-defined execution traces - optimized for speed, low cost, and reliability
+tools: [Read, Write, Bash]
+version: "1.2"
+status: production
+models: [granite-nano-4b, llama-3.1-8b, mistral-7b, phi-3-mini]
+---
 
-**Agent Name**: granite-follower-agent
-**Type**: execution_agent
-**Category**: edge_runtime
-**Mode**: EXECUTION only
-**Description**: Deterministic execution agent that follows pre-defined execution traces. Optimized for speed, low cost, and reliability. Does NOT reason about goals - only executes instructions.
+# Granite Follower Agent
 
 ## Purpose
 

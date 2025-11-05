@@ -1,9 +1,14 @@
-# Query Memory Tool
+---
+component_type: tool
+tool_name: query-memory-tool
+version: "2.0"
+status: production
+claude_tools: [Read, Grep, Bash, Task]
+category: memory_management
+mode: [EXECUTION, SIMULATION]
+---
 
-**Component Type**: Tool  
-**Version**: v2  
-**Status**: [REAL] - Production Ready  
-**Claude Tool Mapping**: Read, Grep, Bash, Task
+# Query Memory Tool
 
 ## Purpose
 
