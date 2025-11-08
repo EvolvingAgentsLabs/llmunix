@@ -6,3 +6,9 @@
 
 # Optional utilities (if needed for specific projects)
 python-dotenv>=1.0.0  # For environment variable management (optional)
+
+# Wabi POC API Server Dependencies
+fastapi>=0.104.0  # Web framework for API server
+uvicorn>=0.24.0  # ASGI server
+pydantic>=2.0.0  # Data validation
+pyyaml>=6.0  # YAML parsing for user memory

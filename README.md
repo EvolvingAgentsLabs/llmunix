@@ -1,12 +1,12 @@
 # LLMunix: Pure Markdown Operating System with Agentic Edge AI
 
-> **Transform any LLM into an intelligent operating system. Learn once with Claude, execute infinitely with Granite at zero cost.**
+> **Transform any LLM into an intelligent operating system. Learn once with Claude, execute infinitely with Granite at zero cost. Generate mobile apps on-demand.**
 
-LLMunix is a revolutionary three-mode AI framework where intelligence is defined in markdown documents. High-powered LLMs create agent definitions, then lightweight edge models execute them with full reasoning capabilities - combining Claude's intelligence with Granite's efficiency.
+LLMunix is a revolutionary three-mode AI framework where intelligence is defined in markdown documents. High-powered LLMs create agent definitions, then lightweight edge models execute them with full reasoning capabilities - combining Claude's intelligence with Granite's efficiency. Now with **optional mobile app generation** for edge deployment.
 
 ## 🚀 Revolutionary Architecture
 
-### Three Execution Modes
+### Three Execution Modes + Mobile App Generation
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -14,6 +14,7 @@ LLMunix is a revolutionary three-mode AI framework where intelligence is defined
 │  Creates: Agent definitions, execution traces      │
 │  Cost: $0.05-$1 per definition (one-time)         │
 │  Use: Novel tasks, complex reasoning               │
+│  NEW: Generates mobile apps from CLI outputs       │
 └─────────────────────────────────────────────────────┘
                         ↓
           (definitions created once)
@@ -35,14 +36,28 @@ LLMunix is a revolutionary three-mode AI framework where intelligence is defined
 │ Use: Repetitive     │      │ Use: Variations,    │
 │ tasks               │      │ conditional logic   │
 └─────────────────────┘      └─────────────────────┘
+         │                            │
+         └──────────┬─────────────────┘
+                    ↓
+         ┌─────────────────────────┐
+         │  MOBILE APP GENERATION  │
+         │  (Optional Output)      │
+         │                         │
+         │  90% Deterministic Apps │
+         │  10% Agentic Apps       │
+         │                         │
+         │  5-20MB or 600MB-1.5GB  │
+         └─────────────────────────┘
 ```
 
 ### Why This Matters
 
 **Traditional AI**: $0.50-$5 per execution, requires internet
 **LLMunix Agentic**: $0 per execution, offline capable, adapts to variations
+**LLMunix Mobile**: Generate production-ready React Native apps from CLI results
 
 **1000 executions**: Save $500-$5000 with agentic mode
+**Mobile apps**: Deploy intelligence to edge devices (iOS + Android)
 
 ## 🎯 Quick Start
 
@@ -50,6 +65,7 @@ LLMunix is a revolutionary three-mode AI framework where intelligence is defined
 - Python 3.11+
 - Git
 - Ollama (for agentic mode)
+- Claude Code (for learner mode and mobile app generation)
 
 ### Installation
 
@@ -71,17 +87,21 @@ pip install -r requirements.txt
 # macOS/Linux: curl -fsSL https://ollama.ai/install.sh | sh
 # Windows: Download from https://ollama.com
 
-# Download Granite 4 model
+# Download Granite models
 ollama pull granite4:micro  # 2.1 GB - for simple tasks
 # OR
 ollama pull granite3.3:8b   # 4.9 GB - for complex tasks
+
+# For mobile app generation (optional)
+# Download Qwen or Granite models for on-device AI
+ollama pull qwen2.5:0.5b    # 600MB - for agentic mobile apps
 ```
 
-## 💡 The Three Modes Explained
+## 💡 The Four Modes Explained
 
 ### Mode 1: Learner (Claude) - Create Once
 
-**Purpose**: Design agent definitions and execution patterns
+**Purpose**: Design agent definitions, execution patterns, and mobile apps
 
 ```bash
 # Boot LLMunix with Claude
@@ -89,9 +109,15 @@ claude --dangerously-skip-permissions "boot llmunix"
 
 # Create an agent definition
 claude --dangerously-skip-permissions "llmunix execute: 'Create an agent for processing customer data files'"
+
+# Create a mobile app (NEW!)
+claude --dangerously-skip-permissions "llmunix execute: 'Create a mobile app for tracking daily habits'"
 ```
 
-**Output**: Agent definition saved to `projects/[project]/components/agents/`
+**Output**:
+- Agent definition saved to `projects/[project]/components/agents/`
+- CLI results in `projects/[project]/output/`
+- **Optional**: Mobile app in `projects/[project]/mobile_app/`
 
 **Cost**: $0.50-$1.00 one-time
 **Value**: Reusable forever
@@ -153,6 +179,60 @@ python edge_runtime/run_agentic_follower.py \
 
 ---
 
+### Mode 4: Mobile App Generation (NEW!) 📱
+
+**Purpose**: Generate production-ready mobile apps from CLI results
+
+```bash
+# Generate mobile app
+claude "llmunix execute: 'Create a mobile app for habit tracking'"
+```
+
+**What Happens**:
+1. **Primary Execution**: CLI workflow generates requirements, analysis, design
+2. **Mobile Detection**: SystemAgent detects "mobile app" keyword
+3. **Code Generation**: CodeGeneratorAgent creates React Native codebase
+4. **Classification**: MobileAppAnalyzer determines if LLM is needed
+   - **Deterministic (90%)**: Code-only, 5-20MB
+   - **Agentic (10%)**: Code + on-device LLM, 600MB-1.5GB
+5. **Bundling**: MobileAppBuilder creates deployment package
+6. **Output**: Complete React Native app ready for iOS/Android
+
+**Classification Examples**:
+
+**Deterministic Apps (No LLM):**
+- Habit tracker, calculator, news reader
+- Data visualization, CRUD operations
+- Rule-based logic only
+- **Size**: 5-20MB
+
+**Agentic Apps (With LLM):**
+- Personal trainer (adapts workouts)
+- Study assistant (generates quizzes)
+- Code helper (suggests improvements)
+- **Size**: 600MB-1.5GB (includes Qwen3-0.6B or Granite 4.0 H-1B)
+
+**Output Structure**:
+```
+projects/Project_habit_tracker/
+├── output/              # Primary CLI results
+│   ├── requirements.md
+│   ├── data_model.md
+│   └── features.md
+└── mobile_app/          # Optional mobile app
+    ├── manifest.json
+    ├── package.json
+    ├── src/
+    │   ├── screens/
+    │   ├── components/
+    │   └── services/
+    ├── models/          # Only if agentic
+    │   └── qwen3-0.6b-int4.gguf
+    └── README.md
+```
+
+---
+
 ## 🌟 Real-World Example: Daily Sales Processing
 
 ### Traditional Approach (Expensive)
@@ -202,6 +282,74 @@ python edge_runtime/run_agentic_follower.py \
 
 ---
 
+## 📱 Mobile App Generation Examples
+
+### Example 1: Habit Tracker (Deterministic)
+
+```bash
+claude "llmunix execute: 'Create a mobile app for tracking daily habits'"
+```
+
+**Generated**:
+- **CLI Output**: requirements.md, data_model.md, features.md
+- **Mobile App**: React Native app (15MB)
+  - Dashboard screen with habit list
+  - Analytics screen with charts
+  - Settings screen
+  - AsyncStorage for data persistence
+  - **No LLM** (all logic is rule-based)
+
+**Classification**: Deterministic
+**Reason**: CRUD operations, charts, reminders - no AI needed
+
+---
+
+### Example 2: Personal Trainer (Agentic)
+
+```bash
+claude "llmunix execute: 'Build a mobile personal trainer app that adapts workouts to my progress'"
+```
+
+**Generated**:
+- **CLI Output**: workout_system.md, training_plan.md
+- **Mobile App**: React Native app (635MB)
+  - Workout tracking screens
+  - Progress analytics
+  - Settings and preferences
+  - **Qwen3-0.6B LLM** bundled (600MB)
+  - AI service for workout generation
+
+**Classification**: Agentic
+**Reason**: Generates personalized workout plans, adapts to user progress
+**LLM Features**:
+- `generateWorkoutPlan(userProfile)` - adaptive routines
+- `provideFeedback(exerciseDescription)` - form corrections
+- `answerQuestions(query)` - conversational trainer
+
+---
+
+### Example 3: Study Assistant (Agentic with Code Focus)
+
+```bash
+claude "llmunix execute: 'Create a mobile study assistant that generates quiz questions and explains concepts'"
+```
+
+**Generated**:
+- **CLI Output**: study_methodology.md, quiz_generator.md
+- **Mobile App**: React Native app (1.54GB)
+  - Study session tracker
+  - Quiz interface
+  - Concept explanations
+  - **Granite 4.0 H-1B LLM** bundled (1.5GB)
+  - Superior code generation for STEM topics
+
+**Classification**: Agentic
+**Reason**: Generates educational content, explanations, code examples
+**Model Choice**: Granite 4.0 H-1B (73.0 HumanEval, 82.37 IFEval)
+**Best For**: Code generation, structured output, instruction following
+
+---
+
 ## 🛠️ What Can You Build?
 
 ### Intelligent File Processing
@@ -218,6 +366,18 @@ run_agentic_follower.py \
 # - Multiple formats (.csv, .xlsx, .json)
 ```
 
+### Mobile Apps On-Demand
+```bash
+# CLI-only (default)
+claude "llmunix execute: 'Analyze fitness tracking requirements'"
+
+# CLI + Deterministic mobile app
+claude "llmunix execute: 'Create a mobile app for fitness tracking'"
+
+# CLI + Agentic mobile app
+claude "llmunix execute: 'Create an AI workout coach mobile app'"
+```
+
 ### Research & Analysis with Flexibility
 ```python
 # Agent adjusts extraction based on content
@@ -230,32 +390,6 @@ run_agentic_follower.py \
 # - Various academic formats
 # - Multiple languages
 # - Incomplete data
-```
-
-### Conditional Workflows
-```python
-# Agent makes intelligent decisions
-run_agentic_follower.py \
-  --agent DataPipelineAgent.md \
-  --goal "Process dataset with appropriate strategy"
-
-# Reasoning:
-# "File is 50MB → I'll process in chunks"
-# "Data quality is poor → I'll apply extra validation"
-# "Format is non-standard → I'll use flexible parsing"
-```
-
-### Error Recovery
-```python
-# Agent handles failures gracefully
-run_agentic_follower.py \
-  --agent RobustProcessorAgent.md \
-  --goal "Process data files with retry logic"
-
-# Decisions:
-# "Network timeout → retry with exponential backoff"
-# "Missing file → check alternative locations"
-# "Invalid format → attempt format detection"
 ```
 
 ---
@@ -272,6 +406,16 @@ run_agentic_follower.py \
 
 **Savings**: $1,999.50 with agentic mode!
 
+### Mobile App Comparison
+
+| Type | Generation Cost | App Size | Features | Examples |
+|------|----------------|----------|----------|----------|
+| **Deterministic** | $0.50 | 5-20MB | CRUD, Charts, Offline | Habit tracker, Calculator |
+| **Agentic (Qwen)** | $0.50 | 635MB | AI reasoning, Multilingual | Personal trainer, Language tutor |
+| **Agentic (Granite)** | $0.50 | 1.54GB | Code generation, STEM | Study assistant, Code helper |
+
+**One-time generation, deploy forever!**
+
 ### Speed Comparison
 
 | Mode | Execution Time | Latency |
@@ -279,119 +423,8 @@ run_agentic_follower.py \
 | **Deterministic** | 0.01-0.1s | None |
 | **Agentic (Granite)** | 0.5-3s | Local LLM |
 | **Cloud (Claude)** | 10-30s | Network + LLM |
-
-**Agentic is 10-60x faster than cloud while maintaining flexibility!**
-
----
-
-## 🎓 Example Projects
-
-### 1. Daily Sales Analytics (Agentic Mode)
-
-**Agent Definition**: `SalesAnalyticsAgent.md`
-```markdown
----
-agent_id: sales-analytics-agent
-capabilities:
-  - read_files: [csv, xlsx, json]
-  - data_analysis: [statistics, trends, forecasting]
-  - report_generation: [markdown, charts]
-constraints:
-  - max_file_size_mb: 50
-  - date_range: last_90_days
-reasoning_guidelines: |
-  1. Detect file format and adapt parsing
-  2. Validate data quality (missing values, outliers)
-  3. Calculate key metrics (revenue, growth, trends)
-  4. If data sparse, use available data with disclaimer
-  5. Generate visual charts for trends
-  6. Create executive summary
----
-```
-
-**Daily Execution**:
-```bash
-# Handles any variation automatically
-python edge_runtime/run_agentic_follower.py \
-  --agent SalesAnalyticsAgent.md \
-  --goal "Analyze today's sales and create report" \
-  --model granite3.3:8b
-```
-
-**Granite's Reasoning**:
-- Detects file: `sales_2024_11_05.csv`
-- Checks format: CSV with 15 columns
-- Validates: 2 missing values found (flags in report)
-- Calculates: Revenue up 12% vs yesterday
-- Decides: Generate trend chart for last 7 days
-- Creates: Markdown report with insights
-
-**Result**: Adaptive analytics without reprogramming
-
----
-
-### 2. Multi-Format Data Pipeline (Agentic Mode)
-
-**Challenge**: Process customer data in various formats
-
-**Agent**: `DataPipelineAgent.md`
-```markdown
-reasoning_guidelines: |
-  1. Identify file format (CSV, JSON, Excel, XML)
-  2. Choose appropriate parser for format
-  3. Normalize data to standard schema
-  4. If format unknown, try multiple parsers
-  5. Validate against schema requirements
-  6. Transform and enrich data
-  7. Load to destination
-  8. Report processing statistics
-```
-
-**Execution**:
-```bash
-python edge_runtime/run_agentic_follower.py \
-  --agent DataPipelineAgent.md \
-  --goal "Process all files in data/input/"
-```
-
-**Granite Handles**:
-- File 1: customers.csv → Uses CSV parser
-- File 2: orders.json → Switches to JSON parser
-- File 3: products.xlsx → Uses Excel parser
-- File 4: inventory.xml → Detects XML, uses appropriate parser
-- File 5: corrupted.csv → Detects corruption, skips with warning
-
-**No hardcoding needed** - Granite reasons through each file!
-
----
-
-### 3. Intelligent Web Scraping (Agentic Mode)
-
-**Agent**: `WebScraperAgent.md`
-```markdown
-reasoning_guidelines: |
-  1. Fetch webpage with retry logic
-  2. Analyze HTML structure dynamically
-  3. If JavaScript-heavy, note in report
-  4. Extract content using flexible selectors
-  5. If rate-limited, back off exponentially
-  6. Validate extracted data quality
-  7. If quality poor, try alternative extraction
-```
-
-**Execution**:
-```bash
-python edge_runtime/run_agentic_follower.py \
-  --agent WebScraperAgent.md \
-  --goal "Scrape tech news from various sources"
-```
-
-**Granite Adapts To**:
-- Different website structures
-- Rate limiting (automatically waits)
-- Changed HTML layouts (finds content anyway)
-- Missing elements (graceful degradation)
-- Network errors (retry with backoff)
+| **Mobile App (Deterministic)** | Instant | None |
+| **Mobile App (Agentic)** | 1-2s | On-device LLM |
 
 ---
 
@@ -401,33 +434,56 @@ python edge_runtime/run_agentic_follower.py \
 llmunix/
 ├── system/
 │   ├── agents/
-│   │   ├── SystemAgent.md              # Orchestration
+│   │   ├── SystemAgent.md              # Orchestration + mobile detection
+│   │   ├── CodeGeneratorAgent.md       # 🆕 React Native generation
 │   │   └── MemoryAnalysisAgent.md      # Learning
 │   ├── tools/
+│   │   ├── MobileAppAnalyzer.md        # 🆕 Agentic vs deterministic
+│   │   ├── MobileAppBuilder.md         # 🆕 App bundling
 │   │   └── ClaudeCodeToolMap.md        # Tool integration
+│   ├── SmartLibrary.md                 # Component registry
 │   └── memory_log.md                   # Experience database
 │
 ├── edge_runtime/
 │   ├── run_follower.py                 # Deterministic execution
-│   ├── run_agentic_follower.py         # 🆕 LLM-powered execution
+│   ├── run_agentic_follower.py         # LLM-powered execution
 │   └── requirements.txt                # ollama, pyyaml
 │
 ├── projects/
-│   └── [ProjectName]/
+│   └── Project_habit_tracker_demo/     # 🆕 Demo project
+│       ├── README.md                   # Complete walkthrough
+│       ├── output/                     # CLI results
+│       │   └── requirements.md         # Requirements analysis
+│       ├── mobile_app/                 # Optional mobile app
+│       │   ├── manifest.json
+│       │   ├── src/
+│       │   └── README.md
 │       ├── components/
-│       │   ├── agents/                 # Project agents (markdown)
-│       │   │   ├── FileProcessorAgent.md
-│       │   │   ├── DataAnalyzerAgent.md
-│       │   │   └── ReportGeneratorAgent.md
-│       │   └── tools/                  # Project tools (markdown)
-│       ├── memory/
-│       │   ├── short_term/             # Execution logs
-│       │   └── long_term/              # Execution traces & agent defs
-│       ├── input/                      # Input data
-│       ├── output/                     # Generated results
-│       └── workspace/                  # Temp execution state
+│       │   ├── agents/                 # Project agents
+│       │   └── tools/                  # Project tools
+│       └── memory/
+│           ├── short_term/
+│           └── long_term/
 │
-└── .claude/agents/                     # Auto-discovered agents
+├── .claude/agents/                     # Auto-discovered agents
+└── CLAUDE.md                          # Framework documentation
+```
+
+---
+
+## 🎓 Demo Project: Habit Tracker
+
+See `projects/Project_habit_tracker_demo/README.md` for a complete walkthrough demonstrating:
+
+1. **Primary CLI workflow** - Requirements analysis, data model design, feature planning
+2. **Mobile app generation** - Complete React Native codebase generated from CLI outputs
+3. **Classification** - Deterministic (no LLM needed, 15MB total)
+4. **Deployment package** - Ready to run on iOS and Android
+
+**Try it yourself**:
+```bash
+cd projects/Project_habit_tracker_demo
+cat README.md
 ```
 
 ---
@@ -474,10 +530,6 @@ error_handling: |
   - Encryption failure: HALT and alert (critical)
   - Validation errors: Log and quarantine record
 ---
-
-# Medical Records Processor Agent
-
-You are a HIPAA-compliant medical records processor...
 ```
 
 ### Step 2: Execute with Agentic Follower
@@ -489,16 +541,6 @@ python edge_runtime/run_agentic_follower.py \
   --model granite3.3:8b \
   --base-dir projects/Project_healthcare
 ```
-
-**Granite's Reasoning**:
-1. "Agent requires encryption → I'll verify encryption first"
-2. "File is encrypted → Good, I'll decrypt and process"
-3. "Found PII in record 15 → I'll anonymize per guidelines"
-4. "Medical code format is ICD-10 → I'll extract correctly"
-5. "Data quality issue in record 42 → I'll flag and continue"
-6. "All records processed → I'll generate compliance report"
-
-**Audit Trail**: Full log of all decisions and actions
 
 ---
 
@@ -513,12 +555,6 @@ python edge_runtime/run_agentic_follower.py \
 
 **Example**: Nightly database backup
 
-```bash
-python edge_runtime/run_follower.py \
-  --trace backup_trace.md \
-  --base-dir /data
-```
-
 ---
 
 ### Choose **Agentic Mode (Granite)** When:
@@ -531,31 +567,39 @@ python edge_runtime/run_follower.py \
 
 **Example**: Daily data processing with varying formats
 
-```bash
-python edge_runtime/run_agentic_follower.py \
-  --agent DataProcessorAgent.md \
-  --goal "Process all new files" \
-  --model granite4:micro
-```
-
 ---
 
-### Choose **Learner Mode (Claude)** When:
+### Choose **Mobile App Generation** When:
 
-✅ **Novel task** (never seen before)
-✅ **Complex reasoning** required
-✅ Creating **new agent definitions**
-✅ **Quality > cost**
+✅ Need **edge deployment** (iOS/Android)
+✅ Want **offline mobile intelligence**
+✅ Building **personal/local apps**
+✅ Privacy-first requirements (no cloud dependency)
 
-**Example**: Design new workflow
-
-```bash
-claude "llmunix execute: 'Create agent for processing satellite imagery'"
-```
+**Deterministic Apps**: Habit trackers, calculators, dashboards, CRUD apps
+**Agentic Apps**: Personal trainers, study assistants, conversational apps
 
 ---
 
 ## 🚀 Advanced Features
+
+### Mobile App Model Selection
+
+**Qwen3-0.6B-INT4 (Primary Choice)**:
+- **Use When**: General agentic apps, conversational AI, multilingual
+- **Size**: 600MB
+- **Quality**: 52.81 MMLU
+- **Speed**: 50-150 tokens/sec (CPU), 200-500 tokens/sec (NPU)
+- **License**: Apache 2.0
+
+**Granite 4.0 H-1B-INT4 (Alternative)**:
+- **Use When**: Code generation, structured output, STEM education
+- **Size**: 1.5GB
+- **Quality**: 73.0 HumanEval, 82.37 IFEval
+- **Speed**: 30-80 tokens/sec (CPU)
+- **License**: Apache 2.0
+
+**Selection automatically handled by MobileAppAnalyzer**
 
 ### Hybrid Workflows
 
@@ -573,6 +617,9 @@ python run_agentic_follower.py \
 # 3. Deterministic mode for known formats (batch)
 python run_follower.py \
   --trace standard_invoice_trace.md
+
+# 4. Mobile app for field workers
+claude "Create a mobile app for invoice scanning and processing"
 ```
 
 ### Multi-Model Strategy
@@ -586,24 +633,8 @@ python run_follower.py \
 
 # Maximum quality: Claude (cloud, expensive)
 claude "llmunix execute: ..."
-```
 
-### Edge Deployment
-
-```bash
-# Package for edge device
-tar -czf llmunix_edge.tar.gz \
-  edge_runtime/ \
-  projects/Project_myapp/components/agents/ \
-  .ollama/models/granite4:micro
-
-# Deploy to edge
-scp llmunix_edge.tar.gz device:/opt/llmunix/
-
-# Run on edge (completely offline!)
-python run_agentic_follower.py \
-  --agent MyAgent.md \
-  --goal "Process local data"
+# Mobile agentic: Qwen 0.5b or Granite 4.0 H-1B (automatic selection)
 ```
 
 ---
@@ -634,50 +665,21 @@ curl -fsSL https://ollama.ai/install.sh | sh
 ollama pull granite4:micro      # 2.1 GB - Simple tasks
 ollama pull granite3.3:8b       # 4.9 GB - Complex tasks
 
-# 6. Verify installation
+# 6. For mobile app generation (optional)
+ollama pull qwen2.5:0.5b        # 600MB - Mobile agentic apps
+
+# 7. Verify installation
 python run_agentic_follower.py --help
 ```
 
-### Minimal Setup (Agentic Only)
-
-```bash
-pip install ollama pyyaml
-ollama pull granite4:micro
-```
-
 ---
 
-## 🔧 Configuration
+## 📖 Complete Documentation
 
-### Environment Variables
-
-```bash
-# .env file
-OLLAMA_HOST=http://localhost:11434   # Local Ollama
-GRANITE_MODEL=granite4:micro          # Default model
-BASE_DIR=/path/to/projects            # Projects directory
-```
-
-### Agent Configuration
-
-Each agent can specify:
-- **Capabilities**: What tools are available
-- **Constraints**: Size limits, format restrictions
-- **Reasoning Guidelines**: How to approach problems
-- **Error Handling**: Recovery strategies
-- **Examples**: Successful patterns
-
----
-
-## 📖 Complete Examples
-
-See `EXAMPLES.md` for comprehensive examples including:
-
-1. **Basic Agentic Test** - File processing with Granite
-2. **Adaptive Data Pipeline** - Handle format variations
-3. **Intelligent Research** - Content extraction with flexibility
-4. **Multi-Agent Orchestration** - Complex workflows
-5. **Error Recovery Patterns** - Robust execution
+- **CLAUDE.md** - Complete framework documentation with mobile app generation workflow
+- **EXAMPLES.md** - Comprehensive examples for all modes
+- **projects/Project_habit_tracker_demo/README.md** - Mobile app generation walkthrough
+- **system/SmartLibrary.md** - Complete component registry
 
 ---
 
@@ -689,6 +691,7 @@ See `EXAMPLES.md` for comprehensive examples including:
 - ❌ No edge deployment
 - ❌ Privacy concerns (data leaves premises)
 - ❌ Can't adapt without reprogramming
+- ❌ No mobile app generation
 
 ### LLMunix Advantages
 - ✅ **$0 per execution** (after setup)
@@ -696,27 +699,33 @@ See `EXAMPLES.md` for comprehensive examples including:
 - ✅ **Adapts to variations** (agentic reasoning)
 - ✅ **Privacy-preserving** (all local)
 - ✅ **Learn once, execute infinitely**
+- ✅ **Generate mobile apps on-demand** (NEW!)
+- ✅ **90% deterministic optimization** (small, fast apps)
+- ✅ **10% agentic intelligence** (when AI is needed)
 
-### The Sweet Spot: Agentic Mode
+### The Sweet Spot: Agentic Mode + Mobile
 
 ```
 Deterministic: Fast but inflexible
      ↓ (add reasoning)
 Agentic: Fast AND flexible
+     ↓ (add mobile deployment)
+Mobile: Edge intelligence with offline capability
      ↓ (add power)
 Cloud: Flexible but expensive
 ```
 
 **Agentic mode gives you 80% of cloud flexibility at 0% of the cost!**
+**Mobile generation deploys that intelligence to edge devices!**
 
 ---
 
 ## 🤔 Getting Help
 
 - **Documentation**: See `EXAMPLES.md`, `CLAUDE.md`
+- **Mobile App Demo**: Check `projects/Project_habit_tracker_demo/`
 - **Issues**: [GitHub Issues](https://github.com/EvolvingAgentsLabs/llmunix/issues)
-- **Examples**: Check `projects/` folder
-- **Architecture**: See validation reports in `projects/Project_*_verification/`
+- **Research**: See `system/SmartLibrary.md` for model selection details
 
 ---
 
@@ -734,11 +743,13 @@ Apache License 2.0 - see LICENSE file for details
 2. **Low-cost flexible execution** (with Granite)
 3. **Zero marginal cost** (local Ollama)
 4. **True edge intelligence** (offline capable)
+5. **Mobile app generation** (React Native + on-device LLMs) 🆕
+6. **Intelligent app classification** (90% lightweight, 10% AI-powered) 🆕
 
-**Result**: Intelligent, adaptive AI at commodity hardware costs.
+**Result**: Intelligent, adaptive AI at commodity hardware costs, now deployable to mobile devices.
 
 ---
 
 *Built with ❤️ by [Evolving Agents Labs](https://evolvingagentslabs.github.io)*
 
-**Start building intelligent edge AI today!**
+**Start building intelligent edge AI today - from CLI to mobile!**

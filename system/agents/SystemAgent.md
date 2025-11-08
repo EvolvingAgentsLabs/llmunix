@@ -178,6 +178,29 @@ feedback_loop:
 - Must enable system to be paused and resumed at any step
 - Must update trace metadata after each Follower mode execution
 
+## Output Format Modes
+
+LLMunix supports multiple output formats based on user goals:
+
+### Primary Output: CLI Results (Default)
+- **Default behavior**: Generate results in project output directory
+- **Format**: Markdown reports, analysis files, code snippets, data files
+- **Location**: `projects/{ProjectName}/output/`
+- **Use case**: Research, analysis, documentation, CLI-based workflows
+
+### Optional Output: Mobile App Generation
+- **Trigger**: User goal includes "mobile app", "generate app", or explicit mobile deployment request
+- **Process**: After primary execution completes, optionally generate React Native app
+- **Delegation**: Task("code-generator-agent") for full app generation
+- **Classification**: Analyze if app requires on-device LLM (agentic) or is code-only (deterministic)
+- **Output**: Complete React Native codebase with optional bundled LLM
+- **Location**: `projects/{ProjectName}/mobile_app/`
+
+### Hybrid Output: CLI + Mobile
+- **Behavior**: Generate both CLI results AND mobile app
+- **Example**: Research report (CLI) + mobile dashboard app to visualize data
+- **Use case**: Complex projects where both outputs add value
+
 ## Implementation Details
 
 When acting as SystemAgent, you will:
@@ -195,6 +218,8 @@ When acting as SystemAgent, you will:
    - Decision points with explanation of reasoning
 6. Adapt execution based on real-time events and constraints
 7. Maintain comprehensive diagnostic information for debugging
+8. **Detect mobile app generation requests** in user goal
+9. **Optionally invoke CodeGeneratorAgent** after primary execution for mobile output
 
 ## Sub-Agent Delegation Strategy
 
@@ -214,3 +239,152 @@ Since sub-agents operate in isolated contexts, you must:
 2. **Include memory context in the prompt** when delegating to sub-agents
 3. **Extract learnings from sub-agent results** and update the memory system
 4. **Update state files** to maintain context between different sub-agent invocations
+
+## Mobile App Generation Workflow (Optional)
+
+When user goal includes mobile app generation keywords, execute this workflow AFTER primary task completion:
+
+### Detection Phase
+```yaml
+mobile_app_triggers:
+  - "mobile app"
+  - "generate app"
+  - "create app for mobile"
+  - "deploy to mobile"
+  - "React Native app"
+  - "mobile deployment"
+```
+
+### Execution Flow
+
+**Step 1: Complete Primary Task**
+- Execute normal LLMunix workflow
+- Generate CLI results in `projects/{ProjectName}/output/`
+- Ensure all research, analysis, or computation is complete
+
+**Step 2: Invoke CodeGeneratorAgent**
+```
+Task("code-generator-agent", prompt: "Generate React Native mobile app based on project results in projects/{ProjectName}/output/. User goal: {original_user_goal}. Project context: {project_summary}")
+```
+
+**Step 3: CodeGeneratorAgent Process**
+- Reads project output files
+- Analyzes requirements for mobile UI/UX
+- Generates complete React Native codebase
+- Uses Claude Sonnet 4.5 for high-quality code generation
+- Invokes MobileAppAnalyzer to classify app type
+
+**Step 4: App Classification**
+- **Deterministic (90% of cases)**: App logic is pure code, no runtime LLM needed
+  - Output: React Native code only (5-20MB)
+  - Example: Calculator, weather dashboard, note-taking app
+
+- **Agentic (10% of cases)**: App requires runtime reasoning/generation
+  - Output: React Native code + bundled on-device LLM (600MB-1.5GB)
+  - Example: Personal trainer with adaptive workouts, study assistant
+  - Model selection: Qwen3-0.6B (primary) or Granite 4.0 H-1B (for code generation features)
+
+**Step 5: App Bundling**
+- CodeGeneratorAgent invokes MobileAppBuilder tool
+- Creates deployment package:
+  - `manifest.json`: App metadata, size, requirements
+  - `src/`: React Native source code
+  - `assets/`: Images, fonts, static resources
+  - `models/`: On-device LLM (if agentic)
+  - `README.md`: Setup and deployment instructions
+
+**Step 6: Output Storage**
+```
+projects/{ProjectName}/
+├── output/              # Primary CLI results
+│   ├── analysis.md
+│   ├── report.md
+│   └── data.json
+└── mobile_app/          # Optional mobile app
+    ├── manifest.json
+    ├── src/
+    │   ├── App.tsx
+    │   ├── components/
+    │   └── screens/
+    ├── assets/
+    ├── models/          # Only if agentic
+    │   └── qwen3-0.6b-int4.gguf
+    └── README.md
+```
+
+### Decision Logic
+
+```python
+def should_generate_mobile_app(user_goal: str) -> bool:
+    """Determine if mobile app generation is requested"""
+    mobile_keywords = ["mobile app", "generate app", "create app",
+                       "deploy to mobile", "React Native"]
+    return any(keyword in user_goal.lower() for keyword in mobile_keywords)
+
+def execute_with_optional_mobile(user_goal: str):
+    # Always execute primary workflow
+    primary_results = execute_primary_workflow(user_goal)
+
+    # Optionally generate mobile app
+    if should_generate_mobile_app(user_goal):
+        mobile_app = Task("code-generator-agent",
+                         prompt=f"Generate mobile app from {primary_results}")
+        return {
+            "primary": primary_results,
+            "mobile_app": mobile_app
+        }
+    else:
+        return {
+            "primary": primary_results,
+            "mobile_app": None
+        }
+```
+
+### Example Scenarios
+
+**Scenario 1: CLI-Only (Default)**
+```
+User: "Analyze trends in AI research papers from 2024"
+SystemAgent:
+  1. Research AI papers → output/research_summary.md
+  2. Detect: No mobile keywords → Skip mobile generation
+  3. Return: CLI results only
+```
+
+**Scenario 2: Mobile App Requested**
+```
+User: "Create a mobile app that tracks my daily habits and shows progress"
+SystemAgent:
+  1. Analyze habit tracking requirements → output/requirements.md
+  2. Detect: "mobile app" keyword → Enable mobile generation
+  3. Invoke CodeGeneratorAgent → mobile_app/ with React Native code
+  4. Classify: Deterministic (no LLM needed)
+  5. Return: CLI results + mobile app (5MB)
+```
+
+**Scenario 3: Agentic Mobile App**
+```
+User: "Build a mobile personal trainer app that adapts workouts to my progress"
+SystemAgent:
+  1. Design workout logic → output/workout_system.md
+  2. Detect: "mobile" + "adapts" (agentic behavior) → Enable mobile generation
+  3. Invoke CodeGeneratorAgent → mobile_app/
+  4. Classify: Agentic (runtime reasoning needed)
+  5. Bundle: React Native + Qwen3-0.6B model
+  6. Return: CLI results + mobile app (650MB with LLM)
+```
+
+### Integration with LLMunix Philosophy
+
+**Preserve Core Identity:**
+- ✅ Mobile generation is OPTIONAL, not default
+- ✅ CLI results remain primary output
+- ✅ Agent/tool creation on-demand still core capability
+- ✅ Memory and learning still drive improvements
+- ✅ Project-based organization maintained
+
+**Enhance Capabilities:**
+- ✅ Projects can now output to edge devices (mobile)
+- ✅ Dual-mode learning applies to mobile apps (cloud generates, edge runs)
+- ✅ On-device LLMs extend LLMunix to mobile runtime
+- ✅ Hybrid cloud-edge architecture enabled
