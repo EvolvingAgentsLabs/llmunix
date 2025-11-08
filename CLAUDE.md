@@ -618,4 +618,162 @@ Then run `source ~/.profile` to apply changes.
 - **Constraint-Aware Execution**: Every action considers current behavioral modifiers
 - **Real-time Adaptation**: Behavioral constraints update during execution based on events
 - **Sentiment-Driven Recovery**: Error handling strategies adapt to user emotional state
+- **Learning Integration**: Every execution contributes to behavioral pattern database- **Constraint-Aware Execution**: Every action considers current behavioral modifiers
+- **Real-time Adaptation**: Behavioral constraints update during execution based on events
+- **Sentiment-Driven Recovery**: Error handling strategies adapt to user emotional state
 - **Learning Integration**: Every execution contributes to behavioral pattern database
+
+## Mobile App Generation (Optional Output Format)
+
+**IMPORTANT: LLMunix's core identity is a CLI-based agent/tool creation OS. Mobile app generation is an OPTIONAL output format, not the primary goal.**
+
+### Core Philosophy
+
+- **Primary Output**: CLI results in `projects/{ProjectName}/output/` (reports, analysis, data files)
+- **Optional Output**: Mobile app in `projects/{ProjectName}/mobile_app/` (React Native codebase)
+- **Trigger**: User explicitly requests mobile app with keywords like "mobile app", "generate app", etc.
+
+### Mobile App Generation Workflow
+
+When user goal includes mobile app keywords, SystemAgent executes this workflow **AFTER** primary CLI execution:
+
+```
+User Request: "Create a mobile app for habit tracking"
+    ↓
+1. SystemAgent detects "mobile app" keyword
+    ↓
+2. SystemAgent executes primary workflow
+   - Analyze habit tracking requirements
+   - Design data model and features
+   - Generate CLI outputs in output/
+    ↓
+3. SystemAgent invokes CodeGeneratorAgent
+   - Reads project output/ files
+   - Generates complete React Native codebase
+   - Uses Claude Sonnet 4.5 for high-quality code
+    ↓
+4. CodeGeneratorAgent invokes MobileAppAnalyzer
+   - Analyzes app requirements
+   - Classifies as agentic (LLM needed) or deterministic (code-only)
+   - Recommends model: Qwen3-0.6B, Granite 4.0 H-1B, or none
+    ↓
+5. CodeGeneratorAgent invokes MobileAppBuilder
+   - Creates deployment package
+   - Bundles LLM model (if agentic)
+   - Generates manifest, package.json, README.md
+    ↓
+6. Output: Complete mobile app in mobile_app/
+   - Deterministic: 5-20MB (code only)
+   - Agentic: 600MB-1.5GB (code + LLM)
+```
+
+### App Classification: Agentic vs Deterministic
+
+**Deterministic Apps (90% of cases) - No LLM Required:**
+- Rule-based logic (if-then, calculations, CRUD)
+- Data visualization and charts
+- No natural language understanding needed
+- Examples: Habit tracker, calculator, news reader, to-do list
+- **Size**: 5-20MB (code + assets only)
+- **Performance**: Instant responses, no LLM latency
+
+**Agentic Apps (10% of cases) - LLM Required:**
+- Natural language understanding/generation
+- Adaptive behavior based on user patterns
+- Content creation (text, code, recommendations)
+- Examples: Personal trainer, study assistant, code helper
+- **Size**: 600MB-1.5GB (code + on-device LLM)
+- **Performance**: 1-2s latency for AI features
+
+### Model Selection (For Agentic Apps)
+
+Based on comprehensive research (see `projects/Project_on_device_wabi_analysis/output/granite_qwen_comparison.md`):
+
+**Qwen3-0.6B-INT4 (Primary Choice):**
+- **Use When**: General agentic apps, conversational AI, multilingual support
+- **Size**: 600MB
+- **Quality**: 52.81 MMLU
+- **Speed**: 50-150 tokens/sec (CPU), 200-500 tokens/sec (NPU)
+- **Strengths**: Proven ecosystem, 100+ languages, balanced quality/size
+- **License**: Apache 2.0
+
+**Granite 4.0 H-1B-INT4 (Alternative):**
+- **Use When**: Code generation, structured output, instruction following
+- **Size**: 1.5GB
+- **Quality**: 73.0 HumanEval, 82.37 IFEval
+- **Speed**: 30-80 tokens/sec (CPU), 100-300 tokens/sec (NPU)
+- **Strengths**: Superior code generation, instruction following
+- **License**: Apache 2.0
+
+**None (Deterministic):**
+- **Use When**: 90% of apps (rule-based logic, no AI needed)
+- **Size**: 0MB (code only)
+- **Speed**: Instant
+
+### Example Commands
+
+**CLI-Only (Default Behavior):**
+```bash
+llmunix execute: "Analyze trends in AI research papers from 2024"
+# Output: projects/Project_ai_trends/output/analysis.md (CLI only)
+```
+
+**Mobile App Generation:**
+```bash
+llmunix execute: "Create a mobile app for tracking daily habits"
+# Output:
+#   - projects/Project_habit_tracker/output/requirements.md (CLI)
+#   - projects/Project_habit_tracker/mobile_app/ (React Native app, 15MB)
+```
+
+**Agentic Mobile App:**
+```bash
+llmunix execute: "Build a mobile personal trainer app that adapts workouts to my progress"
+# Output:
+#   - projects/Project_personal_trainer/output/design.md (CLI)
+#   - projects/Project_personal_trainer/mobile_app/ (React Native app + Qwen3-0.6B, 635MB)
+```
+
+### Example Project
+
+See `projects/Project_habit_tracker_demo/` for a complete example demonstrating:
+1. Primary CLI workflow (requirements analysis, data model, features)
+2. Mobile app generation from CLI outputs
+3. Classification as deterministic (no LLM needed)
+4. Complete React Native deployment package
+
+### Key Components
+
+**System Agents:**
+- **SystemAgent**: Detects mobile keywords, orchestrates workflow
+- **CodeGeneratorAgent**: Generates React Native code from project outputs
+
+**System Tools:**
+- **MobileAppAnalyzer**: Classifies apps as agentic vs deterministic
+- **MobileAppBuilder**: Bundles deployment package with optional LLM
+
+See `system/SmartLibrary.md` for complete component registry.
+
+### Integration with LLMunix Philosophy
+
+**Preserves Core Identity:**
+- ✅ Mobile generation is OPTIONAL, not default
+- ✅ CLI results remain primary output
+- ✅ Agent/tool creation on-demand still core capability
+- ✅ Memory and learning still drive improvements
+- ✅ Project-based organization maintained
+- ✅ Pure markdown framework (agents/tools as markdown specs)
+
+**Enhances Capabilities:**
+- ✅ Projects can now output to edge devices (mobile)
+- ✅ Dual-mode learning applies (cloud generates, edge runs)
+- ✅ On-device LLMs extend LLMunix to mobile runtime
+- ✅ Hybrid cloud-edge architecture enabled
+- ✅ 90% deterministic optimization (small apps)
+
+### Research and Analysis
+
+Comprehensive research documents available in:
+- `projects/Project_on_device_wabi_analysis/output/granite_qwen_comparison.md` - Model selection (950 lines)
+- `projects/Project_on_device_wabi_analysis/output/CODE_GENERATION_ARCHITECTURE.md` - Architecture design
+- `projects/Project_on_device_wabi_analysis/output/EXECUTIVE_SUMMARY.md` - Complete analysis summary
