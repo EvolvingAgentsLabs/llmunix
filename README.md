@@ -449,21 +449,20 @@ llmunix/
 │   ├── run_agentic_follower.py         # LLM-powered execution
 │   └── requirements.txt                # ollama, pyyaml
 │
-├── projects/
-│   └── Project_habit_tracker_demo/     # 🆕 Demo project
-│       ├── README.md                   # Complete walkthrough
+├── projects/                           # Your projects created here
+│   └── [Auto-created on execution]     # Projects created dynamically
+│       ├── components/
+│       │   ├── agents/                 # Project agents
+│       │   └── tools/                  # Project tools
+│       ├── input/                      # Input documents
 │       ├── output/                     # CLI results
-│       │   └── requirements.md         # Requirements analysis
 │       ├── mobile_app/                 # Optional mobile app
 │       │   ├── manifest.json
 │       │   ├── src/
 │       │   └── README.md
-│       ├── components/
-│       │   ├── agents/                 # Project agents
-│       │   └── tools/                  # Project tools
 │       └── memory/
-│           ├── short_term/
-│           └── long_term/
+│           ├── short_term/             # High-frequency memory
+│           └── long_term/              # Consolidated patterns
 │
 ├── .claude/agents/                     # Auto-discovered agents
 └── CLAUDE.md                          # Framework documentation
@@ -471,20 +470,21 @@ llmunix/
 
 ---
 
-## 🎓 Demo Project: Habit Tracker
+## 🎓 Example: Create Your First Project
 
-See `projects/Project_habit_tracker_demo/README.md` for a complete walkthrough demonstrating:
+Generate a complete project with mobile app in one command:
 
-1. **Primary CLI workflow** - Requirements analysis, data model design, feature planning
-2. **Mobile app generation** - Complete React Native codebase generated from CLI outputs
-3. **Classification** - Deterministic (no LLM needed, 15MB total)
-4. **Deployment package** - Ready to run on iOS and Android
-
-**Try it yourself**:
 ```bash
-cd projects/Project_habit_tracker_demo
-cat README.md
+claude --dangerously-skip-permissions "llmunix execute: 'Create a mobile app for tracking daily habits'"
 ```
+
+**What happens**:
+1. **Project created**: `projects/Project_habit_tracker/`
+2. **CLI workflow**: Requirements analysis, data model, features → `output/`
+3. **Mobile app**: Complete React Native codebase → `mobile_app/`
+4. **Classification**: Deterministic (no LLM, 15MB) or Agentic (with LLM, 600MB+)
+
+**Result**: Production-ready mobile app from a single command!
 
 ---
 
@@ -676,10 +676,10 @@ python run_agentic_follower.py --help
 
 ## 📖 Complete Documentation
 
-- **CLAUDE.md** - Complete framework documentation with mobile app generation workflow
+- **CLAUDE.md** - Complete framework documentation with Continuum Memory System and mobile app generation
 - **EXAMPLES.md** - Comprehensive examples for all modes
-- **projects/Project_habit_tracker_demo/README.md** - Mobile app generation walkthrough
 - **system/SmartLibrary.md** - Complete component registry
+- **system/infrastructure/memory_schema.md** - Nested Learning-based memory architecture
 
 ---
 
@@ -723,9 +723,9 @@ Cloud: Flexible but expensive
 ## 🤔 Getting Help
 
 - **Documentation**: See `EXAMPLES.md`, `CLAUDE.md`
-- **Mobile App Demo**: Check `projects/Project_habit_tracker_demo/`
 - **Issues**: [GitHub Issues](https://github.com/EvolvingAgentsLabs/llmunix/issues)
 - **Research**: See `system/SmartLibrary.md` for model selection details
+- **Memory System**: See `system/infrastructure/memory_schema.md` for CMS architecture
 
 ---
 

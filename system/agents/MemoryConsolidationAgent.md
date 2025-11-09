@@ -3,16 +3,18 @@ agent_name: memory-consolidation-agent
 type: memory_analysis
 category: system_intelligence
 mode: [EXECUTION, SIMULATION]
-description: Transforms agent communication traces into consolidated learning patterns and persistent knowledge
+description: Transforms agent communication traces into consolidated learning patterns using Continuum Memory System principles
 tools: [Read, Write, Grep, Bash]
-version: "1.0"
+version: "2.0"
 status: production
+memory_system: continuum_memory_system
+frequency_aware: true
 ---
 
 # MemoryConsolidationAgent
 
 ## Purpose
-Analyzes completed agent communication sessions to extract learnings, identify patterns, and consolidate insights into long-term memory. This agent transforms raw volatile traces into structured, queryable knowledge that improves future agent collaboration.
+Analyzes completed agent communication sessions to extract learnings, identify patterns, and consolidate insights using Continuum Memory System (CMS) principles. This agent manages memory transitions across frequency tiers (high→mid→low) based on confidence, usage patterns, and validation, implementing the theoretical framework from Nested Learning research.
 
 ## Core Capabilities
 
@@ -296,9 +298,247 @@ cost_optimization:
     factors: ["session_novelty", "pattern_uncertainty", "strategic_importance"]
 ```
 
+## Continuum Memory System Integration
+
+### Frequency-Aware Consolidation
+
+The MemoryConsolidationAgent operates as a frequency-aware memory manager, implementing the Continuum Memory System's multi-tier architecture:
+
+**Core Responsibilities**:
+1. Analyze high-frequency memory (short_term logs)
+2. Determine consolidation eligibility based on CMS schema
+3. Create mid-frequency memory (execution traces) when appropriate
+4. Monitor mid-frequency memory for low-frequency promotion
+5. Update memory metadata (frequency_history, confidence, usage patterns)
+
+### Memory Tier Transition Logic
+
+#### High→Mid Frequency Consolidation
+
+**Trigger Conditions**:
+```yaml
+consolidation_criteria:
+  execution_success: true
+  confidence_score: >= 0.75
+  pattern_completeness: true
+  reproducibility: validated
+```
+
+**Process**:
+1. **Read Schema**: Load `system/infrastructure/memory_schema.md` for CMS standards
+2. **Analyze Short-Term Logs**: Extract successful execution patterns
+3. **Calculate Confidence**: Based on execution quality, completeness, error-free execution
+4. **Generate Execution Trace**: Create deterministic workflow with YAML frontmatter
+5. **Set Mid-Frequency Metadata**:
+   ```yaml
+   memory_frequency: mid
+   volatility: medium
+   confidence_score: [calculated]
+   consolidation_threshold: 0.95
+   frequency_history: ["high", "mid"]
+   transition_timestamps: [created, consolidated]
+   ```
+6. **Write to Long-Term Memory**: Save to `memory/long_term/execution_trace_{name}_v1.0.md`
+
+**Validation Checks**:
+- Complete tool call sequence present
+- Success indicators validated
+- No critical errors during execution
+- Pattern can be reproduced deterministically
+
+#### Mid→Low Frequency Promotion
+
+**Trigger Conditions**:
+```yaml
+promotion_criteria:
+  usage_count: >= 20
+  success_rate: >= 0.95
+  confidence_score: >= 0.95
+  cross_context_validation: true
+```
+
+**Process**:
+1. **Monitor Mid-Frequency Memory**: Track usage_count and success_rate in metadata
+2. **Validate Cross-Project Applicability**: Verify pattern works in different contexts
+3. **Calculate Promotion Confidence**: Based on consistent success across uses
+4. **Elevate to System Memory**: Add to `system/memory_log.md` or `project_learnings.md`
+5. **Update SmartLibrary**: Register as reusable system component
+6. **Set Low-Frequency Metadata**:
+   ```yaml
+   memory_frequency: low
+   volatility: low
+   confidence_score: 0.96
+   frequency_history: ["high", "mid", "low"]
+   cross_project_validated: true
+   ```
+
+**Quality Thresholds**:
+- Minimum 20 successful applications
+- At least 95% success rate
+- Validated in 3+ different contexts
+- High confidence (≥0.95) maintained
+
+#### Low→Ultra-Low Frequency (Core System)
+
+**Trigger Conditions**:
+```yaml
+core_system_criteria:
+  usage_count: >= 100
+  success_rate: >= 0.99
+  confidence_score: >= 0.99
+  cross_project_validated: true
+  fundamental_capability: true
+```
+
+**Process**:
+1. **Manual Review Trigger**: Flag for ContinuumMemoryAgent review
+2. **System-Wide Impact Assessment**: Evaluate as core capability
+3. **Create Core Component**: Generate permanent agent/tool definition
+4. **Add to SmartLibrary**: Mark as system_core_component
+5. **Set Ultra-Low Frequency Metadata**:
+   ```yaml
+   memory_frequency: ultra-low
+   volatility: low
+   retention_policy: permanent
+   system_core_component: true
+   ```
+
+**Rare Promotion**: Only truly fundamental, near-perfect patterns reach this tier
+
+### Metadata Update Responsibilities
+
+After each memory operation, MemoryConsolidationAgent updates:
+
+**Usage Tracking**:
+```yaml
+usage_count: [increment on each use]
+last_accessed: [update timestamp]
+success_rate: [recalculate based on outcomes]
+```
+
+**Frequency Transitions**:
+```yaml
+frequency_history: [append new tier]
+transition_timestamps: [append transition time]
+consolidation_log: "[reason for transition]"
+```
+
+**Confidence Evolution**:
+```python
+def update_confidence(current_confidence, new_outcome, usage_count):
+    """Update confidence using exponential moving average"""
+    if new_outcome == 'success':
+        # Asymptotic increase toward 1.0
+        delta = (1.0 - current_confidence) * 0.1 / sqrt(usage_count)
+        return min(1.0, current_confidence + delta)
+    else:
+        # Significant decrease on failure
+        return current_confidence * 0.85
+```
+
+### Consolidation Pipeline (Enhanced with CMS)
+
+```yaml
+enhanced_pipeline_stages:
+  1_frequency_assessment:
+    description: "Determine current memory tier and eligibility for transition"
+    inputs: ["memory files with YAML frontmatter"]
+    outputs: ["tier classification", "transition readiness"]
+
+  2_pattern_extraction:
+    description: "Mine patterns with frequency-aware confidence scoring"
+    inputs: ["high-frequency logs"]
+    outputs: ["patterns with CMS metadata", "confidence scores"]
+
+  3_tier_transition:
+    description: "Execute high→mid or mid→low transitions"
+    inputs: ["eligible patterns", "CMS schema"]
+    outputs: ["promoted memory files", "updated metadata"]
+
+  4_metadata_update:
+    description: "Update all memory metadata post-consolidation"
+    inputs: ["transition results"]
+    outputs: ["frequency_history", "usage_count", "confidence_score"]
+
+  5_pruning_evaluation:
+    description: "Identify low-performing memories for archival/downgrade"
+    inputs: ["success_rate", "usage_count", "age"]
+    outputs: ["prune list", "downgrade recommendations"]
+```
+
+### Memory Quality Assessment (CMS-Enhanced)
+
+```yaml
+quality_dimensions:
+  confidence_score:
+    calculation: "Execution quality × Pattern completeness × Validation success"
+    range: 0.0-1.0
+    consolidation_threshold: 0.75 (high→mid), 0.95 (mid→low)
+
+  success_rate:
+    calculation: "Successful uses / Total uses"
+    range: 0.0-1.0
+    promotion_threshold: 0.95
+
+  usage_count:
+    tracking: "Incremented on each QueryMemoryTool access"
+    promotion_threshold: 20 (mid→low), 100 (low→ultra-low)
+
+  validation_count:
+    tracking: "Cross-context validations"
+    minimum: 3 for cross_project_validated flag
+
+  volatility:
+    assessment: "Based on frequency tier and consistency"
+    values: high (tier: high), medium (tier: mid), low (tier: low/ultra-low)
+```
+
+### Pruning and Downgrade Logic
+
+**Memory Archival (High-Frequency)**:
+```yaml
+archive_rules:
+  condition: age > 30 days AND not_consolidated
+  action: move to archive/short_term_archive/
+  retention: 90 days in archive, then delete
+```
+
+**Memory Downgrade (Mid-Frequency)**:
+```yaml
+downgrade_rules:
+  condition: success_rate < 0.70 OR (usage_count < 5 AND age > 60 days)
+  action: lower confidence_score, flag for review
+  review: Manual decision on deletion vs. refinement
+```
+
+**Memory Flagging (Low-Frequency)**:
+```yaml
+flag_rules:
+  condition: success_rate < 0.85 after new validation
+  action: flag for manual review
+  outcome: Keep with caveat note OR demote to mid-frequency
+```
+
+### Integration with Other Memory Components
+
+**QueryMemoryTool Interaction**:
+- Provides frequency-aware search results
+- Returns confidence_score for ranking
+- Surfaces usage_count and success_rate for trust assessment
+
+**ContinuumMemoryAgent Coordination**:
+- Reports consolidation status and metrics
+- Receives guidance on system-wide memory management
+- Executes tier transitions under ContinuumMemoryAgent orchestration
+
+**MemoryAnalysisAgent Collaboration**:
+- Shares pattern analysis for planning optimization
+- Provides metadata for memory-informed decision-making
+- Collaborates on cross-project pattern recognition
+
 ## Usage Examples
 
-### Session Consolidation Request
+### Session Consolidation Request (CMS-Enhanced)
 ```yaml
 consolidation_request:
   project: "Project_aorta"

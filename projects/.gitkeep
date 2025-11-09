@@ -1,0 +1,25 @@
+# Projects Directory
+
+This directory will contain your LLMunix projects, each with its own:
+- components/ (agents and tools)
+- input/ (source documents)
+- output/ (generated results)
+- memory/ (short_term and long_term learning)
+- workspace/ (execution state)
+
+Projects are created automatically when you execute goals with LLMunix.
+
+Example project structure:
+```
+projects/Project_example/
+├── components/
+│   ├── agents/          # Project-specific agents
+│   └── tools/           # Project-specific tools
+├── input/               # Input documents
+├── output/              # Generated outputs
+├── memory/              # Learning and memory
+│   ├── short_term/      # High-frequency memory
+│   └── long_term/       # Consolidated patterns
+└── workspace/           # Execution state
+    └── state/           # Plan, context, variables, etc.
+```

@@ -618,10 +618,157 @@ Then run `source ~/.profile` to apply changes.
 - **Constraint-Aware Execution**: Every action considers current behavioral modifiers
 - **Real-time Adaptation**: Behavioral constraints update during execution based on events
 - **Sentiment-Driven Recovery**: Error handling strategies adapt to user emotional state
-- **Learning Integration**: Every execution contributes to behavioral pattern database- **Constraint-Aware Execution**: Every action considers current behavioral modifiers
-- **Real-time Adaptation**: Behavioral constraints update during execution based on events
-- **Sentiment-Driven Recovery**: Error handling strategies adapt to user emotional state
 - **Learning Integration**: Every execution contributes to behavioral pattern database
+
+## Theoretical Foundation: Continuum Memory System
+
+**LLMunix implements a practical Continuum Memory System (CMS) inspired by cutting-edge research in Nested Learning.**
+
+### Nested Learning Concepts
+
+LLMunix's memory architecture maps directly to the theoretical framework from Google's "Nested Learning" research:
+
+**Core Principles:**
+- **Multi-Frequency Memory**: Different memory tiers update at different rates, like brain waves (gamma, beta, alpha)
+- **Associative Memory**: Memory as key-value mapping (M: K→V) where keys are goal signatures and values are execution traces
+- **Hierarchical Optimization**: Each memory tier has its own "context flow" and update frequency
+- **Continual Learning**: System improves through experience without catastrophic forgetting
+
+### CMS Implementation in LLMunix
+
+| Memory Tier | Frequency | Update Rate | Purpose | Implementation |
+|-------------|-----------|-------------|---------|----------------|
+| **High-Frequency** | Gamma (30-100 Hz analogue) | Every execution | Immediate context, working memory | `workspace/state/` and `memory/short_term/` |
+| **Mid-Frequency** | Beta (12-30 Hz analogue) | After successful runs | Validated patterns, execution traces | `memory/long_term/execution_trace_*.md` |
+| **Low-Frequency** | Alpha (8-12 Hz analogue) | Periodic consolidation | Stable knowledge, best practices | `system/memory_log.md`, `project_learnings.md` |
+| **Ultra-Low-Frequency** | Delta (0.5-4 Hz analogue) | Rare updates | Core patterns, system identity | `SmartLibrary.md`, user profiles |
+
+### Memory Frequency Metadata
+
+All memory files include frequency/volatility tags in YAML frontmatter:
+
+```yaml
+---
+memory_frequency: high|mid|low|ultra-low
+volatility: high|medium|low
+update_trigger: execution|success|consolidation|manual
+retention_policy: volatile|temporary|persistent|permanent
+consolidation_threshold: 0.75  # Confidence needed to move to lower frequency
+---
+```
+
+### Associative Memory: Goal→Trace Mapping
+
+LLMunix implements associative memory through execution traces:
+
+**Key (K)**: `goal_signature`
+- Semantic embedding of user goal
+- Task type classification
+- Context fingerprint
+
+**Value (V)**: `execution_trace`
+- Deterministic tool call sequence
+- Validation checks
+- Error recovery strategies
+- Performance metrics
+
+**Learning Process**:
+1. **Learner Mode**: Claude Sonnet 4.5 explores solution space, creates new trace
+2. **Follower Mode**: Granite/Edge model executes proven trace deterministically
+3. **Trace Evolution**: Success feedback increases confidence, failures trigger re-learning
+
+### Memory Consolidation as "Systems Consolidation"
+
+LLMunix's consolidation process mirrors biological memory:
+
+**High→Mid Frequency (Short-Term→Long-Term)**:
+- MemoryConsolidationAgent analyzes short-term logs
+- Identifies successful patterns with confidence scores
+- Creates execution traces when confidence ≥ 0.75
+- Stores in `memory/long_term/`
+
+**Mid→Low Frequency (Long-Term→Permanent)**:
+- Traces used 20+ times with >95% success rate
+- Patterns elevated to system-wide memory
+- Added to SmartLibrary as reusable components
+- Become part of LLMunix's "identity"
+
+**Memory Flow Logic**:
+```yaml
+consolidation_rules:
+  short_to_long_term:
+    trigger: successful_execution
+    confidence_threshold: 0.75
+    output: execution_trace.md
+
+  long_term_to_system:
+    trigger: high_reuse (usage_count >= 20 AND success_rate >= 0.95)
+    confidence_threshold: 0.95
+    output: SmartLibrary.md entry
+
+  system_to_core:
+    trigger: cross_project_success
+    confidence_threshold: 0.99
+    output: Core agent/tool definition
+```
+
+### Deep Optimizers: Learnable Planning
+
+SystemAgent's planning process is itself optimized through memory:
+
+**Planning Metadata Logging**:
+- Query strategy used (semantic vs. keyword)
+- Components selected
+- Constraints applied
+- Outcome quality
+
+**Meta-Learning**:
+- MemoryAnalysisAgent analyzes planning decisions
+- Identifies which planning strategies succeeded
+- Recommends improved query strategies
+- Guides future component selection
+
+**Example**: If semantic similarity queries consistently outperform keyword searches for creative tasks, the system learns to prefer semantic queries for similar future tasks.
+
+### Self-Modifying Architecture
+
+LLMunix extends beyond creating new agents to modifying existing ones:
+
+**Performance-Based Evolution**:
+1. Track agent success rates in memory
+2. Identify failure patterns (e.g., "WebFetchAgent fails on site X")
+3. Automatically generate agent modifications
+4. Update agent markdown with new error handling
+5. Version control for agent evolution
+
+**Example**:
+```yaml
+agent_modification_log:
+  agent: web-fetch-agent
+  version: 1.0 → 1.1
+  trigger: repeated_failures (site: news.ycombinator.com)
+  modification: Added rate limiting and retry logic
+  confidence_improvement: 0.65 → 0.92
+```
+
+### Theoretical Advantages
+
+**Why This Matters**:
+
+1. **Rigorous Foundation**: Grounded in cutting-edge ML research (Nested Learning, CMS)
+2. **Practical Implementation**: Theory manifests as file-based, human-readable system
+3. **Continual Learning**: No catastrophic forgetting—old knowledge preserved in low-frequency tiers
+4. **Explainability**: Every learning decision is auditable through markdown logs
+5. **Scalability**: Frequency-based pruning prevents memory bloat
+6. **Adaptability**: System improves automatically without manual tuning
+
+**Comparison to Traditional LLMs**:
+- ❌ Traditional: Context window only, no persistent learning
+- ✅ LLMunix: Multi-tier memory with continual learning and adaptation
+
+**Comparison to RAG Systems**:
+- ❌ RAG: Flat memory retrieval, no hierarchy or consolidation
+- ✅ LLMunix: Hierarchical CMS with frequency-aware consolidation and trace evolution
 
 ## Mobile App Generation (Optional Output Format)
 
@@ -734,12 +881,17 @@ llmunix execute: "Build a mobile personal trainer app that adapts workouts to my
 #   - projects/Project_personal_trainer/mobile_app/ (React Native app + Qwen3-0.6B, 635MB)
 ```
 
-### Example Project
+### Example Usage
 
-See `projects/Project_habit_tracker_demo/` for a complete example demonstrating:
-1. Primary CLI workflow (requirements analysis, data model, features)
-2. Mobile app generation from CLI outputs
-3. Classification as deterministic (no LLM needed)
+Generate a complete project with one command:
+```bash
+claude --dangerously-skip-permissions "llmunix execute: 'Create a mobile app for tracking daily habits'"
+```
+
+This creates:
+1. Primary CLI workflow (requirements analysis, data model, features) in `output/`
+2. Mobile app generation from CLI outputs in `mobile_app/`
+3. Automatic classification (deterministic or agentic)
 4. Complete React Native deployment package
 
 ### Key Components
