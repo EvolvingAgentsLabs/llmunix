@@ -1,11 +1,13 @@
 ---
 component_type: tool
 tool_name: query-memory-tool
-version: "2.0"
+version: "3.0"
 status: production
 claude_tools: [Read, Grep, Bash, Task]
 category: memory_management
 mode: [EXECUTION, SIMULATION]
+memory_system: continuum_memory_system
+frequency_aware: true
 ---
 
 # Query Memory Tool
@@ -50,11 +52,23 @@ filters:                   # Optional filters (auto-generated if not provided)
   sentiment: string
   cost_range: {}
   error_threshold: number
+  # CMS-specific filters (v3.0+)
+  memory_frequency: [high|mid|low|ultra-low]  # Filter by frequency tier
+  min_confidence: 0.0-1.0   # Minimum confidence_score
+  min_success_rate: 0.0-1.0 # Minimum success_rate for traces
+  cross_project: boolean    # Only cross-project validated memories
 options:                   # Query behavior options
   max_experiences: number  # Limit number of experiences to analyze
   include_failures: boolean# Whether to include failed experiences
   priority_focus: string   # "recent", "successful", "similar", "all"
   confidence_threshold: number # Minimum confidence for recommendations
+  # CMS-specific options (v3.0+)
+  tier_weights:            # Weight results by frequency tier
+    high: 0.1              # Recent context
+    mid: 0.6               # Proven patterns
+    low: 0.3               # Stable knowledge
+  prefer_stable: boolean   # Prefer low-volatility memories
+  include_metadata: boolean# Include CMS metadata in results
 ```
 
 ## Output Specification

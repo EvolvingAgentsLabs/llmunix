@@ -8,46 +8,26 @@ LLMunix is a revolutionary three-mode AI framework where intelligence is defined
 
 ### Three Execution Modes + Mobile App Generation
 
-```
-┌─────────────────────────────────────────────────────┐
-│         LEARNER MODE (Claude Sonnet 4.5)           │
-│  Creates: Agent definitions, execution traces      │
-│  Cost: $0.05-$1 per definition (one-time)         │
-│  Use: Novel tasks, complex reasoning               │
-│  NEW: Generates mobile apps from CLI outputs       │
-└─────────────────────────────────────────────────────┘
-                        ↓
-          (definitions created once)
-                        ↓
-    ┌──────────────────┴──────────────────┐
-    │                                     │
-    ▼                                     ▼
-┌─────────────────────┐      ┌─────────────────────┐
-│ DETERMINISTIC MODE  │      │  AGENTIC MODE       │
-│ (Pure Python)       │      │  (Granite 4)        │
-│                     │      │                     │
-│ Executes: Fixed     │      │ Executes: Flexible  │
-│ steps exactly       │      │ with reasoning      │
-│                     │      │                     │
-│ Speed: 0.01-0.1s    │      │ Speed: 0.5-3s       │
-│ Cost: $0            │      │ Cost: $0 (local)    │
-│ Adapt: None         │      │ Adapt: High         │
-│                     │      │                     │
-│ Use: Repetitive     │      │ Use: Variations,    │
-│ tasks               │      │ conditional logic   │
-└─────────────────────┘      └─────────────────────┘
-         │                            │
-         └──────────┬─────────────────┘
-                    ↓
-         ┌─────────────────────────┐
-         │  MOBILE APP GENERATION  │
-         │  (Optional Output)      │
-         │                         │
-         │  90% Deterministic Apps │
-         │  10% Agentic Apps       │
-         │                         │
-         │  5-20MB or 600MB-1.5GB  │
-         └─────────────────────────┘
+```mermaid
+graph TB
+    Learner["<b>LEARNER MODE</b><br/>(Claude Sonnet 4.5)<br/><br/>Creates: Agent definitions, execution traces<br/>Cost: $0.05-$1 per definition (one-time)<br/>Use: Novel tasks, complex reasoning<br/>NEW: Generates mobile apps from CLI outputs"]
+
+    Learner -->|definitions created once| Split{ }
+
+    Split --> Deterministic["<b>DETERMINISTIC MODE</b><br/>(Pure Python)<br/><br/>Executes: Fixed steps exactly<br/>Speed: 0.01-0.1s<br/>Cost: $0<br/>Adapt: None<br/><br/>Use: Repetitive tasks"]
+
+    Split --> Agentic["<b>AGENTIC MODE</b><br/>(Granite 4)<br/><br/>Executes: Flexible with reasoning<br/>Speed: 0.5-3s<br/>Cost: $0 (local)<br/>Adapt: High<br/><br/>Use: Variations, conditional logic"]
+
+    Deterministic --> Mobile
+    Agentic --> Mobile
+
+    Mobile["<b>MOBILE APP GENERATION</b><br/>(Optional Output)<br/><br/>90% Deterministic Apps<br/>10% Agentic Apps<br/><br/>5-20MB or 600MB-1.5GB"]
+
+    style Learner fill:#e1f5ff,stroke:#0366d6,stroke-width:2px
+    style Deterministic fill:#f0fff4,stroke:#22863a,stroke-width:2px
+    style Agentic fill:#fff5e1,stroke:#d73a49,stroke-width:2px
+    style Mobile fill:#f5e1ff,stroke:#6f42c1,stroke-width:2px
+    style Split fill:none,stroke:none
 ```
 
 ### Why This Matters
@@ -449,21 +429,20 @@ llmunix/
 │   ├── run_agentic_follower.py         # LLM-powered execution
 │   └── requirements.txt                # ollama, pyyaml
 │
-├── projects/
-│   └── Project_habit_tracker_demo/     # 🆕 Demo project
-│       ├── README.md                   # Complete walkthrough
+├── projects/                           # Your projects created here
+│   └── [Auto-created on execution]     # Projects created dynamically
+│       ├── components/
+│       │   ├── agents/                 # Project agents
+│       │   └── tools/                  # Project tools
+│       ├── input/                      # Input documents
 │       ├── output/                     # CLI results
-│       │   └── requirements.md         # Requirements analysis
 │       ├── mobile_app/                 # Optional mobile app
 │       │   ├── manifest.json
 │       │   ├── src/
 │       │   └── README.md
-│       ├── components/
-│       │   ├── agents/                 # Project agents
-│       │   └── tools/                  # Project tools
 │       └── memory/
-│           ├── short_term/
-│           └── long_term/
+│           ├── short_term/             # High-frequency memory
+│           └── long_term/              # Consolidated patterns
 │
 ├── .claude/agents/                     # Auto-discovered agents
 └── CLAUDE.md                          # Framework documentation
@@ -471,20 +450,21 @@ llmunix/
 
 ---
 
-## 🎓 Demo Project: Habit Tracker
+## 🎓 Example: Create Your First Project
 
-See `projects/Project_habit_tracker_demo/README.md` for a complete walkthrough demonstrating:
+Generate a complete project with mobile app in one command:
 
-1. **Primary CLI workflow** - Requirements analysis, data model design, feature planning
-2. **Mobile app generation** - Complete React Native codebase generated from CLI outputs
-3. **Classification** - Deterministic (no LLM needed, 15MB total)
-4. **Deployment package** - Ready to run on iOS and Android
-
-**Try it yourself**:
 ```bash
-cd projects/Project_habit_tracker_demo
-cat README.md
+claude --dangerously-skip-permissions "llmunix execute: 'Create a mobile app for tracking daily habits'"
 ```
+
+**What happens**:
+1. **Project created**: `projects/Project_habit_tracker/`
+2. **CLI workflow**: Requirements analysis, data model, features → `output/`
+3. **Mobile app**: Complete React Native codebase → `mobile_app/`
+4. **Classification**: Deterministic (no LLM, 15MB) or Agentic (with LLM, 600MB+)
+
+**Result**: Production-ready mobile app from a single command!
 
 ---
 
@@ -676,10 +656,10 @@ python run_agentic_follower.py --help
 
 ## 📖 Complete Documentation
 
-- **CLAUDE.md** - Complete framework documentation with mobile app generation workflow
+- **CLAUDE.md** - Complete framework documentation with Continuum Memory System and mobile app generation
 - **EXAMPLES.md** - Comprehensive examples for all modes
-- **projects/Project_habit_tracker_demo/README.md** - Mobile app generation walkthrough
 - **system/SmartLibrary.md** - Complete component registry
+- **system/infrastructure/memory_schema.md** - Nested Learning-based memory architecture
 
 ---
 
@@ -705,14 +685,16 @@ python run_agentic_follower.py --help
 
 ### The Sweet Spot: Agentic Mode + Mobile
 
-```
-Deterministic: Fast but inflexible
-     ↓ (add reasoning)
-Agentic: Fast AND flexible
-     ↓ (add mobile deployment)
-Mobile: Edge intelligence with offline capability
-     ↓ (add power)
-Cloud: Flexible but expensive
+```mermaid
+graph TD
+    A[Deterministic<br/>Fast but inflexible] -->|add reasoning| B[Agentic<br/>Fast AND flexible]
+    B -->|add mobile deployment| C[Mobile<br/>Edge intelligence with offline capability]
+    C -->|add power| D[Cloud<br/>Flexible but expensive]
+
+    style A fill:#f0f0f0,stroke:#666,stroke-width:2px
+    style B fill:#fff5e1,stroke:#d73a49,stroke-width:3px
+    style C fill:#f5e1ff,stroke:#6f42c1,stroke-width:3px
+    style D fill:#e1f5ff,stroke:#0366d6,stroke-width:2px
 ```
 
 **Agentic mode gives you 80% of cloud flexibility at 0% of the cost!**
@@ -723,9 +705,9 @@ Cloud: Flexible but expensive
 ## 🤔 Getting Help
 
 - **Documentation**: See `EXAMPLES.md`, `CLAUDE.md`
-- **Mobile App Demo**: Check `projects/Project_habit_tracker_demo/`
 - **Issues**: [GitHub Issues](https://github.com/EvolvingAgentsLabs/llmunix/issues)
 - **Research**: See `system/SmartLibrary.md` for model selection details
+- **Memory System**: See `system/infrastructure/memory_schema.md` for CMS architecture
 
 ---
 
