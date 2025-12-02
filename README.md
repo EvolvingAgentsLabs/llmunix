@@ -41,7 +41,7 @@ $ python llmos/boot.py interactive
 
 ### 1. Sentience: AI with Internal State
 
-LLM OS maintains persistent state that influences all decisions:
+LLM OS maintains persistent state that influences all decisions, enabling **simulated behaviors** like creativity, caution, and focus:
 
 | Dimension | What it represents |
 |-----------|-------------------|
@@ -50,12 +50,14 @@ LLM OS maintains persistent state that influences all decisions:
 | **Energy** | Available resources for expensive operations |
 | **Confidence** | Belief in own capabilities |
 
-These combine into **behavioral modes**:
+These combine into **emergent behavioral modes**:
 
-- **Auto-Creative** - High curiosity: explores, tries new approaches
-- **Auto-Contained** - Low curiosity: efficient, task-focused
+- **Auto-Creative** - High curiosity: explores novel solutions, suggests improvements, tries unconventional approaches
+- **Auto-Contained** - Low curiosity: efficient, task-focused, follows established patterns
 - **Recovery** - Low energy: prefers cheap operations
 - **Cautious** - Low safety: extra verification, asks for confirmation
+
+The Sentience Layer enables the system to **simulate creativity** - when curiosity is high and confidence is strong, the AI actively explores alternatives, proposes innovations, and goes beyond literal task requirements. This isn't random behavior; it's state-driven intelligence that adapts to context.
 
 ```python
 # Agents see their internal state
@@ -67,15 +69,26 @@ mode=auto_contained
 [/INTERNAL_STATE]
 ```
 
-### 2. Learning: From $0.50 to $0.00
+### 2. Intelligent Execution: Right Mode for Each Task
 
-Every execution creates a trace. Similar goals replay the trace for free:
+LLM OS automatically selects the optimal execution strategy:
 
-| Execution | Mode | Cost |
-|-----------|------|------|
-| 1st time | LEARNER | ~$0.50 |
-| 2nd time | FOLLOWER | $0.00 |
-| 5th+ time | CRYSTALLIZED | $0.00, <1s |
+| Mode | When Used | Cost | Best For |
+|------|-----------|------|----------|
+| **LEARNER** | Novel tasks, ad hoc requests | ~$0.50 | Creative problem-solving, unique challenges |
+| **FOLLOWER** | Repetitive, deterministic tasks | $0.00 | Same logic, predictable patterns |
+| **CRYSTALLIZED** | 5+ successful executions | $0.00, <1s | High-frequency operations |
+| **ORCHESTRATOR** | Complex multi-step tasks | Variable | Tasks requiring coordination |
+
+**FOLLOWER mode** works for tasks with **deterministic logic** - where the same input always produces the same output (e.g., "create a calculator", "generate a report template"). These patterns can be captured once and replayed exactly.
+
+**LEARNER mode** handles **ad hoc requests** requiring real intelligence - novel problems, creative solutions, tasks with variable context. The LLM reasons through each step, adapting to the specific situation.
+
+```
+"Create a Python calculator"     → FOLLOWER (deterministic pattern)
+"Debug this specific error..."   → LEARNER (requires analysis)
+"Write a poem about my day"      → LEARNER (creative, context-dependent)
+```
 
 After 5 successful uses, patterns become Python functions - instant execution, zero cost.
 
