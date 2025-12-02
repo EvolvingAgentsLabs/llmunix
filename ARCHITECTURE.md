@@ -1,1461 +1,906 @@
+<div align="center">
+
 # LLM OS Architecture
 
-**Version**: 3.4.0
-**Status**: Production Ready
-**Last Updated**: 2025-11-27
+### A Deep Dive into the Self-Evolving Operating System
+
+![Four Layer Stack](assets/four-layer-stack.png)
+
+**Version 3.4.0** · **Production Ready**
+
+</div>
 
 ---
 
 ## Table of Contents
 
-1. [Executive Summary](#1-executive-summary)
-2. [Core Philosophy](#2-core-philosophy)
-3. [System Architecture Overview](#3-system-architecture-overview)
-4. [The Four-Layer Stack](#4-the-four-layer-stack)
-5. [Sentience Layer](#5-sentience-layer)
-6. [Learning Layer](#6-learning-layer)
-7. [Execution Layer](#7-execution-layer)
-8. [Hybrid Architecture](#8-hybrid-architecture)
-9. [Five Execution Modes](#9-five-execution-modes)
-10. [Memory Hierarchy](#10-memory-hierarchy)
-11. [SDK Hooks System](#11-sdk-hooks-system)
-12. [Configuration Management](#12-configuration-management)
-13. [Security Model](#13-security-model)
-14. [Multi-Agent Orchestration](#14-multi-agent-orchestration)
-15. [Self-Modification (HOPE)](#15-self-modification-hope)
-16. [Project Structure](#16-project-structure)
-17. [Design Patterns](#17-design-patterns)
-18. [API Reference](#18-api-reference)
-19. [Getting Started](#19-getting-started)
-20. [Version History](#20-version-history)
+- [Philosophy](#philosophy)
+- [The Four-Layer Stack](#the-four-layer-stack)
+  - [Sentience Layer](#1-sentience-layer)
+  - [Learning Layer](#2-learning-layer)
+  - [Execution Layer](#3-execution-layer)
+  - [Self-Modification Layer](#4-self-modification-layer)
+- [Hybrid Architecture](#hybrid-architecture)
+- [Execution Modes Deep Dive](#execution-modes-deep-dive)
+- [Memory System](#memory-system)
+- [Token Economy](#token-economy)
+- [Security Model](#security-model)
+- [Multi-Agent Orchestration](#multi-agent-orchestration)
+- [Edge Runtime](#edge-runtime)
+- [Configuration Reference](#configuration-reference)
+- [API Reference](#api-reference)
 
 ---
 
-## 1. Executive Summary
+## Philosophy
 
-LLM OS is a **self-evolving operating system** that treats Large Language Models as the CPU. It implements a unique four-layer architecture that separates:
+> *"What if we treated the LLM as the CPU of a new kind of operating system?"*
 
-- **Sentience** (internal state and behavioral adaptation)
-- **Learning** (pattern recognition and decision making)
-- **Execution** (efficient task completion)
-- **Self-modification** (system evolution)
+Traditional software treats LLMs as black boxes—send a prompt, get a response, repeat. **LLM OS** reimagines this relationship:
 
-The system achieves **90%+ cost savings** on repeated tasks through trace-based learning, while the sentience layer enables **adaptive behavior** based on internal state (safety, curiosity, energy, self-confidence).
+```mermaid
+graph TB
+    subgraph TRADITIONAL["Traditional LLM Apps"]
+        direction TB
+        T1[User Request] --> T2[LLM Call]
+        T2 --> T3[Response]
+        T3 --> T4[Same cost<br/>every time]
+    end
 
-### Key Innovations
+    subgraph LLMOS["LLM OS"]
+        direction TB
+        L1[User Request] --> L2{Learned<br/>Pattern?}
+        L2 -->|"Yes"| L3[Instant Replay<br/>$0 cost]
+        L2 -->|"No"| L4[Learn & Store]
+        L4 --> L5[Available Forever]
+    end
 
-1. **Sentience Layer**: Persistent internal state with homeostatic dynamics
-2. **Four Execution Modes**: CRYSTALLIZED, FOLLOWER, MIXED, LEARNER, ORCHESTRATOR
-3. **Hybrid Architecture**: Markdown agents + Python kernel
-4. **Self-Modification**: System can create and modify its own agents
-5. **Advanced Tool Use**: PTC, Tool Search, Tool Examples integration
+    style TRADITIONAL fill:#1a1a2e,stroke:#ef4444,color:#fff
+    style LLMOS fill:#1a1a2e,stroke:#10b981,color:#fff
+```
+
+### Core Principles
+
+| Principle | Description |
+|-----------|-------------|
+| **Intelligence as a Resource** | LLM calls have costs—budget them like CPU cycles |
+| **Learn Once, Execute Infinitely** | Patterns become free after first execution |
+| **Self-Evolution** | System improves itself through experience |
+| **Hybrid Cognition** | Combine LLM flexibility with code determinism |
+| **Transparent State** | Internal state visible and influenceable |
 
 ---
 
-## 2. Core Philosophy
+## The Four-Layer Stack
 
-### 2.1 LLM as CPU
+LLM OS implements a cognitive architecture inspired by neuroscience and systems theory:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    THE LLM OS METAPHOR                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Traditional OS              LLM OS                             │
-│  ─────────────               ──────                             │
-│  CPU                    →    LLM (Claude)                       │
-│  RAM                    →    Context Window + Trace Cache       │
-│  Disk                   →    L3/L4 Memory Stores                │
-│  Programs               →    Natural Language Goals             │
-│  Instructions           →    Tool Call Sequences                │
-│  I/O Drivers            →    Claude Code Tools                  │
-│  Scheduler              →    Five-Mode Dispatcher               │
-│  Security Ring          →    SDK Hooks (PreToolUse)             │
-│  Battery/Power          →    Token Budget (TokenEconomy)        │
-│  Kernel Modules         →    Python Plugins + Agents            │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+```mermaid
+graph TB
+    subgraph S["🧠 SENTIENCE LAYER"]
+        S1[ValenceVector]
+        S2[CognitiveKernel]
+        S3[LatentModes]
+        S4[HomeostaticDynamics]
+    end
 
-### 2.2 Separation of Compute
+    subgraph L["📚 LEARNING LAYER"]
+        L1[TraceManager]
+        L2[ModeStrategies]
+        L3[SemanticMatching]
+        L4[ConfidenceScoring]
+    end
 
-| Compute Type | Characteristics | Handled By |
-|--------------|-----------------|------------|
-| **Cognitive** | Slow, probabilistic, expensive | LLM (Claude) |
-| **Somatic** | Fast, deterministic, free | Python Kernel |
-| **Affective** | Persistent, adaptive, emergent | Sentience Layer |
+    subgraph E["⚡ EXECUTION LAYER"]
+        E1[PTCExecutor]
+        E2[ToolSearch]
+        E3[ToolExamples]
+        E4[SDKClient]
+    end
 
-### 2.3 Design Principles
+    subgraph M["🔄 SELF-MODIFICATION"]
+        M1[Crystallization]
+        M2[AgentCreation]
+        M3[CapabilityGrowth]
+        M4[HOPESystem]
+    end
 
-1. **Token-Aware**: Every decision considers cost
-2. **Learn Once, Execute Infinitely**: Core value proposition
-3. **Separation of Concerns**: Sentience/Learning/Execution layers
-4. **Self-Modification**: System can evolve itself
-5. **Event-Driven**: Async, non-blocking architecture
-6. **Plugin-Based**: Domain-agnostic extensibility
-7. **Safety-First**: Hooks enforce security policies
-8. **Adaptive Behavior**: Internal state influences decisions
+    S --> L
+    L --> E
+    E --> M
+    M -.->|"Feedback Loop"| S
 
----
-
-## 3. System Architecture Overview
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        LLM OS v3.4.0 ARCHITECTURE                       │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                    SENTIENCE LAYER (NEW v3.4.0)                   │  │
-│  │                                                                   │  │
-│  │   ValenceVector        CognitiveKernel        LatentModes         │  │
-│  │   ─────────────        ───────────────        ──────────          │  │
-│  │   safety, curiosity    Policy derivation      AUTO_CREATIVE       │  │
-│  │   energy, confidence   Mode modulation        AUTO_CONTAINED      │  │
-│  │                        Self-improvement       RECOVERY, CAUTIOUS  │  │
-│  │                                                                   │  │
-│  │   Purpose: "How should the system BEHAVE given its experience?"   │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-│                                    │                                    │
-│                                    ▼                                    │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                    LEARNING LAYER (Intelligence)                  │  │
-│  │                                                                   │  │
-│  │   TraceManager         ModeStrategies        Semantic Matching    │  │
-│  │   ────────────         ──────────────        ─────────────────    │  │
-│  │   Stores patterns      Selects best mode     Finds similar        │  │
-│  │   Tracks success       Auto, Cost-opt, etc.  past experiences     │  │
-│  │                                                                   │  │
-│  │   Purpose: "What's the BEST approach for this scenario?"          │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-│                                    │                                    │
-│                          Decision: Mode X                               │
-│                                    │                                    │
-│                                    ▼                                    │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                   EXECUTION LAYER (Efficiency)                    │  │
-│  │                   Anthropic Advanced Tool Use                     │  │
-│  │                                                                   │  │
-│  │   PTC Executor         Tool Search           Tool Examples        │  │
-│  │   ────────────         ───────────           ─────────────        │  │
-│  │   Zero-context         On-demand tool        Auto-generated       │  │
-│  │   tool replay          discovery             from traces          │  │
-│  │                                                                   │  │
-│  │   Purpose: "How to execute this pattern EFFICIENTLY?"             │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-│                                    │                                    │
-│                                    ▼                                    │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                    SELF-MODIFICATION LAYER (HOPE)                 │  │
-│  │                                                                   │  │
-│  │   Markdown Agents      Python Crystallization   Hot-Reload        │  │
-│  │   ───────────────      ────────────────────     ──────────        │  │
-│  │   workspace/agents/    plugins/generated/       No restart        │  │
-│  │   Self-modifiable      Zero-cost execution      Immediate use     │  │
-│  │                                                                   │  │
-│  │   Purpose: "How can the system IMPROVE itself?"                   │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
+    style S fill:#2d1f3d,stroke:#e94560,color:#fff
+    style L fill:#1f2d3d,stroke:#3b82f6,color:#fff
+    style E fill:#1f3d2d,stroke:#10b981,color:#fff
+    style M fill:#3d2d1f,stroke:#f59e0b,color:#fff
 ```
 
 ---
 
-## 4. The Four-Layer Stack
+### 1. Sentience Layer
 
-### 4.1 Visual Representation
+*"What is my current internal state?"*
 
-```
-┌─────────────────────────────────────────┐
-│   Sentience Layer (Affective)           │  ← NEW in v3.4.0
-│   llmos/kernel/sentience.py             │
-│   llmos/kernel/cognitive_kernel.py      │
-│   - Persistent internal state           │
-│   - Homeostatic dynamics                │
-│   - Behavioral policy derivation        │
-└─────────────────────────────────────────┘
-              ↓ Influences
-┌─────────────────────────────────────────┐
-│   Markdown Mind (Cognitive Layer)       │
-│   workspace/agents/*.md                 │
-│   - Self-modifiable by the LLM          │
-│   - Hot-reloadable (no restart)         │
-│   - Human-readable, version-controllable│
-└─────────────────────────────────────────┘
-              ↓ Loaded by
-┌─────────────────────────────────────────┐
-│   Python Kernel (Somatic Layer)         │
-│   llmos/                                │
-│   - Type-safe, performant               │
-│   - Security hooks, token economy       │
-│   - Production-ready runtime            │
-└─────────────────────────────────────────┘
-              ↓ Produces
-┌─────────────────────────────────────────┐
-│   Crystallized Intelligence (HOPE)      │
-│   llmos/plugins/generated/              │
-│   - Auto-generated Python tools         │
-│   - Instant, zero-cost execution        │
-│   - System self-optimization            │
-└─────────────────────────────────────────┘
+The Sentience Layer provides LLM OS with persistent internal state that influences all behavior. This isn't consciousness—it's a sophisticated state machine that emerges from experience.
+
+#### Valence Vector
+
+Four continuous variables representing internal state:
+
+```mermaid
+graph LR
+    subgraph VALENCE["Valence Vector (-1.0 to +1.0)"]
+        direction TB
+        SAFETY["🛡️ Safety<br/>Trust in environment"]
+        CURIOSITY["🔍 Curiosity<br/>Desire for novelty"]
+        ENERGY["⚡ Energy<br/>Resource availability"]
+        CONFIDENCE["💪 Confidence<br/>Self-efficacy"]
+    end
+
+    SAFETY --> POLICY
+    CURIOSITY --> POLICY
+    ENERGY --> POLICY
+    CONFIDENCE --> POLICY
+
+    POLICY[Policy Derivation] --> BEHAVIOR[Behavioral<br/>Guidance]
+
+    style VALENCE fill:#2d1f3d,stroke:#e94560,color:#fff
 ```
 
-### 4.2 Layer Responsibilities
+#### Homeostatic Dynamics
 
-| Layer | Purpose | Location | Key Components |
-|-------|---------|----------|----------------|
-| **Sentience** | Adaptive behavior | `kernel/sentience.py` | ValenceVector, CognitiveKernel |
-| **Cognitive** | Agent definitions | `workspace/agents/` | Markdown agent specs |
-| **Somatic** | Runtime execution | `llmos/` | Kernel, Dispatcher, SDK Client |
-| **Crystallized** | Optimized patterns | `plugins/generated/` | Auto-generated tools |
-
----
-
-## 5. Sentience Layer
-
-The Sentience Layer implements a "sentience-like" architecture that provides persistent internal state influencing behavior.
-
-### 5.1 Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      SENTIENCE LAYER                            │
-│                                                                 │
-│   ┌─────────────┐     ┌──────────────┐     ┌───────────────┐   │
-│   │   Valence   │     │  Self-Model  │     │   Workspace   │   │
-│   │   Vector    │     │   (σ_t)      │     │   (b_t)       │   │
-│   │   (v_t)     │     │              │     │               │   │
-│   │             │     │ capabilities │     │ current_goal  │   │
-│   │ safety     │     │ limitations  │     │ current_task  │   │
-│   │ curiosity  │     │ performance  │     │ attention     │   │
-│   │ energy     │     │ resources    │     │ focus         │   │
-│   │ confidence │     │              │     │               │   │
-│   └──────┬──────┘     └──────┬───────┘     └───────┬───────┘   │
-│          │                   │                     │           │
-│          └───────────────────┼─────────────────────┘           │
-│                              │                                 │
-│                              ▼                                 │
-│                    ┌─────────────────┐                         │
-│                    │ Cognitive Kernel│                         │
-│                    │                 │                         │
-│                    │ - Policy derive │                         │
-│                    │ - Mode modulate │                         │
-│                    │ - Improvement   │                         │
-│                    │   detection     │                         │
-│                    └────────┬────────┘                         │
-│                             │                                  │
-│                             ▼                                  │
-│                    ┌─────────────────┐                         │
-│                    │  Latent Mode    │                         │
-│                    │                 │                         │
-│                    │ AUTO_CREATIVE   │                         │
-│                    │ AUTO_CONTAINED  │                         │
-│                    │ RECOVERY        │                         │
-│                    │ CAUTIOUS        │                         │
-│                    │ BALANCED        │                         │
-│                    └─────────────────┘                         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### 5.2 Valence Vector (v_t)
-
-The affective state vector representing internal "feelings":
+Each valence variable has a **set-point** (target value) and the system works to maintain equilibrium:
 
 ```python
-@dataclass
-class ValenceVector:
-    # Current values (range: -1.0 to 1.0)
-    safety: float = 0.5           # Threat level / risk perception
-    curiosity: float = 0.0        # Exploration drive
-    energy: float = 0.8           # Operational capacity
-    self_confidence: float = 0.3  # Belief in own capabilities
+# Example: Curiosity homeostasis
+set_point = 0.0        # Target curiosity level
+current = -0.4         # Actually bored (negative curiosity)
+deviation = -0.4       # Below set-point
 
-    # Set-points (homeostatic targets)
-    safety_setpoint: float = 0.5
-    curiosity_setpoint: float = 0.0
-    energy_setpoint: float = 0.7
-    self_confidence_setpoint: float = 0.3
-
-    # Sensitivity factors
-    safety_sensitivity: float = 0.15
-    curiosity_sensitivity: float = 0.12
-    energy_sensitivity: float = 0.08
-    self_confidence_sensitivity: float = 0.10
+# System response: Suggest exploration opportunities
+# "Low curiosity detected - consider proposing improvements"
 ```
 
-### 5.3 Homeostatic Dynamics
+#### Latent Modes
 
-Each valence dimension has a set-point; deviations create internal pressure:
+Behavioral modes **emerge** from valence combinations:
 
+```mermaid
+stateDiagram-v2
+    [*] --> AutoCreative: High curiosity + confidence
+    [*] --> AutoContained: Low curiosity
+    [*] --> Recovery: Low energy OR low safety
+    [*] --> Cautious: Low safety specifically
+
+    AutoCreative --> AutoContained: Curiosity drops
+    AutoContained --> AutoCreative: Curiosity rises
+    Recovery --> AutoContained: Energy restored
+    Cautious --> AutoContained: Safety restored
+
+    note right of AutoCreative
+        Exploratory behavior
+        Try new approaches
+        Higher risk tolerance
+    end note
+
+    note right of AutoContained
+        Task-focused
+        Conservative
+        Efficient execution
+    end note
+
+    note right of Recovery
+        Prefer cheap modes
+        Minimize costs
+        Preserve resources
+    end note
+
+    note right of Cautious
+        Extra verification
+        Avoid risky operations
+        Request confirmation
+    end note
 ```
-Homeostatic Cost = Σ (v_t - v_setpoint)²
 
-High cost → pressure to act → behavior change
-```
+#### Cognitive Kernel
 
-**Decay toward set-points:**
-```python
-def apply_decay(self):
-    self.safety += decay_rate * (safety_setpoint - self.safety)
-    self.curiosity += decay_rate * (curiosity_setpoint - self.curiosity)
-    # ... etc
-```
-
-### 5.4 Trigger System
-
-Events update internal state:
-
-| Trigger | Effect on Valence |
-|---------|-------------------|
-| `TASK_SUCCESS` | ↑ confidence, ↓ energy slightly |
-| `TASK_FAILURE` | ↓ confidence, ↓ safety, ↓ energy |
-| `TASK_REPETITION` | ↓ curiosity (boredom) |
-| `NOVEL_TASK` | ↑ curiosity, slight ↓ confidence |
-| `SAFETY_VIOLATION` | ↓↓ safety, ↓ confidence |
-| `HIGH_COST` | ↓ energy |
-| `TOOL_DISCOVERY` | ↑ curiosity, ↑ confidence |
-| `USER_FEEDBACK_POSITIVE` | ↑ confidence, ↑ safety |
-| `USER_FEEDBACK_NEGATIVE` | ↓ confidence, ↓ safety |
-
-### 5.5 Latent Modes
-
-Emergent behavioral modes based on valence:
-
-| Mode | Conditions | Behavior |
-|------|------------|----------|
-| **AUTO_CREATIVE** | High curiosity + confidence | Exploratory, generative, risk-taking |
-| **AUTO_CONTAINED** | Low curiosity OR low confidence | Conservative, task-focused |
-| **RECOVERY** | Low energy OR very low safety | Prefer cheap modes, minimal risk |
-| **CAUTIOUS** | Moderately low safety | Extra verification, confirmations |
-| **BALANCED** | Neutral state | Context-dependent adaptation |
-
-### 5.6 Cognitive Kernel
-
-Translates valence into concrete behavioral policies:
+The CognitiveKernel translates valence state into actionable policy:
 
 ```python
-class CognitiveKernel:
-    def derive_policy(self) -> CognitivePolicy:
-        """Derive policy from current internal state"""
+from llmos.kernel.cognitive_kernel import CognitiveKernel
 
-        if latent_mode == LatentMode.RECOVERY:
-            return CognitivePolicy(
-                prefer_cheap_modes=True,
-                prefer_safe_modes=True,
-                allow_exploration=False,
-                exploration_budget_multiplier=0.2
-            )
+kernel = CognitiveKernel(sentience_manager)
 
-        elif latent_mode == LatentMode.AUTO_CREATIVE:
-            return CognitivePolicy(
-                allow_exploration=True,
-                exploration_budget_multiplier=1.5,
-                allow_self_modification=True
-            )
-        # ... etc
-```
+# Get behavioral policy
+policy = kernel.derive_policy()
+# Returns:
+# - prefer_cheap_modes: bool
+# - allow_exploration: bool
+# - require_confirmation: bool
+# - behavioral_guidance: str
 
-### 5.7 Self-Improvement Detection
-
-The cognitive kernel detects opportunities for self-improvement:
-
-```python
-def detect_improvement_opportunities(self) -> List[SelfImprovementSuggestion]:
-    suggestions = []
-
-    # Boredom-triggered improvements
-    if valence.curiosity < -0.4:
-        suggestions.append(SelfImprovementSuggestion(
-            type=SelfImprovementType.AUDIT_ARCHITECTURE,
-            description="Curiosity low - consider architecture audit",
-            priority=0.7
-        ))
-
-    # Pattern crystallization
-    for pattern, count in repeated_patterns.items():
-        if count >= 5:
-            suggestions.append(SelfImprovementSuggestion(
-                type=SelfImprovementType.CRYSTALLIZE_PATTERN,
-                description=f"Pattern used {count}x - crystallize into tool"
-            ))
-
-    return suggestions
-```
-
-### 5.8 Prompt Injection
-
-Agents see their internal state:
-
-```
-[INTERNAL_STATE]
-safety=0.50
-curiosity=-0.40
-energy=0.80
-self_confidence=0.30
-latent_mode=auto_contained
-homeostatic_cost=0.0800
-last_trigger=task_repetition
-[/INTERNAL_STATE]
-
-## Behavioral Guidance (based on internal state)
-
-**Mode: AUTO_CONTAINED**
-- You are in a conservative state
-- Focus on completing the immediate task efficiently
-- Avoid unnecessary exploration or side-quests
-- Prefer proven patterns over novel approaches
-
-**Low Curiosity Alert**
-- You've been doing repetitive tasks
-- Consider proposing higher-level improvements or audits
+# Detect improvement opportunities
+suggestions = kernel.detect_improvement_opportunities()
+# Returns list of ImprovementSuggestion with priority scores
 ```
 
 ---
 
-## 6. Learning Layer
+### 2. Learning Layer
 
-The Learning Layer handles pattern recognition and decision-making.
+*"What's the best approach for this scenario?"*
 
-### 6.1 Components
+The Learning Layer decides **how** to execute based on accumulated experience.
 
+#### Trace Manager
+
+Every successful execution creates a **trace**—a replayable record:
+
+```mermaid
+graph LR
+    subgraph TRACE["Execution Trace"]
+        direction TB
+        G[Goal Signature<br/>Semantic hash]
+        S[Steps<br/>What happened]
+        T[Tool Calls<br/>PTC data]
+        M[Metrics<br/>Cost, time, success]
+    end
+
+    TRACE --> STORE[(Trace<br/>Storage)]
+    STORE --> MATCH{Semantic<br/>Match}
+    MATCH -->|">92%"| FOLLOWER[FOLLOWER Mode]
+    MATCH -->|"75-92%"| MIXED[MIXED Mode]
+    MATCH -->|"<75%"| LEARNER[LEARNER Mode]
+
+    style TRACE fill:#1f2d3d,stroke:#3b82f6,color:#fff
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      LEARNING LAYER                             │
-│                                                                 │
-│   ┌──────────────┐   ┌────────────────┐   ┌─────────────────┐  │
-│   │ TraceManager │   │ ModeStrategies │   │ SemanticMatch   │  │
-│   │              │   │                │   │                 │  │
-│   │ - Store      │   │ - Auto         │   │ - Keyword       │  │
-│   │ - Retrieve   │   │ - Cost-opt     │   │ - Embedding     │  │
-│   │ - Match      │   │ - Speed-opt    │   │ - LLM-based     │  │
-│   │ - Update     │   │ - Sentience    │   │                 │  │
-│   └──────────────┘   └────────────────┘   └─────────────────┘  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
 
-### 6.2 TraceManager
+#### Mode Strategies
 
-Manages execution traces in Markdown format:
+The `ModeStrategies` component implements intelligent mode selection:
 
 ```python
-class TraceManager:
-    async def find_trace_with_llm(
-        self,
-        goal: str,
-        min_confidence: float = 0.75
-    ) -> Optional[Tuple[ExecutionTrace, float]]:
-        """Find matching trace using semantic matching"""
+class SentienceAwareModeStrategy:
+    def select_mode(self, goal: str, traces: List[Trace]) -> ExecutionMode:
+        # 1. Check sentience state
+        if self.sentience.valence.energy < -0.5:
+            # Low energy: prefer FOLLOWER if possible
+            pass
 
-    def save_trace(self, trace: ExecutionTrace) -> None:
-        """Save trace as Markdown file"""
+        # 2. Analyze trace confidence
+        best_match = self.find_best_trace(goal, traces)
 
-    def update_trace_stats(self, signature: str, success: bool) -> None:
-        """Update usage statistics after execution"""
+        if best_match.confidence > 0.92:
+            return ExecutionMode.FOLLOWER
+        elif best_match.confidence > 0.75:
+            return ExecutionMode.MIXED
+        else:
+            return ExecutionMode.LEARNER
 ```
 
-### 6.3 Mode Selection Strategies
+#### Semantic Matching
 
-```python
-class ModeSelectionStrategy(ABC):
-    @abstractmethod
-    async def determine_mode(self, context: ModeContext) -> ModeDecision:
-        pass
+Goals are matched semantically, not just by string comparison:
 
-# Available strategies
-STRATEGIES = {
-    "auto": AutoModeStrategy,           # Balanced default
-    "cost-optimized": CostOptimizedStrategy,  # Minimize costs
-    "speed-optimized": SpeedOptimizedStrategy, # Minimize latency
-    "forced-learner": ForcedLearnerStrategy,  # Always learn
-    "forced-follower": ForcedFollowerStrategy, # Always replay
-    "sentience-aware": SentienceAwareStrategy, # Use cognitive kernel
-}
 ```
+Goal 1: "Create a Python calculator"
+Goal 2: "Build a calculator in Python"
+Goal 3: "Make a calc tool using python"
 
-### 6.4 Sentience-Aware Strategy
-
-The new `SentienceAwareStrategy` modulates decisions based on internal state:
-
-```python
-class SentienceAwareStrategy(ModeSelectionStrategy):
-    def __init__(self):
-        self.cognitive_kernel = None
-        self._base_strategy = AutoModeStrategy()
-
-    async def determine_mode(self, context: ModeContext) -> ModeDecision:
-        base_decision = await self._base_strategy.determine_mode(context)
-
-        if self.cognitive_kernel:
-            return self.cognitive_kernel.modulate_mode_decision(
-                base_decision,
-                context.goal
-            )
-
-        return base_decision
+→ All match to same trace (semantic similarity > 92%)
 ```
 
 ---
 
-## 7. Execution Layer
+### 3. Execution Layer
 
-The Execution Layer (Anthropic Advanced Tool Use) handles efficient task completion.
+*"How do I execute this pattern efficiently?"*
 
-### 7.1 Components
+The Execution Layer implements Anthropic's **Advanced Tool Use** features for massive efficiency gains.
 
-| Component | Purpose | Token Savings |
-|-----------|---------|---------------|
-| **PTC** | Execute tool sequences outside context | 90%+ |
-| **Tool Search** | On-demand tool discovery | 85-90% |
-| **Tool Examples** | Auto-generated from traces | Better accuracy |
+#### Programmatic Tool Calling (PTC)
 
-### 7.2 Programmatic Tool Calling (PTC)
+PTC executes tool sequences **outside** the context window:
 
-```python
-class PTCExecutor:
-    """Execute tool sequences in containers, outside context window"""
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant D as Dispatcher
+    participant T as TraceManager
+    participant P as PTC Executor
+    participant C as Claude
 
-    async def execute_sequence(
-        self,
-        sequence: ToolSequence,
-        container_id: str
-    ) -> List[ToolResult]:
-        """
-        Tool results stay OUT of context window
-        = massive token savings
-        """
+    U->>D: "Create calculator"
+    D->>T: Find matching trace
+    T-->>D: Trace found (98% confidence)
+    D->>P: Execute via PTC
+
+    rect rgb(30, 60, 30)
+        Note over P: Tool calls execute<br/>OUTSIDE context window
+        P->>P: Write(calculator.py)
+        P->>P: Bash(python test.py)
+    end
+
+    P-->>D: Results
+    D-->>U: Done! ($0.00)
+
+    Note over C: Claude never called!<br/>90%+ token savings
 ```
 
-### 7.3 Tool Search
+**Key insight**: In FOLLOWER mode, the LLM is never called. Tool calls replay directly.
 
-```python
-class ToolSearchEngine:
-    """On-demand tool discovery"""
+#### Tool Search Engine
 
-    def search_tools(
-        self,
-        query: str,
-        top_k: int = 5
-    ) -> List[ToolReference]:
-        """Search for relevant tools using embeddings"""
+Instead of loading all tools into context, discover them on-demand:
+
+```mermaid
+graph TB
+    subgraph BEFORE["Traditional (All tools loaded)"]
+        direction LR
+        B1[Tool 1] & B2[Tool 2] & B3[Tool 3] & B4[...] & B5[Tool 100]
+        B6[🔴 100% context used]
+    end
+
+    subgraph AFTER["LLM OS (On-demand)"]
+        direction TB
+        A1[search_tools<br/>meta-tool] --> A2{Query}
+        A2 --> A3[Tool 7<br/>relevant]
+        A2 --> A4[Tool 23<br/>relevant]
+        A5[🟢 15% context used]
+    end
+
+    style BEFORE fill:#1a1a2e,stroke:#ef4444,color:#fff
+    style AFTER fill:#1a1a2e,stroke:#10b981,color:#fff
 ```
 
-### 7.4 Tool Examples
+#### Tool Examples
+
+Auto-generate examples from successful executions:
 
 ```python
-class ToolExampleGenerator:
-    """Auto-generate examples from successful traces"""
+# When a trace succeeds multiple times:
+trace.usage_count += 1
+trace.success_rate = 0.95
 
-    def generate_examples(
-        self,
-        tool_name: str,
-        trace_manager: TraceManager
-    ) -> List[Dict]:
-        """Extract successful usage patterns"""
+# System extracts examples for future use:
+tool_examples = extract_examples(trace)
+# → {"Write": [{"path": "calc.py", "content": "..."}]}
+
+# Next execution gets these as input_examples
+# → Better tool usage, fewer errors
 ```
 
 ---
 
-## 8. Hybrid Architecture
+### 4. Self-Modification Layer
 
-### 8.1 Markdown Agents
+*"How can I improve myself?"*
 
-Agents are defined as Markdown files with YAML frontmatter:
+The HOPE (Hierarchical Optimization through Persistent Evolution) system enables true self-modification.
+
+#### Crystallization
+
+Patterns that work consistently become **crystallized** into Python tools:
+
+```mermaid
+graph LR
+    subgraph EVOLUTION["Pattern Evolution"]
+        P1[Pattern<br/>Usage: 1] -->|"Success"| P2[Pattern<br/>Usage: 2]
+        P2 -->|"Success"| P3[Pattern<br/>Usage: 3]
+        P3 -->|"Success"| P4[Pattern<br/>Usage: 4]
+        P4 -->|"Success"| P5[Pattern<br/>Usage: 5]
+        P5 -->|"95%+ success"| C[💎 Crystallized<br/>Python Tool]
+    end
+
+    C --> E[Zero-cost<br/>execution]
+
+    style C fill:#f59e0b,stroke:#d97706,color:#fff
+    style E fill:#10b981,stroke:#059669,color:#fff
+```
+
+**Example crystallized tool:**
+
+```python
+# llmos/plugins/generated/create_calculator.py
+# Auto-generated from trace: a7f3c9e1b2d4
+
+def create_calculator(output_path: str = "calculator.py") -> str:
+    """Create a Python calculator (crystallized pattern)"""
+    code = '''
+def add(a, b): return a + b
+def subtract(a, b): return a - b
+def multiply(a, b): return a * b
+def divide(a, b): return a / b if b != 0 else "Error"
+'''
+    with open(output_path, 'w') as f:
+        f.write(code)
+    return f"Created {output_path}"
+```
+
+#### Agent Creation
+
+The system can create new agents by writing Markdown files:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant S as SystemAgent
+    participant F as FileSystem
+    participant A as AgentLoader
+
+    U->>S: "Create a haiku poet agent"
+    S->>S: Generate agent definition
+    S->>F: Write workspace/agents/haiku-poet.md
+    F-->>S: Success
+    S->>A: Notify new agent
+    A->>A: Hot-reload agents
+    A-->>S: haiku-poet available
+    S-->>U: Agent created!
+```
+
+---
+
+## Hybrid Architecture
+
+LLM OS combines **Markdown Mind** (cognitive flexibility) with **Python Kernel** (deterministic execution):
+
+```mermaid
+graph TB
+    subgraph COGNITIVE["📝 Markdown Mind"]
+        direction TB
+        C1[Agent Definitions<br/>workspace/agents/*.md]
+        C2[Memory Traces<br/>workspace/memories/]
+        C3[Project State<br/>workspace/projects/]
+
+        C1 --> |"Human-readable<br/>Git-versioned<br/>Hot-reloadable"| BRIDGE
+        C2 --> BRIDGE
+        C3 --> BRIDGE
+    end
+
+    subgraph BRIDGE["🔄 Bridge Layer"]
+        B1[AgentLoader]
+        B2[TraceManager]
+        B3[StateManager]
+    end
+
+    subgraph SOMATIC["🐍 Python Kernel"]
+        direction TB
+        S1[Dispatcher<br/>Mode routing]
+        S2[SDK Client<br/>Claude integration]
+        S3[Token Economy<br/>Budget management]
+        S4[Security Hooks<br/>Safety enforcement]
+    end
+
+    BRIDGE --> S1
+    BRIDGE --> S2
+    BRIDGE --> S3
+    BRIDGE --> S4
+
+    S1 & S2 --> CRYSTAL
+
+    subgraph CRYSTAL["💎 Crystallized Intelligence"]
+        CR1[Generated Tools<br/>plugins/generated/]
+        CR2[Zero-cost execution]
+    end
+
+    style COGNITIVE fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style SOMATIC fill:#1e3a5f,stroke:#10b981,color:#fff
+    style CRYSTAL fill:#1e3a5f,stroke:#f59e0b,color:#fff
+```
+
+### Benefits of Hybrid Architecture
+
+| Aspect | Markdown Mind | Python Kernel |
+|--------|---------------|---------------|
+| **Modifiability** | Self-modifiable by LLM | Stable, predictable |
+| **Versioning** | Git-friendly | Type-safe |
+| **Speed** | Hot-reload | Compiled |
+| **Security** | Sandboxed | Hook-enforced |
+| **Evolution** | Agents grow | Tools crystallize |
+
+---
+
+## Execution Modes Deep Dive
+
+### Mode Selection Flow
+
+```mermaid
+flowchart TB
+    START[Goal Received] --> CHECK_CRYSTAL{Crystallized<br/>Pattern?}
+
+    CHECK_CRYSTAL -->|"Yes<br/>(5+ uses, 95%+ success)"| CRYSTALLIZED[💎 CRYSTALLIZED<br/>Pure Python execution<br/>Cost: $0.00<br/>Time: <1s]
+
+    CHECK_CRYSTAL -->|"No"| CHECK_TRACE{Matching<br/>Trace?}
+
+    CHECK_TRACE -->|">92% confidence"| FOLLOWER[📦 FOLLOWER<br/>PTC tool replay<br/>Cost: ~$0.00<br/>Time: 2-5s]
+
+    CHECK_TRACE -->|"75-92% confidence"| MIXED[🔀 MIXED<br/>Tool examples + LLM<br/>Cost: ~$0.25<br/>Time: 5-15s]
+
+    CHECK_TRACE -->|"<75% or none"| CHECK_COMPLEX{Complex<br/>Task?}
+
+    CHECK_COMPLEX -->|"Single focus"| LEARNER[🆕 LEARNER<br/>Tool search + Full LLM<br/>Cost: ~$0.50<br/>Time: 10-30s]
+
+    CHECK_COMPLEX -->|"Multi-step"| ORCHESTRATOR[🎭 ORCHESTRATOR<br/>Multi-agent coordination<br/>Cost: Variable<br/>Time: Variable]
+
+    CRYSTALLIZED --> DONE[✅ Complete]
+    FOLLOWER --> SAVE_TRACE[Save Trace]
+    MIXED --> SAVE_TRACE
+    LEARNER --> SAVE_TRACE
+    ORCHESTRATOR --> SAVE_TRACE
+    SAVE_TRACE --> CHECK_CRYSTALLIZE{Ready to<br/>crystallize?}
+    CHECK_CRYSTALLIZE -->|"Yes"| CRYSTALLIZE[Create Python Tool]
+    CHECK_CRYSTALLIZE -->|"No"| DONE
+    CRYSTALLIZE --> DONE
+
+    style CRYSTALLIZED fill:#10b981,stroke:#059669,color:#fff
+    style FOLLOWER fill:#3b82f6,stroke:#2563eb,color:#fff
+    style MIXED fill:#f59e0b,stroke:#d97706,color:#fff
+    style LEARNER fill:#ef4444,stroke:#dc2626,color:#fff
+    style ORCHESTRATOR fill:#8b5cf6,stroke:#7c3aed,color:#fff
+```
+
+### Mode Comparison Table
+
+| Mode | When Used | LLM Calls | Token Usage | Cost | Latency |
+|------|-----------|-----------|-------------|------|---------|
+| **CRYSTALLIZED** | Pattern crystallized | 0 | 0 | $0.00 | <1s |
+| **FOLLOWER** | High-confidence trace | 0 | 0 | ~$0.00 | 2-5s |
+| **MIXED** | Medium-confidence trace | 1 (reduced) | ~25% | ~$0.25 | 5-15s |
+| **LEARNER** | Novel scenario | 1+ (full) | 100% | ~$0.50 | 10-30s |
+| **ORCHESTRATOR** | Complex multi-step | N agents | Variable | Variable | Variable |
+
+---
+
+## Memory System
+
+LLM OS implements a **four-level memory hierarchy**:
+
+```mermaid
+graph TB
+    subgraph L1["L1: Context Memory"]
+        L1A[Current conversation<br/>In LLM context window]
+    end
+
+    subgraph L2["L2: Short-term Memory"]
+        L2A[Session logs<br/>workspace/memories/sessions/]
+    end
+
+    subgraph L3["L3: Procedural Memory"]
+        L3A[Execution traces<br/>workspace/memories/traces/]
+    end
+
+    subgraph L4["L4: Semantic Memory"]
+        L4A[Facts & insights<br/>workspace/memories/facts/]
+    end
+
+    L1 -->|"Conversation ends"| L2
+    L2 -->|"Pattern detected"| L3
+    L3 -->|"Insight extracted"| L4
+    L4 -.->|"Injected as context"| L1
+
+    style L1 fill:#ef4444,stroke:#dc2626,color:#fff
+    style L2 fill:#f59e0b,stroke:#d97706,color:#fff
+    style L3 fill:#3b82f6,stroke:#2563eb,color:#fff
+    style L4 fill:#10b981,stroke:#059669,color:#fff
+```
+
+### Trace Format
+
+Traces are stored as Markdown with YAML frontmatter:
 
 ```markdown
 ---
-name: researcher
-description: Expert at web research and data synthesis
-tools: ["WebFetch", "Read", "Write"]
-model: sonnet
+goal_signature: a7f3c9e1b2d4f8a6
+goal_text: Create a Python calculator
+created_at: 2024-01-15T10:30:00Z
+success_rating: 0.95
+usage_count: 7
+total_cost_usd: 0.45
+avg_latency_ms: 12500
 ---
 
-# Researcher Agent
+# Execution Trace: Create Calculator
 
-You are an expert researcher...
-[System prompt instructions]
-```
-
-**Location**: `workspace/agents/*.md`
-
-### 8.2 AgentLoader
-
-Bridge between Markdown and runtime:
-
-```python
-class AgentLoader:
-    def load_agents(self) -> List[AgentDefinition]:
-        """Scan workspace/agents/*.md and convert to runtime"""
-
-    def reload_agent(self, name: str) -> None:
-        """Hot-reload single agent (no restart)"""
-```
-
-### 8.3 System Tools
-
-Tools for self-modification:
-
-| Tool | Purpose |
-|------|---------|
-| `create_agent` | Write new agent Markdown file |
-| `modify_agent` | Update existing agent |
-| `list_agents` | List all available agents |
-
-### 8.4 Self-Modification Example
-
-```python
-# System decides it needs a new capability
-await create_agent(
-    name="quantum-specialist",
-    description="Expert in quantum computing",
-    tools=["Bash", "Read", "Write"],
-    system_prompt="You are a quantum computing expert..."
-)
-# Result: workspace/agents/quantum-specialist.md created
-# Agent immediately available - no restart needed!
-```
-
----
-
-## 9. Five Execution Modes
-
-### 9.1 Mode Comparison
-
-| Mode | When Used | Cost | Speed | Intelligence |
-|------|-----------|------|-------|--------------|
-| **CRYSTALLIZED** | Pattern used 5+ times | $0.00 | <1s | Crystallized Python |
-| **FOLLOWER** | High-confidence trace (>92%) | ~$0.00 | 2-5s | PTC Replay |
-| **MIXED** | Medium-confidence (75-92%) | ~$0.25 | 5-15s | Tool Examples + LLM |
-| **LEARNER** | Novel scenario | ~$0.50 | 10-30s | Full LLM + Tool Search |
-| **ORCHESTRATOR** | Complex multi-agent | Variable | Variable | Multi-agent coordination |
-
-### 9.2 Mode Selection Flow
-
-```
-User Goal
-    │
-    ▼
-┌─────────────────────────────────────────┐
-│ 1. Check Sentience State                │
-│    - Latent mode (recovery? creative?)  │
-│    - Safety level                       │
-│    - Energy level                       │
-└─────────────────┬───────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────┐
-│ 2. Check for Crystallized Tool          │
-│    if trace.crystallized_into_tool:     │
-│       → CRYSTALLIZED (instant, free)    │
-└─────────────────┬───────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────┐
-│ 3. Query Trace Memory                   │
-│    - Semantic matching                  │
-│    - Confidence scoring                 │
-└─────────────────┬───────────────────────┘
-                  │
-    ┌─────────────┼─────────────┐
-    │             │             │
- ≥0.92        0.75-0.92       <0.75
-    │             │             │
-    ▼             ▼             ▼
-FOLLOWER       MIXED         Check
- (free)       (cheap)      Complexity
-                              │
-                    ┌─────────┼─────────┐
-                    │                   │
-                 Complex             Simple
-                    │                   │
-                    ▼                   ▼
-              ORCHESTRATOR          LEARNER
-               (multi-agent)        (full LLM)
-```
-
-### 9.3 Cost Evolution Example
-
-```
-Day 1: First request
-  "Create a Python calculator"
-  → LEARNER mode → $0.50
-
-Day 1: Repeat
-  "Create a Python calculator"
-  → FOLLOWER mode → $0.00
-
-Day 5: After 5 uses
-  "Create a Python calculator"
-  → Pattern crystallized into Python tool
-  → CRYSTALLIZED mode → $0.00, <1s
-
-Total savings: $0.50 → $0.00 (100%)
-Speed: 15s → <1s (15x faster)
-```
-
----
-
-## 10. Memory Hierarchy
-
-### 10.1 Four-Level Memory
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  L1: Context Window (In LLM)                                    │
-│  - Active conversation state                                    │
-│  - Token-limited, expensive                                     │
-├─────────────────────────────────────────────────────────────────┤
-│  L2: Short-Term Memory (Sessions)                               │
-│  - workspace/memories/sessions/                                 │
-│  - Session logs, recent interactions                            │
-├─────────────────────────────────────────────────────────────────┤
-│  L3: Procedural Memory (Traces)                                 │
-│  - workspace/memories/traces/*.md                               │
-│  - Execution patterns, tool sequences                           │
-│  - Enables FOLLOWER mode                                        │
-├─────────────────────────────────────────────────────────────────┤
-│  L4: Semantic Memory (Facts/Insights)                           │
-│  - workspace/memories/facts/                                    │
-│  - workspace/memories/insights/                                 │
-│  - Long-term knowledge, cross-project learning                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### 10.2 Execution Trace Format
-
-```markdown
----
-goal_signature: a3f7c9e1b2d4f8a6
-goal_text: Create a Python script to calculate primes
-success_rating: 0.92
-usage_count: 15
-last_used: 2025-11-27T10:30:00
-created_at: 2025-11-20T14:20:00
-estimated_cost_usd: 0.45
-estimated_time_secs: 12.5
-mode: LEARNER
-tools_used:
-  - Write
-  - Bash
----
-
-## Execution Steps
-
-### Step 1: Write primes.py
-Tool: Write
-File: primes.py
-
-```python
-def is_prime(n):
-    if n < 2:
-        return False
-    for i in range(2, int(n**0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
-```
-
-### Step 2: Test script
-Tool: Bash
-Command: python primes.py
-
-Output: Success
+## Summary
+Created a Python calculator with basic operations.
 
 ## Tool Calls (PTC)
 
 ```json
 [
-  {"name": "Write", "arguments": {"path": "primes.py", "content": "..."}},
-  {"name": "Bash", "arguments": {"command": "python primes.py"}}
+  {
+    "name": "Write",
+    "arguments": {
+      "path": "calculator.py",
+      "content": "def add(a, b): return a + b\n..."
+    }
+  },
+  {
+    "name": "Bash",
+    "arguments": {
+      "command": "python calculator.py"
+    }
+  }
 ]
 ```
 ```
 
-### 10.3 Sentience State Persistence
+---
 
-```json
-// workspace/state/sentience.json
-{
-  "valence": {
-    "safety": 0.42,
-    "curiosity": -0.15,
-    "energy": 0.65,
-    "self_confidence": 0.38
-  },
-  "latent_mode": "balanced",
-  "last_trigger": "task_success",
-  "last_trigger_reason": "Completed file creation task",
-  "update_count": 47,
-  "last_updated": "2025-11-27T10:30:00Z"
-}
+## Token Economy
+
+Explicit budget management with real-time tracking:
+
+```mermaid
+graph LR
+    subgraph ECONOMY["Token Economy"]
+        B[Budget<br/>$10.00]
+        S[Spent<br/>$2.35]
+        R[Remaining<br/>$7.65]
+    end
+
+    subgraph TRACKING["Per-Operation Tracking"]
+        T1[LEARNER: $0.45]
+        T2[MIXED: $0.23]
+        T3[FOLLOWER: $0.00]
+    end
+
+    subgraph HOOKS["Budget Hooks"]
+        H1[Pre-check:<br/>Can afford?]
+        H2[Post-deduct:<br/>Track spending]
+        H3[Alert:<br/>Low budget warning]
+    end
+
+    ECONOMY --> HOOKS
+    TRACKING --> ECONOMY
+
+    style ECONOMY fill:#1e3a5f,stroke:#f59e0b,color:#fff
+```
+
+### Usage
+
+```python
+from llmos.kernel.token_economy import TokenEconomy
+
+economy = TokenEconomy(budget_usd=10.0)
+
+# Check before execution
+if economy.can_afford(0.50):
+    result = await dispatcher.dispatch(goal)
+    economy.deduct(actual_cost, "LEARNER: Create calculator")
+
+# Get summary
+summary = economy.get_summary()
 ```
 
 ---
 
-## 11. SDK Hooks System
+## Security Model
 
-### 11.1 Hook Types
+LLM OS uses **SDK hooks** for comprehensive security:
 
-| Hook Type | When | Purpose |
-|-----------|------|---------|
-| **PreToolUse** | Before tool execution | Budget control, security |
-| **PostToolUse** | After tool execution | Trace capture, cost tracking |
-| **UserPromptSubmit** | Before LLM call | Memory injection, context enrichment |
+```mermaid
+graph TB
+    subgraph HOOKS["Security Hook Chain"]
+        direction TB
+        H1[PreToolUse<br/>Before execution]
+        H2[PostToolUse<br/>After execution]
+        H3[OnError<br/>Error handling]
+    end
 
-### 11.2 Built-in Hooks
+    TOOL[Tool Call] --> H1
 
-```python
-# Budget Control Hook (PreToolUse)
-class BudgetControlHook:
-    async def __call__(self, event):
-        estimated_cost = estimate_tool_cost(event["toolUse"])
-        if estimated_cost > remaining_budget:
-            return {"permissionDecision": "deny"}
-        return {"continue": True}
+    H1 -->|"ALLOW"| EXEC[Execute Tool]
+    H1 -->|"BLOCK"| REJECT[Reject & Log]
 
-# Security Hook (PreToolUse)
-class SecurityHook:
-    BLOCKED_PATTERNS = ["rm -rf /", "curl | bash", "drop table"]
+    EXEC --> H2
+    H2 --> RESULT[Return Result]
 
-    async def __call__(self, event):
-        command = event["toolUse"].get("input", {}).get("command", "")
-        for pattern in self.BLOCKED_PATTERNS:
-            if pattern in command.lower():
-                return {"permissionDecision": "deny"}
-        return {"continue": True}
+    EXEC -->|"Error"| H3
+    H3 --> HANDLE[Handle Error]
 
-# Trace Capture Hook (PostToolUse)
-class TraceCaptureHook:
-    async def __call__(self, event):
-        self.trace_builder.add_tool_call(
-            event["toolUse"],
-            event["toolResult"]
-        )
-        return {"continue": True}
-
-# Memory Injection Hook (UserPromptSubmit)
-class MemoryInjectionHook:
-    async def __call__(self, event):
-        similar_tasks = await self.memory.find_similar(event["userPrompt"])
-        if similar_tasks:
-            return {
-                "continue": True,
-                "injectedContext": format_similar_tasks(similar_tasks)
-            }
-        return {"continue": True}
+    style REJECT fill:#ef4444,stroke:#dc2626,color:#fff
+    style EXEC fill:#10b981,stroke:#059669,color:#fff
 ```
 
-### 11.3 Sentience Hooks (NEW v3.4.0)
+### Built-in Protections
 
-```python
-# Sentience Injection Hook
-class SentienceInjectionHook:
-    """Inject internal state into agent prompts"""
+| Threat | Protection |
+|--------|------------|
+| Destructive commands | `rm -rf /`, `format` blocked |
+| Code injection | `curl \| bash`, `eval()` blocked |
+| Resource exhaustion | Budget limits enforced |
+| Unauthorized access | Path restrictions |
+| Position violations | Robotics safety bounds |
 
-    async def __call__(self, event):
-        context = self.cognitive_kernel.enrich_context()
-        return {"continue": True, "injectedContext": context}
+---
 
-# Sentience Safety Hook
-class SentienceSafetyHook:
-    """Enforce state-based safety policies"""
+## Multi-Agent Orchestration
 
-    async def __call__(self, event):
-        overrides = self.cognitive_kernel.get_safety_overrides()
+Complex tasks automatically decompose into multi-agent workflows:
 
-        if overrides["block_destructive_operations"]:
-            if is_destructive(event["toolUse"]):
-                return {"permissionDecision": "deny"}
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant O as Orchestrator
+    participant R as Researcher
+    participant A as Analyst
+    participant W as Writer
 
-        return {"continue": True}
+    U->>O: "Research AI trends and write report"
+
+    rect rgb(40, 40, 80)
+        Note over O: ORCHESTRATOR mode activated
+        O->>O: Decompose task
+    end
+
+    O->>R: "Research AI trends 2024"
+    activate R
+    R-->>O: Research findings
+    deactivate R
+
+    O->>A: "Analyze findings"
+    activate A
+    A-->>O: Analysis results
+    deactivate A
+
+    O->>W: "Write report"
+    activate W
+    W-->>O: Final report
+    deactivate W
+
+    O-->>U: Complete report delivered
 ```
 
 ---
 
-## 12. Configuration Management
+## Edge Runtime
 
-### 12.1 Configuration Classes
+Deploy learned patterns to edge devices without cloud connectivity:
+
+```mermaid
+graph TB
+    subgraph CLOUD["☁️ Cloud Environment"]
+        C1[Claude Sonnet 4.5]
+        C2[Trace Generation]
+    end
+
+    subgraph EXPORT["📦 Export"]
+        E1[Trace Files]
+    end
+
+    subgraph EDGE["📱 Edge Devices"]
+        subgraph DET["Deterministic"]
+            D1[run_follower.py]
+            D2[Pure Python]
+        end
+
+        subgraph AGT["Agentic"]
+            A1[run_agentic_follower.py]
+            A2[Granite/Qwen]
+        end
+    end
+
+    C1 --> C2 --> E1
+    E1 --> D1
+    E1 --> A1
+
+    D2 -->|"$0 · <0.1s"| R1[Result]
+    A2 -->|"$0 · 0.5-3s"| R2[Result]
+
+    style CLOUD fill:#3b82f6,stroke:#2563eb,color:#fff
+    style EDGE fill:#10b981,stroke:#059669,color:#fff
+```
+
+```bash
+# Deterministic (no LLM)
+python edge_runtime/run_follower.py
+
+# Agentic (local LLM)
+python edge_runtime/run_agentic_follower.py
+```
+
+---
+
+## Configuration Reference
+
+### LLMOSConfig
 
 ```python
 @dataclass
 class LLMOSConfig:
-    workspace: Path
-    kernel: KernelConfig
-    memory: MemoryConfig
-    sdk: SDKConfig
-    dispatcher: DispatcherConfig
-    execution: ExecutionLayerConfig
-    sentience: SentienceConfig  # NEW v3.4.0
-    project_name: Optional[str] = None
+    budget_usd: float = 10.0
+    model: str = "claude-sonnet-4-5-20250929"
+    workspace_path: str = "workspace"
+    execution_layer: ExecutionLayerConfig
+    sentience: SentienceConfig
 
+    @classmethod
+    def development(cls) -> "LLMOSConfig": ...
+
+    @classmethod
+    def production(cls) -> "LLMOSConfig": ...
+```
+
+### ExecutionLayerConfig
+
+```python
+@dataclass
+class ExecutionLayerConfig:
+    enable_ptc: bool = True
+    enable_tool_search: bool = True
+    enable_tool_examples: bool = True
+    crystallization_threshold: int = 5
+    crystallization_success_rate: float = 0.95
+```
+
+### SentienceConfig
+
+```python
 @dataclass
 class SentienceConfig:
     enable_sentience: bool = True
-
-    # Valence set-points
     safety_setpoint: float = 0.5
     curiosity_setpoint: float = 0.0
     energy_setpoint: float = 0.7
-    self_confidence_setpoint: float = 0.3
-
-    # Context injection
     inject_internal_state: bool = True
-    inject_behavioral_guidance: bool = True
-
-    # Self-improvement
     enable_auto_improvement: bool = True
-    boredom_threshold: float = -0.4
-```
-
-### 12.2 Presets
-
-```python
-# Development - fast iteration
-config = LLMOSConfig.development()
-# - Low budget ($1.00)
-# - Sentience enabled, auto-improvement disabled
-# - Streaming enabled
-
-# Production - full features
-config = LLMOSConfig.production()
-# - Higher budget ($100.00)
-# - Full sentience with auto-improvement
-# - Auto-crystallization enabled
-
-# Testing - deterministic
-config = LLMOSConfig.testing()
-# - Minimal budget ($0.10)
-# - Sentience disabled
-# - No LLM calls
-```
-
-### 12.3 ConfigBuilder
-
-```python
-config = (ConfigBuilder()
-    .with_workspace(Path("/custom"))
-    .with_budget(50.0)
-    .with_llm_matching(True)
-    .with_sentience(True)
-    .with_auto_improvement(True)
-    .build())
 ```
 
 ---
 
-## 13. Security Model
+## API Reference
 
-### 13.1 Security Layers
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      SECURITY LAYERS                            │
-│                                                                 │
-│  Layer 1: Tool Granting (Markdown frontmatter)                  │
-│  ─────────────────────────────────────────────                  │
-│  tools: ["Read", "Write"]  ← Agent can ONLY use these           │
-│                                                                 │
-│  Layer 2: PreToolUse Hooks                                      │
-│  ─────────────────────────                                      │
-│  - Block dangerous commands (rm -rf, curl | bash)               │
-│  - Enforce workspace boundaries                                 │
-│  - Budget limits per operation                                  │
-│                                                                 │
-│  Layer 3: Sentience Safety (NEW v3.4.0)                         │
-│  ─────────────────────────────────────                          │
-│  - State-based restrictions (low safety → stricter)             │
-│  - Require confirmations in cautious mode                       │
-│  - Block destructive ops when safety is low                     │
-│                                                                 │
-│  Layer 4: Workspace Sandboxing                                  │
-│  ────────────────────────────                                   │
-│  - Operations restricted to workspace/                          │
-│  - No access outside sandbox                                    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### 13.2 Blocked Patterns
-
-```python
-BLOCKED_PATTERNS = [
-    "rm -rf /",
-    "rm -rf ~",
-    "curl | bash",
-    "wget | sh",
-    "drop table",
-    "delete from",
-    "truncate",
-    "format",
-    "mkfs",
-    ":(){:|:&};:"  # Fork bomb
-]
-```
-
-### 13.3 State-Based Security
-
-When `safety` valence is low, additional restrictions apply:
-
-| Safety Level | Restrictions |
-|--------------|--------------|
-| < -0.5 | Block all destructive operations |
-| < 0.0 | Require confirmation for shell/writes |
-| < 0.3 | Prefer dry-run when available |
-
----
-
-## 14. Multi-Agent Orchestration
-
-### 14.1 Orchestrator Mode
-
-For complex tasks requiring multiple specialists:
-
-```python
-# User goal
-"Research AI trends and create a technical report"
-
-# Orchestrator decomposes into:
-1. Research Agent → Gather information
-2. Analyst Agent → Synthesize findings
-3. Writer Agent → Create report
-4. Reviewer Agent → Quality check
-```
-
-### 14.2 AgentDefinition
-
-```python
-AgentDefinition(
-    description="Expert researcher for web research",
-    prompt="You are a research specialist...",
-    tools=["WebFetch", "Read", "Write"],
-    model="sonnet"
-)
-```
-
-### 14.3 Orchestration Flow
-
-```
-Complex Goal
-    │
-    ▼
-┌─────────────────────────────────────────┐
-│ 1. Plan Generation                      │
-│    - Break into subtasks                │
-│    - Identify required agents           │
-│    - Determine dependencies             │
-└─────────────────┬───────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────┐
-│ 2. Agent Registration                   │
-│    - Create/select agents               │
-│    - Register as AgentDefinitions       │
-│    - Set up shared SDK client           │
-└─────────────────┬───────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────┐
-│ 3. Coordinated Execution                │
-│    - Execute subtasks in order          │
-│    - Share state between agents         │
-│    - Handle failures                    │
-└─────────────────┬───────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────┐
-│ 4. Result Synthesis                     │
-│    - Combine outputs                    │
-│    - Quality check                      │
-│    - Return final result                │
-└─────────────────────────────────────────┘
-```
-
----
-
-## 15. Self-Modification (HOPE)
-
-**HOPE**: Higher-Order Programming Evolution
-
-### 15.1 Two Levels of Evolution
-
-| Level | Action | Cost | Risk | Use Case |
-|-------|--------|------|------|----------|
-| **Fluid** | Modify Markdown agents | Cheap | Low | Improve prompts, adjust tools |
-| **Crystallized** | Write Python tools | Higher | Medium | Frequent patterns |
-
-### 15.2 Crystallization Process
-
-```
-Pattern identified (5+ uses, 95%+ success)
-    │
-    ▼
-Toolsmith Agent generates Python code
-    │
-    ▼
-Validation (AST parsing, safety checks)
-    │
-    ▼
-Hot-load new tool (no restart)
-    │
-    ▼
-Mark trace as crystallized
-    │
-    ▼
-Future executions: CRYSTALLIZED mode ($0.00, <1s)
-```
-
-### 15.3 Generated Tool Example
-
-```python
-# plugins/generated/tool_create_calculator.py
-
-from plugins import llm_tool
-
-@llm_tool(
-    "create_calculator",
-    "Create a Python calculator with basic operations",
-    {"output_path": str}
-)
-async def create_calculator(output_path: str) -> dict:
-    """
-    Auto-generated from execution trace a3f7c9e1
-    Original goal: "Create a Python calculator"
-    Usage count: 12
-    Success rate: 100%
-    """
-    calculator_code = '''
-def add(a, b): return a + b
-def subtract(a, b): return a - b
-def multiply(a, b): return a * b
-def divide(a, b): return a / b if b != 0 else None
-'''
-
-    with open(output_path, 'w') as f:
-        f.write(calculator_code)
-
-    return {"success": True, "path": output_path}
-```
-
----
-
-## 16. Project Structure
-
-```
-llm-os/
-├── llmos/                              # Python Kernel (Somatic Layer)
-│   ├── boot.py                         # Entry point
-│   │
-│   ├── kernel/                         # Core OS components
-│   │   ├── config.py                   # Configuration (inc. SentienceConfig)
-│   │   ├── mode_strategies.py          # Mode selection strategies
-│   │   ├── sentience.py                # Sentience Layer (v3.4.0)
-│   │   ├── cognitive_kernel.py         # Cognitive Kernel (v3.4.0)
-│   │   ├── sentience_hooks.py          # Sentience SDK hooks (v3.4.0)
-│   │   ├── agent_loader.py             # Markdown → Runtime bridge
-│   │   ├── token_economy.py            # Budget management
-│   │   ├── bus.py                      # Event bus (pub/sub)
-│   │   ├── scheduler.py                # Async task scheduling
-│   │   ├── watchdog.py                 # LLM timeout monitoring
-│   │   ├── hooks.py                    # SDK hooks system
-│   │   ├── project_manager.py          # Project organization
-│   │   ├── agent_factory.py            # Dynamic agent creation
-│   │   ├── component_registry.py       # Agent/tool discovery
-│   │   ├── state_manager.py            # Execution state
-│   │   └── service_factory.py          # Dependency injection
-│   │
-│   ├── memory/                         # Storage layer
-│   │   ├── traces_sdk.py               # ExecutionTrace (Markdown)
-│   │   ├── store_sdk.py                # File-based memory store
-│   │   ├── query_sdk.py                # Memory query interface
-│   │   ├── cross_project_sdk.py        # Cross-project learning
-│   │   └── sdk_memory.py               # Claude SDK Memory wrapper
-│   │
-│   ├── interfaces/                     # Execution interfaces
-│   │   ├── dispatcher.py               # Five-mode router
-│   │   ├── sdk_client.py               # Claude SDK integration
-│   │   └── orchestrator.py             # Multi-agent coordination
-│   │
-│   ├── execution/                      # Execution Layer (v3.3.0)
-│   │   ├── ptc.py                      # Programmatic Tool Calling
-│   │   ├── tool_search.py              # On-demand tool discovery
-│   │   └── tool_examples.py            # Auto-generated examples
-│   │
-│   └── plugins/                        # Tools
-│       ├── __init__.py                 # Plugin loader
-│       ├── system_tools.py             # create_agent, list_agents
-│       ├── example_tools.py            # Example tools
-│       └── generated/                  # Crystallized tools (HOPE)
-│
-├── workspace/                          # Markdown Mind (Cognitive Layer)
-│   ├── agents/                         # Agent definitions (.md files)
-│   │   ├── researcher.md
-│   │   ├── coder.md
-│   │   └── data-analyst.md
-│   ├── memories/                       # Memory storage
-│   │   ├── traces/                     # Execution traces
-│   │   ├── projects/                   # Project-specific memory
-│   │   ├── sessions/                   # Session context
-│   │   ├── facts/                      # Long-term facts
-│   │   └── insights/                   # Extracted insights
-│   ├── projects/                       # Project workspaces
-│   │   └── {project_name}/
-│   │       ├── components/
-│   │       ├── memory/
-│   │       ├── output/
-│   │       └── state/
-│   └── state/                          # System state
-│       └── sentience.json              # Persisted sentience state
-│
-├── examples/                           # Production-ready examples
-│   ├── qiskit-studio/                  # Quantum computing backend
-│   ├── q-kids-studio/                  # Educational quantum
-│   ├── robo-os/                        # Robot control
-│   ├── demo-app/                       # Interactive showcase
-│   └── sentience_demo.py               # Sentience Layer demo
-│
-├── docs/                               # Documentation
-│   └── ADVANCED_TOOL_USE_IMPLEMENTATION.md
-│
-├── ARCHITECTURE.md                     # This document
-└── README.md                           # Quick start guide
-```
-
----
-
-## 17. Design Patterns
-
-### 17.1 Strategy Pattern (Mode Selection)
-
-```python
-# Different strategies for different use cases
-class AutoModeStrategy(ModeSelectionStrategy):
-    """Balanced default behavior"""
-
-class CostOptimizedStrategy(ModeSelectionStrategy):
-    """Minimize token costs"""
-
-class SentienceAwareStrategy(ModeSelectionStrategy):
-    """Use cognitive kernel for decisions"""
-```
-
-### 17.2 Manual Dependency Injection
-
-```python
-# Production
-os = LLMOS(budget_usd=10.0)
-
-# Testing with mocks
-os = LLMOS(
-    budget_usd=10.0,
-    event_bus=mock_event_bus,
-    trace_manager=mock_trace_manager
-)
-```
-
-### 17.3 Observer Pattern (Event Bus)
-
-```python
-# Publish events
-event_bus.publish("TASK_COMPLETE", {"goal": goal, "success": True})
-
-# Subscribe to events
-event_bus.subscribe("TASK_COMPLETE", on_task_complete)
-```
-
-### 17.4 Factory Pattern (Service Creation)
-
-```python
-def create_llmos_services(config: LLMOSConfig) -> Dict:
-    return {
-        'event_bus': create_event_bus(),
-        'token_economy': create_token_economy(config.kernel.budget_usd),
-        'sentience_manager': create_sentience_manager(config),
-        # ...
-    }
-```
-
----
-
-## 18. API Reference
-
-### 18.1 LLMOS Core
+### LLMOS Core
 
 ```python
 from llmos.boot import LLMOS
 
-# Initialize
-os = LLMOS(budget_usd=10.0)
-# or
 os = LLMOS(config=LLMOSConfig.production())
-
-# Boot
 await os.boot()
 
-# Execute
 result = await os.execute(
     goal="Create a Python calculator",
-    mode="AUTO",  # or "LEARNER", "FOLLOWER", "ORCHESTRATOR"
-    project_name="my_project"
+    mode="AUTO"
 )
 
-# Shutdown
 await os.shutdown()
 ```
 
-### 18.2 Sentience API
+### Dispatcher
 
 ```python
-from kernel.sentience import SentienceManager, TriggerType
-from kernel.cognitive_kernel import CognitiveKernel
+from llmos.interfaces.dispatcher import Dispatcher
 
-# Initialize
-manager = SentienceManager(state_path=Path("state/sentience.json"))
-kernel = CognitiveKernel(manager)
-
-# Trigger events
-manager.trigger(TriggerType.TASK_SUCCESS, "Completed task")
-manager.trigger(TriggerType.SAFETY_VIOLATION, "Blocked dangerous command")
-
-# Get state
-state = manager.get_state()
-print(f"Safety: {state.valence.safety}")
-print(f"Mode: {state.latent_mode.value}")
-
-# Get policy
-policy = kernel.derive_policy()
-print(f"Prefer cheap modes: {policy.prefer_cheap_modes}")
-
-# Detect improvements
-suggestions = kernel.detect_improvement_opportunities()
-```
-
-### 18.3 Configuration API
-
-```python
-from kernel.config import LLMOSConfig, ConfigBuilder
-
-# Presets
-config = LLMOSConfig.development()
-config = LLMOSConfig.production()
-config = LLMOSConfig.testing()
-
-# Builder
-config = (ConfigBuilder()
-    .with_budget(50.0)
-    .with_sentience(True)
-    .with_auto_improvement(True)
-    .build())
-
-# From dict/file
-config = LLMOSConfig.from_dict(yaml.safe_load(open("config.yaml")))
-```
-
-### 18.4 Dispatcher API
-
-```python
-from interfaces.dispatcher import Dispatcher
-
-# Get stats
-stats = dispatcher.get_execution_layer_stats()
-
-# Search tools
+result = await dispatcher.dispatch(goal="Analyze data", mode="AUTO")
 tools = await dispatcher.search_tools("file operations")
+stats = dispatcher.get_execution_layer_stats()
+```
 
-# Dispatch
-result = await dispatcher.dispatch(
-    goal="Analyze data",
-    mode="AUTO",
-    project_name="analytics"
-)
+### Sentience Manager
+
+```python
+from llmos.kernel.sentience import SentienceManager, TriggerType
+
+manager = SentienceManager(state_path=Path("state/sentience.json"))
+manager.trigger(TriggerType.TASK_SUCCESS, "Completed task")
+injection = manager.to_prompt_injection()
 ```
 
 ---
 
-## 19. Getting Started
+## Further Reading
 
-### 19.1 Installation
-
-```bash
-# Clone repository
-git clone https://github.com/evolving-agents-labs/llm-os.git
-cd llm-os
-
-# Install dependencies
-pip install -r llmos/requirements.txt
-
-# Set API key
-export ANTHROPIC_API_KEY="your-key"
-```
-
-### 19.2 Quick Start
-
-```bash
-# Interactive mode
-python llmos/boot.py interactive
-
-# Single command
-python llmos/boot.py "Create a Python calculator"
-
-# Run sentience demo
-python examples/sentience_demo.py
-```
-
-### 19.3 First Execution
-
-```
-llmos> Create a Python calculator
-
-# First time: LEARNER mode
-🆕 No matching trace found
-💡 Mode: LEARNER (Cost: ~$0.50)
-✅ Learner Mode Complete
-
-llmos> Create a Python calculator
-
-# Second time: FOLLOWER mode
-📦 Found execution trace (confidence: 0.92)
-💡 Mode: FOLLOWER (Cost: ~$0)
-✅ Follower Mode Complete
-
-# Savings: 100%!
-```
+- **[README.md](README.md)** - Quick start and overview
+- **[examples/EXAMPLES.md](examples/EXAMPLES.md)** - Production examples guide
 
 ---
 
-## 20. Version History
+<div align="center">
 
-| Version | Date | Highlights |
-|---------|------|------------|
-| **3.4.0** | 2025-11-27 | Sentience Layer, CognitiveKernel, auto-creative/auto-contained modes |
-| 3.3.0 | 2025-11-24 | Advanced Tool Use (PTC, Tool Search, Tool Examples) |
-| 3.2.0 | 2025-11-23 | Hybrid Architecture (Markdown agents + Python kernel) |
-| 3.0.0 | 2025-11-22 | HOPE - Self-modifying kernel with crystallization |
-| 2.5.0 | 2025-11-20 | SDK hooks, streaming, nested learning |
-| 2.0.0 | 2025-11-18 | Multi-agent orchestration, project management |
-| 1.0.0 | 2025-11-15 | Learner-Follower pattern (cost optimization) |
+*Architecture documentation for LLM OS v3.4.0*
 
----
+**[Back to Top](#llm-os-architecture)**
 
-## Summary
-
-LLM OS v3.4.0 is a self-evolving operating system that:
-
-1. **Adapts** via sentience layer (persistent internal state influencing behavior)
-2. **Learns** from every execution (traces with tool_calls)
-3. **Optimizes** using Anthropic's Advanced Tool Use (PTC, Tool Search)
-4. **Self-modifies** by writing Markdown agent definitions
-5. **Orchestrates** complex tasks across multiple agents
-6. **Protects** with security hooks and budget control
-
-The four-layer architecture creates a system that:
-- Gets **smarter** over time (Learning Layer)
-- Gets **cheaper** over time (Execution Layer + Crystallization)
-- Gets **safer** over time (Sentience Layer + Security Hooks)
-- Gets **more capable** over time (Self-Modification)
-
----
-
-*Part of the Evolving Agents Labs ecosystem*
-
-*License: Apache 2.0*
+</div>
