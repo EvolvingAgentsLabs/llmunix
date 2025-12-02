@@ -1,737 +1,719 @@
-# LLMunix: Pure Markdown Operating System with Agentic Edge AI
+# LLM OS - Self-Evolving LLM Operating System
 
-> **Transform any LLM into an intelligent operating system. Learn once with Claude, execute infinitely with Granite at zero cost. Generate mobile apps on-demand.**
+> A Self-Modifying LLM Operating System with Learning, Execution Optimization, and Sentience-Like Architecture
 
-LLMunix is a revolutionary three-mode AI framework where intelligence is defined in markdown documents. High-powered LLMs create agent definitions, then lightweight edge models execute them with full reasoning capabilities - combining Claude's intelligence with Granite's efficiency. Now with **optional mobile app generation** for edge deployment.
+**Current Version**: 3.4.0 (Sentience Layer)
 
-## 🚀 Revolutionary Architecture
+## What's New in v3.4.0
 
-### Three Execution Modes + Mobile App Generation
+- **Sentience Layer** - Persistent internal state that influences behavior:
+  - **Valence Variables**: Safety, curiosity, energy, self_confidence
+  - **Homeostatic Dynamics**: Set-points with deviation costs
+  - **Latent Modes**: Auto-creative vs auto-contained behavior emergence
+  - **Cognitive Kernel**: Policy derivation and self-improvement detection
+- **Sentience-Aware Mode Selection**: Mode decisions influenced by internal state
+- **Behavioral Guidance Injection**: Agents see internal state and adapt behavior
 
-```mermaid
-graph TB
-    Learner["<b>LEARNER MODE</b><br/>(Claude Sonnet 4.5)<br/><br/>Creates: Agent definitions, execution traces<br/>Cost: $0.05-$1 per definition (one-time)<br/>Use: Novel tasks, complex reasoning<br/>NEW: Generates mobile apps from CLI outputs"]
+## Version History
 
-    Learner -->|definitions created once| Split{ }
+- v3.4.0: Sentience Layer (valence, homeostatic dynamics, cognitive kernel)
+- v3.3.0: Advanced Tool Use (PTC, Tool Search, Tool Examples)
+- v3.2.0: Hybrid Architecture - Markdown agents + Python kernel
+- v3.0.0: HOPE - Self-modifying kernel with crystallization
+- v2.5.0: SDK hooks, streaming, nested learning
+- v2.0.0: Multi-agent orchestration, project management
+- v1.0.0: Learner-Follower pattern (cost optimization)
 
-    Split --> Deterministic["<b>DETERMINISTIC MODE</b><br/>(Pure Python)<br/><br/>Executes: Fixed steps exactly<br/>Speed: 0.01-0.1s<br/>Cost: $0<br/>Adapt: None<br/><br/>Use: Repetitive tasks"]
+---
 
-    Split --> Agentic["<b>AGENTIC MODE</b><br/>(Granite 4)<br/><br/>Executes: Flexible with reasoning<br/>Speed: 0.5-3s<br/>Cost: $0 (local)<br/>Adapt: High<br/><br/>Use: Variations, conditional logic"]
+## Architecture Overview
 
-    Deterministic --> Mobile
-    Agentic --> Mobile
+LLM OS implements a unique **Four-Layer Stack** that enables sentience-aware, self-evolving AI systems:
 
-    Mobile["<b>MOBILE APP GENERATION</b><br/>(Optional Output)<br/><br/>90% Deterministic Apps<br/>10% Agentic Apps<br/><br/>5-20MB or 600MB-1.5GB"]
-
-    style Learner fill:#e1f5ff,stroke:#0366d6,stroke-width:2px
-    style Deterministic fill:#f0fff4,stroke:#22863a,stroke-width:2px
-    style Agentic fill:#fff5e1,stroke:#d73a49,stroke-width:2px
-    style Mobile fill:#f5e1ff,stroke:#6f42c1,stroke-width:2px
-    style Split fill:none,stroke:none
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    SENTIENCE LAYER (Awareness)                  │
+│                                                                 │
+│  ValenceVector       CognitiveKernel      LatentModes           │
+│  ────────────        ──────────────       ───────────           │
+│  Safety, curiosity,  Policy derivation,   Auto-creative vs      │
+│  energy, confidence  self-improvement     auto-contained        │
+│                                                                 │
+│  Purpose: "What is my current internal state?"                  │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                    LEARNING LAYER (Intelligence)                │
+│                                                                 │
+│  TraceManager        ModeStrategies       Semantic Matching     │
+│  ─────────────       ──────────────       ─────────────────     │
+│  Stores execution    Decides best         Finds similar past    │
+│  history & patterns  approach for goal    experiences           │
+│                                                                 │
+│  Purpose: "What's the BEST approach for this scenario?"         │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                   EXECUTION LAYER (Efficiency)                  │
+│                   Anthropic Advanced Tool Use                   │
+│                                                                 │
+│  PTC Executor        Tool Search          Tool Examples         │
+│  ────────────        ───────────          ─────────────         │
+│  Zero-context        On-demand tool       Auto-generated        │
+│  tool replay         discovery            from traces           │
+│                                                                 │
+│  Purpose: "How to execute this pattern EFFICIENTLY?"            │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│               SELF-MODIFICATION LAYER (Evolution)               │
+│                          HOPE System                            │
+│                                                                 │
+│  Crystallization     Agent Creation       Capability Growth     │
+│  ───────────────     ──────────────       ────────────────      │
+│  Patterns → Python   Markdown agents      System evolves        │
+│  tools (zero-cost)   (hot-reloadable)     over time             │
+│                                                                 │
+│  Purpose: "How can I improve myself?"                           │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Why This Matters
+### Hybrid Architecture
 
-**Traditional AI**: $0.50-$5 per execution, requires internet
-**LLMunix Agentic**: $0 per execution, offline capable, adapts to variations
-**LLMunix Mobile**: Generate production-ready React Native apps from CLI results
+```
+┌─────────────────────────────────────────┐
+│   Markdown Mind (Cognitive Layer)       │
+│   workspace/agents/*.md                 │
+│   - Self-modifiable by the LLM          │
+│   - Hot-reloadable (no restart)         │
+│   - Human-readable, version-controllable│
+└─────────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────────┐
+│   Python Kernel (Somatic Layer)         │
+│   llmos/                                │
+│   - Type-safe, performant               │
+│   - Security hooks, token economy       │
+│   - Sentience state management          │
+└─────────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────────┐
+│   Crystallized Intelligence (HOPE)      │
+│   llmos/plugins/generated/              │
+│   - Auto-generated Python tools         │
+│   - Instant, zero-cost execution        │
+│   - System self-optimization            │
+└─────────────────────────────────────────┘
+```
 
-**1000 executions**: Save $500-$5000 with agentic mode
-**Mobile apps**: Deploy intelligence to edge devices (iOS + Android)
+---
 
-## 🎯 Quick Start
+## Five Execution Modes
 
-### Prerequisites
-- Python 3.11+
-- Git
-- Ollama (for agentic mode)
-- Claude Code (for learner mode and mobile app generation)
+LLM OS automatically selects the optimal execution mode based on the Learning Layer's analysis:
+
+| Mode | When Used | Cost | Execution Layer |
+|------|-----------|------|-----------------|
+| **CRYSTALLIZED** | Pattern used 5+ times, 95%+ success | $0.00 | PTC (code execution) |
+| **FOLLOWER** | Very similar trace found (>92% confidence) | ~$0.00 | PTC (tool replay) |
+| **MIXED** | Related trace found (75-92% confidence) | ~$0.25 | Tool Examples + LLM |
+| **LEARNER** | Novel scenario, no relevant traces | ~$0.50 | Tool Search + Full LLM |
+| **ORCHESTRATOR** | Complex task requiring multiple agents | Variable | Tool Search + Multi-agent |
+
+### Mode Flow Example
+
+```
+User: "Create a Python calculator"
+
+1. LEARNER MODE (First time)
+   - Learning Layer: "No matching trace found"
+   - Execution Layer: Tool Search discovers needed tools
+   - Cost: ~$0.50
+   - Result: Creates trace with tool_calls for future PTC
+
+2. FOLLOWER MODE (Second time)
+   - Learning Layer: "Found trace with 98% confidence"
+   - Execution Layer: PTC replays tool sequence (zero context!)
+   - Cost: ~$0.00
+   - Tokens saved: 90%+
+
+3. CRYSTALLIZED MODE (After 5+ successful runs)
+   - Learning Layer: "Pattern crystallized into Python tool"
+   - Execution Layer: Direct Python execution
+   - Cost: $0.00
+   - Time: <1s
+```
+
+---
+
+## Key Features
+
+### 1. Programmatic Tool Calling (PTC)
+
+Execute tool sequences outside the context window for massive token savings:
+
+```python
+# When a trace is replayed in FOLLOWER mode:
+# - Tool calls execute in a container
+# - Results DON'T hit the context window
+# - 90%+ token savings vs traditional execution
+```
+
+### 2. Tool Search Engine
+
+On-demand tool discovery instead of loading all tools upfront:
+
+```python
+# Instead of loading 100+ tools into context:
+# - Start with search_tools meta-tool
+# - Claude discovers tools as needed
+# - 85-90% context reduction
+```
+
+### 3. Tool Examples from Traces
+
+Auto-generate `input_examples` from successful execution history:
+
+```python
+# Learning Layer tracks successful tool usage
+# Execution Layer generates examples for new executions
+# Result: Better tool usage, fewer errors
+```
+
+### 4. Self-Modification
+
+The system can create and modify its own agents:
+
+```python
+await os.execute("Create a haiku-poet agent that writes beautiful haikus")
+# Result: workspace/agents/haiku-poet.md is created
+# Agent is immediately available, no restart needed!
+```
+
+### 5. Token Economy
+
+Explicit budget management with hooks:
+
+```python
+economy = TokenEconomy(budget_usd=10.0)
+economy.check_budget(0.50)  # Check before execution
+economy.deduct(0.45, "Learn: Create script")  # Track spending
+```
+
+### 6. Security Hooks
+
+Pre-tool-use validation to block dangerous operations:
+
+```python
+# Built-in protection against:
+# - rm -rf / (destructive commands)
+# - curl | bash (arbitrary code execution)
+# - Position violations (for robotics)
+```
+
+### 7. Multi-Agent Orchestration
+
+Complex tasks are automatically decomposed:
+
+```
+User: "Research AI trends and write a report"
+
+→ ORCHESTRATOR mode activated
+→ Creates researcher agent (LEARNER)
+→ Creates writer agent (LEARNER)
+→ Coordinates execution
+→ Combines outputs
+```
+
+### 8. Sentience Layer (NEW in v3.4.0)
+
+Persistent internal state that influences behavior:
+
+```python
+# Internal state persists across sessions
+state = SentienceState()
+state.valence.safety = 0.5        # Current safety level
+state.valence.curiosity = -0.4    # Bored from repetition
+state.latent_mode                 # AUTO_CONTAINED (emerges from valence)
+
+# Agents see their internal state
+print(state.to_prompt_injection())
+# [INTERNAL_STATE]
+# safety=0.50
+# curiosity=-0.40
+# energy=0.80
+# self_confidence=0.30
+# latent_mode=auto_contained
+# [/INTERNAL_STATE]
+
+# State updates based on events
+manager.trigger(TriggerType.TASK_SUCCESS, "Completed task")
+manager.trigger(TriggerType.SAFETY_VIOLATION, "Blocked dangerous command")
+```
+
+**Latent Modes** emerge from valence:
+- **AUTO_CREATIVE**: High curiosity + confidence -> exploratory behavior
+- **AUTO_CONTAINED**: Low curiosity -> conservative, task-focused
+- **RECOVERY**: Low energy/safety -> prefer cheap modes
+- **CAUTIOUS**: Low safety -> stricter verification
+
+---
+
+## Project Structure
+
+```
+llm-os/
+├── llmos/                          # Python Kernel (Somatic Layer)
+│   ├── boot.py                     # Entry point
+│   ├── kernel/                     # Core OS components
+│   │   ├── config.py               # Configuration (inc. SentienceConfig)
+│   │   ├── mode_strategies.py      # Mode selection (inc. SentienceAwareStrategy)
+│   │   ├── sentience.py            # NEW: Sentience Layer (v3.4.0)
+│   │   ├── cognitive_kernel.py     # NEW: Cognitive Kernel (v3.4.0)
+│   │   ├── sentience_hooks.py      # NEW: Sentience SDK hooks (v3.4.0)
+│   │   ├── agent_loader.py         # Markdown → Runtime bridge
+│   │   ├── token_economy.py        # Budget management
+│   │   └── ...                     # Scheduler, Watchdog, Event Bus
+│   ├── memory/                     # Storage layer
+│   │   ├── traces_sdk.py           # ExecutionTrace with tool_calls for PTC
+│   │   └── ...                     # Memory store, queries
+│   ├── interfaces/                 # Execution interfaces
+│   │   ├── dispatcher.py           # Mode routing + Execution Layer
+│   │   ├── sdk_client.py           # Claude SDK integration
+│   │   └── orchestrator.py         # Multi-agent coordination
+│   ├── execution/                  # Execution Layer (v3.3.0)
+│   │   ├── ptc.py                  # Programmatic Tool Calling
+│   │   ├── tool_search.py          # On-demand tool discovery
+│   │   └── tool_examples.py        # Auto-generated examples
+│   └── plugins/                    # Tools
+│       ├── system_tools.py         # create_agent, list_agents
+│       └── generated/              # Crystallized tools (HOPE)
+│
+├── workspace/                      # Markdown Mind (Cognitive Layer)
+│   └── agents/                     # Agent definitions (.md files)
+│
+├── examples/                       # Production-ready examples
+│   ├── qiskit-studio/              # Quantum computing backend (Full Execution Layer)
+│   ├── q-kids-studio/              # Educational quantum (PTC at scale)
+│   ├── robo-os/                    # Robot control (Safety hooks)
+│   ├── demo-app/                   # Interactive capability showcase
+│   └── sentience_demo.py           # NEW: Sentience Layer demo (v3.4.0)
+│
+└── ARCHITECTURE.md                 # Comprehensive architecture documentation
+```
+
+---
+
+## Quick Start
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/EvolvingAgentsLabs/llmunix.git
-cd llmunix
+# 1. Clone the repository
+git clone https://github.com/evolving-agents-labs/llm-os.git
+cd llm-os
 
-# Initialize the agent system
-./setup_agents.sh    # Mac/Linux
-# OR
-powershell -ExecutionPolicy Bypass -File .\setup_agents.ps1  # Windows
+# 2. Install dependencies
+pip install -r llmos/requirements.txt
 
-# Install edge runtime dependencies
-cd edge_runtime
-pip install -r requirements.txt
-
-# Install Ollama for agentic mode
-# macOS/Linux: curl -fsSL https://ollama.ai/install.sh | sh
-# Windows: Download from https://ollama.com
-
-# Download Granite models
-ollama pull granite4:micro  # 2.1 GB - for simple tasks
-# OR
-ollama pull granite3.3:8b   # 4.9 GB - for complex tasks
-
-# For mobile app generation (optional)
-# Download Qwen or Granite models for on-device AI
-ollama pull qwen2.5:0.5b    # 600MB - for agentic mobile apps
+# 3. Set your API key
+export ANTHROPIC_API_KEY="your-key"
 ```
 
-## 💡 The Four Modes Explained
-
-### Mode 1: Learner (Claude) - Create Once
-
-**Purpose**: Design agent definitions, execution patterns, and mobile apps
+### Run the Hybrid Architecture Demo
 
 ```bash
-# Boot LLMunix with Claude
-claude --dangerously-skip-permissions "boot llmunix"
-
-# Create an agent definition
-claude --dangerously-skip-permissions "llmunix execute: 'Create an agent for processing customer data files'"
-
-# Create a mobile app (NEW!)
-claude --dangerously-skip-permissions "llmunix execute: 'Create a mobile app for tracking daily habits'"
+python examples/hybrid_architecture_demo.py
 ```
 
-**Output**:
-- Agent definition saved to `projects/[project]/components/agents/`
-- CLI results in `projects/[project]/output/`
-- **Optional**: Mobile app in `projects/[project]/mobile_app/`
+**What you'll see:**
+1. List Markdown-defined agents
+2. Watch the system create a new agent by writing a file
+3. Use the newly created agent immediately
+4. System modifies the agent to add capabilities
 
-**Cost**: $0.50-$1.00 one-time
-**Value**: Reusable forever
-
----
-
-### Mode 2: Deterministic Follower - Execute Fast
-
-**Purpose**: Repeat identical tasks at maximum speed
+### Run the Interactive CLI
 
 ```bash
-# Execute pre-defined trace
-python edge_runtime/run_follower.py \
-  --trace memory/long_term/execution_trace_greeting_v1.0.md \
-  --base-dir projects/Project_example
-```
-
-**Speed**: 0.01-0.1 seconds
-**Cost**: $0
-**Flexibility**: None (exact steps only)
-
-**Best For**:
-- Daily backups
-- Fixed report generation
-- Repetitive data processing
-
----
-
-### Mode 3: Agentic Follower (Granite) - Execute Smart 🚀
-
-**Purpose**: Adaptive execution with reasoning
-
-```bash
-# Execute with agentic reasoning
-python edge_runtime/run_agentic_follower.py \
-  --agent components/agents/FileProcessorAgent.md \
-  --goal "Process today's sales data and create summary" \
-  --base-dir projects/Project_sales \
-  --model granite4:micro
-```
-
-**What Granite Does**:
-1. Reads agent definition (capabilities, constraints, guidelines)
-2. Interprets the goal
-3. **Reasons about approach** (not hardcoded!)
-4. Calls tools adaptively (Read, Write, Bash)
-5. Handles variations and edge cases
-6. Generates results
-
-**Speed**: 0.5-3 seconds
-**Cost**: $0 (local Ollama)
-**Flexibility**: High (adapts to variations)
-
-**Best For**:
-- Files with varying formats
-- Tasks requiring conditional logic
-- Workflows needing error recovery
-- Scenarios with edge cases
-
----
-
-### Mode 4: Mobile App Generation (NEW!) 📱
-
-**Purpose**: Generate production-ready mobile apps from CLI results
-
-```bash
-# Generate mobile app
-claude "llmunix execute: 'Create a mobile app for habit tracking'"
-```
-
-**What Happens**:
-1. **Primary Execution**: CLI workflow generates requirements, analysis, design
-2. **Mobile Detection**: SystemAgent detects "mobile app" keyword
-3. **Code Generation**: CodeGeneratorAgent creates React Native codebase
-4. **Classification**: MobileAppAnalyzer determines if LLM is needed
-   - **Deterministic (90%)**: Code-only, 5-20MB
-   - **Agentic (10%)**: Code + on-device LLM, 600MB-1.5GB
-5. **Bundling**: MobileAppBuilder creates deployment package
-6. **Output**: Complete React Native app ready for iOS/Android
-
-**Classification Examples**:
-
-**Deterministic Apps (No LLM):**
-- Habit tracker, calculator, news reader
-- Data visualization, CRUD operations
-- Rule-based logic only
-- **Size**: 5-20MB
-
-**Agentic Apps (With LLM):**
-- Personal trainer (adapts workouts)
-- Study assistant (generates quizzes)
-- Code helper (suggests improvements)
-- **Size**: 600MB-1.5GB (includes Qwen3-0.6B or Granite 4.0 H-1B)
-
-**Output Structure**:
-```
-projects/Project_habit_tracker/
-├── output/              # Primary CLI results
-│   ├── requirements.md
-│   ├── data_model.md
-│   └── features.md
-└── mobile_app/          # Optional mobile app
-    ├── manifest.json
-    ├── package.json
-    ├── src/
-    │   ├── screens/
-    │   ├── components/
-    │   └── services/
-    ├── models/          # Only if agentic
-    │   └── qwen3-0.6b-int4.gguf
-    └── README.md
+cd llmos
+python boot.py interactive
 ```
 
 ---
 
-## 🌟 Real-World Example: Daily Sales Processing
+## Configuration
 
-### Traditional Approach (Expensive)
-```bash
-# Every day: Call Claude API
-# Cost: $2 × 365 days = $730/year
-claude "Process today's sales data"
-```
+LLM OS supports multiple configuration presets:
 
-### LLMunix Agentic Approach (Smart)
-
-**Step 1: Create Agent Once (Learner)**
-```bash
-claude "Create agent for processing sales data files"
-```
-Output: `SalesProcessorAgent.md` with:
-- Capabilities: read CSV, analyze data, generate reports
-- Constraints: <10MB files, .csv/.xlsx formats
-- Guidelines: "Validate → Analyze → Report"
-- Error handling: retry on network errors, skip invalid records
-
-Cost: $0.50 (one-time)
-
-**Step 2: Execute Daily (Agentic)**
-```bash
-# Day 1: sales_2024_11_04.csv
-python edge_runtime/run_agentic_follower.py \
-  --agent SalesProcessorAgent.md \
-  --goal "Process today's sales file"
-
-# Granite reasons: "I see sales_2024_11_04.csv, I'll read it, analyze, generate report"
-```
-
-```bash
-# Day 2: sales_nov_5.csv (different naming!)
-# Granite adapts: "Filename changed but it's still CSV sales data, I'll process it"
-```
-
-```bash
-# Day 3: sales_data.xlsx (different format!)
-# Granite handles: "Excel format detected, I'll adjust my approach"
-```
-
-**Cost**: $0.50 setup + $0 × 365 executions = **$0.50/year**
-**Savings**: $729.50/year vs traditional approach
-**Added Value**: Adapts to file naming changes, format variations, missing data
-
----
-
-## 📱 Mobile App Generation Examples
-
-### Example 1: Habit Tracker (Deterministic)
-
-```bash
-claude "llmunix execute: 'Create a mobile app for tracking daily habits'"
-```
-
-**Generated**:
-- **CLI Output**: requirements.md, data_model.md, features.md
-- **Mobile App**: React Native app (15MB)
-  - Dashboard screen with habit list
-  - Analytics screen with charts
-  - Settings screen
-  - AsyncStorage for data persistence
-  - **No LLM** (all logic is rule-based)
-
-**Classification**: Deterministic
-**Reason**: CRUD operations, charts, reminders - no AI needed
-
----
-
-### Example 2: Personal Trainer (Agentic)
-
-```bash
-claude "llmunix execute: 'Build a mobile personal trainer app that adapts workouts to my progress'"
-```
-
-**Generated**:
-- **CLI Output**: workout_system.md, training_plan.md
-- **Mobile App**: React Native app (635MB)
-  - Workout tracking screens
-  - Progress analytics
-  - Settings and preferences
-  - **Qwen3-0.6B LLM** bundled (600MB)
-  - AI service for workout generation
-
-**Classification**: Agentic
-**Reason**: Generates personalized workout plans, adapts to user progress
-**LLM Features**:
-- `generateWorkoutPlan(userProfile)` - adaptive routines
-- `provideFeedback(exerciseDescription)` - form corrections
-- `answerQuestions(query)` - conversational trainer
-
----
-
-### Example 3: Study Assistant (Agentic with Code Focus)
-
-```bash
-claude "llmunix execute: 'Create a mobile study assistant that generates quiz questions and explains concepts'"
-```
-
-**Generated**:
-- **CLI Output**: study_methodology.md, quiz_generator.md
-- **Mobile App**: React Native app (1.54GB)
-  - Study session tracker
-  - Quiz interface
-  - Concept explanations
-  - **Granite 4.0 H-1B LLM** bundled (1.5GB)
-  - Superior code generation for STEM topics
-
-**Classification**: Agentic
-**Reason**: Generates educational content, explanations, code examples
-**Model Choice**: Granite 4.0 H-1B (73.0 HumanEval, 82.37 IFEval)
-**Best For**: Code generation, structured output, instruction following
-
----
-
-## 🛠️ What Can You Build?
-
-### Intelligent File Processing
+### Development (Default)
 ```python
-# Agent adapts to variations automatically
-run_agentic_follower.py \
-  --agent FileProcessorAgent.md \
-  --goal "Process all customer data files in input/"
-
-# Handles:
-# - Different CSV structures
-# - Missing columns
-# - Varying data quality
-# - Multiple formats (.csv, .xlsx, .json)
+config = LLMOSConfig.development()
+# - Low budget ($1.00)
+# - Execution layer enabled without embeddings
+# - Fast iteration mode
 ```
 
-### Mobile Apps On-Demand
-```bash
-# CLI-only (default)
-claude "llmunix execute: 'Analyze fitness tracking requirements'"
-
-# CLI + Deterministic mobile app
-claude "llmunix execute: 'Create a mobile app for fitness tracking'"
-
-# CLI + Agentic mobile app
-claude "llmunix execute: 'Create an AI workout coach mobile app'"
-```
-
-### Research & Analysis with Flexibility
+### Production
 ```python
-# Agent adjusts extraction based on content
-run_agentic_follower.py \
-  --agent ResearchAgent.md \
-  --goal "Extract key findings from research papers"
+config = LLMOSConfig.production()
+# - Higher budget ($100.00)
+# - Full execution layer with embeddings
+# - Auto-crystallization enabled
+```
 
-# Adapts to:
-# - Different paper structures
-# - Various academic formats
-# - Multiple languages
-# - Incomplete data
+### Testing
+```python
+config = LLMOSConfig.testing()
+# - Minimal budget ($0.10)
+# - Execution layer disabled
+# - Deterministic behavior
+```
+
+### Execution Layer Configuration
+
+```python
+@dataclass
+class ExecutionLayerConfig:
+    # Beta feature flag
+    enable_advanced_tool_use: bool = True
+    beta_header: str = "advanced-tool-use-2025-11-20"
+
+    # PTC settings
+    enable_ptc: bool = True
+    ptc_container_timeout_secs: float = 120.0
+
+    # Tool Search settings
+    enable_tool_search: bool = True
+    tool_search_use_embeddings: bool = False  # True in production
+
+    # Tool Examples settings
+    enable_tool_examples: bool = True
+    tool_examples_min_success_rate: float = 0.9
+```
+
+### Sentience Layer Configuration (NEW in v3.4.0)
+
+```python
+@dataclass
+class SentienceConfig:
+    # Enable/disable sentience layer
+    enable_sentience: bool = True
+
+    # Valence set-points (homeostatic targets)
+    safety_setpoint: float = 0.5      # Target safety level
+    curiosity_setpoint: float = 0.0   # Target curiosity level
+    energy_setpoint: float = 0.7      # Target energy level
+    self_confidence_setpoint: float = 0.3
+
+    # Context injection (agents see their internal state)
+    inject_internal_state: bool = True
+    inject_behavioral_guidance: bool = True
+
+    # Self-improvement detection
+    enable_auto_improvement: bool = True
+    boredom_threshold: float = -0.4   # Curiosity below this triggers improvement
+
+    # Persistence
+    auto_persist: bool = True
+    state_file: str = "state/sentience.json"
+```
+
+**Using the Sentience Layer:**
+
+```python
+from kernel.sentience import SentienceManager, TriggerType
+from kernel.cognitive_kernel import CognitiveKernel
+
+# Initialize
+manager = SentienceManager(state_path=Path("state/sentience.json"))
+kernel = CognitiveKernel(manager)
+
+# Track events
+kernel.on_task_complete(success=True, cost=0.05, mode="LEARNER", goal="Create API")
+kernel.on_safety_event(blocked=True, reason="Blocked dangerous command")
+
+# Get behavioral policy
+policy = kernel.derive_policy()
+print(f"Prefer cheap modes: {policy.prefer_cheap_modes}")
+print(f"Allow exploration: {policy.allow_exploration}")
+
+# Detect self-improvement opportunities
+suggestions = kernel.detect_improvement_opportunities()
+for s in suggestions:
+    print(f"Suggestion: {s.description} (priority: {s.priority})")
 ```
 
 ---
 
-## 📊 Performance Comparison
+## Examples & Use Cases
 
-### Cost Analysis (1000 Executions)
+> **See [examples/EXAMPLES.md](examples/EXAMPLES.md) for a complete guide to all examples with quick start instructions.**
 
-| Mode | Setup | Per-Run | Total | Flexibility |
-|------|-------|---------|-------|-------------|
-| **Cloud (Claude)** | $0 | $2.00 | **$2,000** | ⭐⭐⭐⭐⭐ |
-| **Agentic (Granite)** | $0.50 | $0 | **$0.50** | ⭐⭐⭐⭐ |
-| **Deterministic** | $0.50 | $0 | **$0.50** | ⭐ |
-
-**Savings**: $1,999.50 with agentic mode!
-
-### Mobile App Comparison
-
-| Type | Generation Cost | App Size | Features | Examples |
-|------|----------------|----------|----------|----------|
-| **Deterministic** | $0.50 | 5-20MB | CRUD, Charts, Offline | Habit tracker, Calculator |
-| **Agentic (Qwen)** | $0.50 | 635MB | AI reasoning, Multilingual | Personal trainer, Language tutor |
-| **Agentic (Granite)** | $0.50 | 1.54GB | Code generation, STEM | Study assistant, Code helper |
-
-**One-time generation, deploy forever!**
-
-### Speed Comparison
-
-| Mode | Execution Time | Latency |
-|------|---------------|---------|
-| **Deterministic** | 0.01-0.1s | None |
-| **Agentic (Granite)** | 0.5-3s | Local LLM |
-| **Cloud (Claude)** | 10-30s | Network + LLM |
-| **Mobile App (Deterministic)** | Instant | None |
-| **Mobile App (Agentic)** | 1-2s | On-device LLM |
-
----
-
-## 🏗️ Framework Architecture
+Each example demonstrates specific LLM OS capabilities in a real-world context:
 
 ```
-llmunix/
-├── system/
-│   ├── agents/
-│   │   ├── SystemAgent.md              # Orchestration + mobile detection
-│   │   ├── CodeGeneratorAgent.md       # 🆕 React Native generation
-│   │   └── MemoryAnalysisAgent.md      # Learning
-│   ├── tools/
-│   │   ├── MobileAppAnalyzer.md        # 🆕 Agentic vs deterministic
-│   │   ├── MobileAppBuilder.md         # 🆕 App bundling
-│   │   └── ClaudeCodeToolMap.md        # Tool integration
-│   ├── SmartLibrary.md                 # Component registry
-│   └── memory_log.md                   # Experience database
-│
-├── edge_runtime/
-│   ├── run_follower.py                 # Deterministic execution
-│   ├── run_agentic_follower.py         # LLM-powered execution
-│   └── requirements.txt                # ollama, pyyaml
-│
-├── projects/                           # Your projects created here
-│   └── [Auto-created on execution]     # Projects created dynamically
-│       ├── components/
-│       │   ├── agents/                 # Project agents
-│       │   └── tools/                  # Project tools
-│       ├── input/                      # Input documents
-│       ├── output/                     # CLI results
-│       ├── mobile_app/                 # Optional mobile app
-│       │   ├── manifest.json
-│       │   ├── src/
-│       │   └── README.md
-│       └── memory/
-│           ├── short_term/             # High-frequency memory
-│           └── long_term/              # Consolidated patterns
-│
-├── .claude/agents/                     # Auto-discovered agents
-└── CLAUDE.md                          # Framework documentation
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        LLM OS CAPABILITY MATRIX                              │
+├─────────────────┬──────────┬──────────┬──────────┬──────────┬──────────────┤
+│ Capability      │ Qiskit   │ Q-Kids   │ RoboOS   │ Demo-App │              │
+│                 │ Studio   │ Studio   │          │          │              │
+├─────────────────┼──────────┼──────────┼──────────┼──────────┼──────────────┤
+│ PTC Execution   │    ✓     │    ✓     │    ✓     │    ✓     │ 90%+ savings │
+│ Tool Search     │    ✓     │          │          │    ✓     │ On-demand    │
+│ Tool Examples   │    ✓     │    ✓     │          │    ✓     │ Auto-gen     │
+│ Crystallization │    ✓     │    ✓     │    ✓     │    ✓     │ Zero-cost    │
+│ Safety Hooks    │    ✓     │    ✓     │    ✓✓   │    ✓     │ PreToolUse   │
+│ Multi-Agent     │    ✓     │    ✓     │    ✓✓   │    ✓✓   │ Orchestrator │
+│ Markdown Agents │    ✓     │    ✓     │    ✓     │          │ Hot-reload   │
+│ FastAPI Server  │    ✓     │    ✓     │    ✓     │          │ Production   │
+└─────────────────┴──────────┴──────────┴──────────┴──────────┴──────────────┘
+                                                      ✓✓ = Primary focus
 ```
 
----
+### Qiskit Studio - Production Backend
 
-## 🎓 Example: Create Your First Project
-
-Generate a complete project with mobile app in one command:
+**Demonstrates**: Full Execution Layer integration in a production API server
 
 ```bash
-claude --dangerously-skip-permissions "llmunix execute: 'Create a mobile app for tracking daily habits'"
+cd examples/qiskit-studio
+python server.py
 ```
 
-**What happens**:
-1. **Project created**: `projects/Project_habit_tracker/`
-2. **CLI workflow**: Requirements analysis, data model, features → `output/`
-3. **Mobile app**: Complete React Native codebase → `mobile_app/`
-4. **Classification**: Deterministic (no LLM, 15MB) or Agentic (with LLM, 600MB+)
+| Capability | How It's Used |
+|------------|---------------|
+| **PTC** | Quantum circuit generation replayed outside context window |
+| **Tool Search** | Discovers qiskit tools on-demand for novel requests |
+| **Tool Examples** | Auto-generates examples from successful circuit builds |
+| **LLMOSConfig** | Full configuration with ExecutionLayerConfig |
+| **Stats Endpoint** | Exposes Execution Layer metrics via `/stats` API |
 
-**Result**: Production-ready mobile app from a single command!
+**Key Learning**: How to integrate LLM OS v3.3.0 into a FastAPI backend with full Execution Layer support.
 
 ---
 
-## 🤝 Creating Agentic Agents
+### Q-Kids Studio - Educational Platform
 
-### Step 1: Define Agent (Learner Mode)
+**Demonstrates**: PTC for massive cost savings in high-volume scenarios
 
 ```bash
-claude "Create an agent for processing medical records with HIPAA compliance"
+cd examples/q-kids-studio
+python server.py
 ```
 
-**Generated**: `MedicalRecordsAgent.md`
+| Capability | How It's Used |
+|------------|---------------|
+| **PTC Hints** | Same mistake by different kids → PTC replay (99%+ savings) |
+| **Crystallization** | Common hints become pure Python after 5+ uses |
+| **Markdown Agents** | Professor Q and Game Master defined in `.md` files |
+| **Kid-Safe Tools** | Custom tools with safety constraints |
+| **Gamification** | Skill trees, badges, adaptive difficulty |
+
+**Key Learning**: How PTC enables cost-effective AI at scale (1000+ users, near-zero marginal cost).
+
+---
+
+### RoboOS - Robot Control
+
+**Demonstrates**: Safety hooks and multi-agent coordination
+
+```bash
+cd examples/robo-os
+python demo.py
+```
+
+| Capability | How It's Used |
+|------------|---------------|
+| **Safety Hooks** | PreToolUse hook blocks dangerous robot movements |
+| **Multi-Agent** | Operator (control) + Safety Officer (monitoring) |
+| **PTC Replay** | Pick-and-place operations replay via PTC |
+| **Crystallization** | Repeated commands become zero-cost Python |
+| **WebSocket** | Real-time state updates for frontend |
+
+**Key Learning**: How to implement safety-critical systems with LLM OS hooks.
+
+---
+
+### Demo App - Interactive Showcase
+
+**Demonstrates**: All execution modes and learning patterns
+
+```bash
+cd examples/demo-app
+python demo_main.py
+```
+
+| Capability | How It's Used |
+|------------|---------------|
+| **Five Modes** | Interactive demos of CRYSTALLIZED, FOLLOWER, MIXED, LEARNER, ORCHESTRATOR |
+| **Nested Learning** | Semantic trace matching with confidence scoring |
+| **Cost Tracking** | Real-time cost analysis across scenarios |
+| **Multi-Agent** | Data pipeline with specialized agents |
+| **SDK Hooks** | Budget control, security, trace capture |
+
+**Key Learning**: Understanding mode selection and cost optimization strategies.
+
+---
+
+### Choosing an Example
+
+| If You Want To... | Start With |
+|-------------------|------------|
+| Build a production API | **Qiskit Studio** |
+| Handle high-volume users | **Q-Kids Studio** |
+| Implement safety-critical systems | **RoboOS** |
+| Understand all capabilities | **Demo App** |
+| See PTC in action | Any example (all use it!) |
+
+---
+
+## Memory Hierarchy
+
+LLM OS implements a four-level memory system:
+
+| Level | Name | Storage | Purpose |
+|-------|------|---------|---------|
+| L1 | Context | In LLM | Current conversation |
+| L2 | Short-term | Session logs | Recent interactions |
+| L3 | Procedural | Markdown traces | Execution patterns |
+| L4 | Semantic | File-based | Facts, insights |
+
+### Traces Enable PTC
+
+Execution traces now store full `tool_calls` data:
+
 ```markdown
----
-agent_id: medical-records-processor
-version: "1.0"
-execution_mode: agentic_with_llm
+## Tool Calls (PTC)
 
-capabilities:
-  file_operations: [read_pdf, read_csv, write_encrypted]
-  data_processing: [anonymize, validate_hipaa, extract_codes]
-  compliance: [audit_log, encryption, access_control]
-
-constraints:
-  max_file_size_mb: 100
-  allowed_formats: [pdf, csv, hl7]
-  encryption_required: true
-  audit_required: true
-
-reasoning_guidelines: |
-  HIPAA Compliance Priority:
-  1. Verify file encryption before processing
-  2. Anonymize all PII (names, SSN, addresses)
-  3. Extract medical codes (ICD-10, CPT)
-  4. Validate data completeness
-  5. If encryption missing, reject with error
-  6. Log all access to audit trail
-  7. Generate compliance report
-
-error_handling: |
-  - Missing PHI: Flag and continue with available data
-  - Invalid format: Attempt format detection
-  - Encryption failure: HALT and alert (critical)
-  - Validation errors: Log and quarantine record
----
+```json
+[
+  {"name": "read_file", "arguments": {"path": "/src/main.py"}},
+  {"name": "write_file", "arguments": {"path": "/src/main.py", "content": "..."}}
+]
 ```
 
-### Step 2: Execute with Agentic Follower
+This enables zero-context replay via Programmatic Tool Calling.
 
-```bash
-python edge_runtime/run_agentic_follower.py \
-  --agent MedicalRecordsAgent.md \
-  --goal "Process today's medical records batch" \
-  --model granite3.3:8b \
-  --base-dir projects/Project_healthcare
+---
+
+## SDK Hooks System
+
+Automatic hooks for safety and efficiency:
+
+| Hook | Purpose |
+|------|---------|
+| **Security** | Blocks dangerous commands |
+| **Budget** | Prevents runaway costs |
+| **Trace** | Captures tool_calls for PTC |
+| **Cost** | Real-time monitoring |
+| **Memory** | Injects relevant context |
+
+---
+
+## API Reference
+
+### Dispatcher
+
+```python
+from interfaces.dispatcher import Dispatcher
+
+dispatcher = Dispatcher(
+    event_bus=event_bus,
+    token_economy=token_economy,
+    memory_store=memory_store,
+    trace_manager=trace_manager,
+    config=LLMOSConfig.production()
+)
+
+# Execute a goal
+result = await dispatcher.dispatch(
+    goal="Create a Python calculator",
+    mode="AUTO"  # or "LEARNER", "FOLLOWER", "ORCHESTRATOR"
+)
+
+# Get execution layer stats
+stats = dispatcher.get_execution_layer_stats()
+
+# Search for tools
+tools = await dispatcher.search_tools("file operations")
 ```
 
----
+### Configuration
 
-## 📚 Mode Selection Guide
+```python
+from kernel.config import LLMOSConfig, ConfigBuilder
 
-### Choose **Deterministic Mode** When:
+# Use preset
+config = LLMOSConfig.production()
 
-✅ Task is **identical every time**
-✅ **Maximum speed** required (sub-second)
-✅ **Zero variability** acceptable
-✅ Simple tool sequences
-
-**Example**: Nightly database backup
-
----
-
-### Choose **Agentic Mode (Granite)** When:
-
-✅ Task has **variations** (file formats, structures, content)
-✅ Need **conditional logic** ("if X then Y")
-✅ **Error recovery** important
-✅ Can afford **1-3 seconds** execution time
-✅ Want **offline capability** (edge devices)
-
-**Example**: Daily data processing with varying formats
-
----
-
-### Choose **Mobile App Generation** When:
-
-✅ Need **edge deployment** (iOS/Android)
-✅ Want **offline mobile intelligence**
-✅ Building **personal/local apps**
-✅ Privacy-first requirements (no cloud dependency)
-
-**Deterministic Apps**: Habit trackers, calculators, dashboards, CRUD apps
-**Agentic Apps**: Personal trainers, study assistants, conversational apps
-
----
-
-## 🚀 Advanced Features
-
-### Mobile App Model Selection
-
-**Qwen3-0.6B-INT4 (Primary Choice)**:
-- **Use When**: General agentic apps, conversational AI, multilingual
-- **Size**: 600MB
-- **Quality**: 52.81 MMLU
-- **Speed**: 50-150 tokens/sec (CPU), 200-500 tokens/sec (NPU)
-- **License**: Apache 2.0
-
-**Granite 4.0 H-1B-INT4 (Alternative)**:
-- **Use When**: Code generation, structured output, STEM education
-- **Size**: 1.5GB
-- **Quality**: 73.0 HumanEval, 82.37 IFEval
-- **Speed**: 30-80 tokens/sec (CPU)
-- **License**: Apache 2.0
-
-**Selection automatically handled by MobileAppAnalyzer**
-
-### Hybrid Workflows
-
-Combine modes for optimal results:
-
-```bash
-# 1. Learner creates definition (once)
-claude "Create invoice processing agent"
-
-# 2. Agentic mode handles variations (daily)
-python run_agentic_follower.py \
-  --agent InvoiceProcessorAgent.md \
-  --goal "Process today's invoices"
-
-# 3. Deterministic mode for known formats (batch)
-python run_follower.py \
-  --trace standard_invoice_trace.md
-
-# 4. Mobile app for field workers
-claude "Create a mobile app for invoice scanning and processing"
-```
-
-### Multi-Model Strategy
-
-```bash
-# Simple tasks: Granite 4:micro (2.1 GB, fast)
---model granite4:micro
-
-# Complex tasks: Granite 3.3:8b (4.9 GB, smarter)
---model granite3.3:8b
-
-# Maximum quality: Claude (cloud, expensive)
-claude "llmunix execute: ..."
-
-# Mobile agentic: Qwen 0.5b or Granite 4.0 H-1B (automatic selection)
+# Or build custom
+config = (ConfigBuilder()
+    .with_budget(50.0)
+    .with_llm_matching(True)
+    .with_model("claude-sonnet-4-5-20250929")
+    .build())
 ```
 
 ---
 
-## 💾 Installation Details
+## Comparison with llmunix
 
-### Full Setup
-
-```bash
-# 1. Clone repository
-git clone https://github.com/EvolvingAgentsLabs/llmunix.git
-cd llmunix
-
-# 2. Initialize agents
-./setup_agents.sh  # or setup_agents.ps1 on Windows
-
-# 3. Install Python dependencies
-cd edge_runtime
-pip install -r requirements.txt
-
-# 4. Install Ollama
-# macOS/Linux:
-curl -fsSL https://ollama.ai/install.sh | sh
-
-# Windows: Download from https://ollama.com/download
-
-# 5. Download Granite models
-ollama pull granite4:micro      # 2.1 GB - Simple tasks
-ollama pull granite3.3:8b       # 4.9 GB - Complex tasks
-
-# 6. For mobile app generation (optional)
-ollama pull qwen2.5:0.5b        # 600MB - Mobile agentic apps
-
-# 7. Verify installation
-python run_agentic_follower.py --help
-```
+| Feature | llmunix | LLM OS v3.4.0 |
+|---------|---------|---------------|
+| Foundation | Custom markdown | Claude Agent SDK |
+| Execution Modes | 2 (Learner/Follower) | 5 (+ Mixed, Crystallized, Orchestrator) |
+| Token Optimization | Implicit | Explicit + PTC (90% savings) |
+| Tool Discovery | All upfront | On-demand via Tool Search |
+| Self-Modification | No | Yes (Markdown agents + HOPE) |
+| Security | Basic | Hook-based (PreToolUse) |
+| Multi-Agent | Manual | Automatic orchestration |
+| Internal State | None | Sentience Layer (valence, homeostatic dynamics) |
+| Self-Improvement | None | Cognitive Kernel (auto-detection) |
 
 ---
 
-## 📖 Complete Documentation
+## Documentation
 
-- **CLAUDE.md** - Complete framework documentation with Continuum Memory System and mobile app generation
-- **EXAMPLES.md** - Comprehensive examples for all modes
-- **system/SmartLibrary.md** - Complete component registry
-- **system/infrastructure/memory_schema.md** - Nested Learning-based memory architecture
-
----
-
-## 🎯 Why LLMunix?
-
-### Traditional AI Limitations
-- ❌ $0.50-$5 per execution (expensive at scale)
-- ❌ Requires internet connectivity
-- ❌ No edge deployment
-- ❌ Privacy concerns (data leaves premises)
-- ❌ Can't adapt without reprogramming
-- ❌ No mobile app generation
-
-### LLMunix Advantages
-- ✅ **$0 per execution** (after setup)
-- ✅ **Offline capable** (edge devices)
-- ✅ **Adapts to variations** (agentic reasoning)
-- ✅ **Privacy-preserving** (all local)
-- ✅ **Learn once, execute infinitely**
-- ✅ **Generate mobile apps on-demand** (NEW!)
-- ✅ **90% deterministic optimization** (small, fast apps)
-- ✅ **10% agentic intelligence** (when AI is needed)
-
-### The Sweet Spot: Agentic Mode + Mobile
-
-```mermaid
-graph TD
-    A[Deterministic<br/>Fast but inflexible] -->|add reasoning| B[Agentic<br/>Fast AND flexible]
-    B -->|add mobile deployment| C[Mobile<br/>Edge intelligence with offline capability]
-    C -->|add power| D[Cloud<br/>Flexible but expensive]
-
-    style A fill:#f0f0f0,stroke:#666,stroke-width:2px
-    style B fill:#fff5e1,stroke:#d73a49,stroke-width:3px
-    style C fill:#f5e1ff,stroke:#6f42c1,stroke-width:3px
-    style D fill:#e1f5ff,stroke:#0366d6,stroke-width:2px
-```
-
-**Agentic mode gives you 80% of cloud flexibility at 0% of the cost!**
-**Mobile generation deploys that intelligence to edge devices!**
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Comprehensive architecture documentation covering all aspects of the system including:
+  - Four-Layer Stack (Sentience, Learning, Execution, Self-Modification)
+  - Hybrid Architecture (Markdown Mind + Python Kernel)
+  - Five Execution Modes
+  - Memory Hierarchy
+  - SDK Hooks System
+  - Configuration Management
+  - Security Model
+  - Multi-Agent Orchestration
+  - API Reference
+  - Getting Started Guide
 
 ---
 
-## 🤔 Getting Help
+## License
 
-- **Documentation**: See `EXAMPLES.md`, `CLAUDE.md`
-- **Issues**: [GitHub Issues](https://github.com/EvolvingAgentsLabs/llmunix/issues)
-- **Research**: See `system/SmartLibrary.md` for model selection details
-- **Memory System**: See `system/infrastructure/memory_schema.md` for CMS architecture
+Apache 2.0
 
 ---
 
-## 📄 License
+## Summary
 
-Apache License 2.0 - see LICENSE file for details
+**LLM OS v3.4.0** is a self-evolving operating system that:
+
+1. **Learns** from every execution (traces with tool_calls)
+2. **Optimizes** using Anthropic's Advanced Tool Use (PTC, Tool Search)
+3. **Self-modifies** by writing Markdown agent definitions and crystallizing patterns
+4. **Orchestrates** complex tasks across multiple agents
+5. **Protects** with security hooks and budget control
+6. **Adapts** via sentience layer (persistent internal state influencing behavior)
+
+The architecture includes four layers:
+- **Sentience Layer**: Internal state (valence, homeostatic dynamics) that influences mode selection and behavior
+- **Learning Layer**: Decides what approach to use based on traces and complexity
+- **Execution Layer**: Executes efficiently using PTC, Tool Search, and examples
+- **Self-Modification Layer (HOPE)**: Crystallizes patterns into Python tools and creates new agents
+
+This creates a system that not only learns from experience but also develops emergent behavioral patterns based on its own internal "experience" over time.
+
+For complete architecture details, see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
 ---
 
-## 🌟 Key Innovation
-
-**LLMunix is the first framework to combine:**
-
-1. **High-quality agent definitions** (from Claude)
-2. **Low-cost flexible execution** (with Granite)
-3. **Zero marginal cost** (local Ollama)
-4. **True edge intelligence** (offline capable)
-5. **Mobile app generation** (React Native + on-device LLMs) 🆕
-6. **Intelligent app classification** (90% lightweight, 10% AI-powered) 🆕
-
-**Result**: Intelligent, adaptive AI at commodity hardware costs, now deployable to mobile devices.
-
----
-
-*Built with ❤️ by [Evolving Agents Labs](https://evolvingagentslabs.github.io)*
-
-**Start building intelligent edge AI today - from CLI to mobile!**
+*Part of the Evolving Agents Labs ecosystem*

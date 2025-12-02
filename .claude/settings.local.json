@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir)",
+      "Bash(cp:*)",
+      "Bash(dir projects)",
+      "Bash(dir:*)",
+      "Bash(python test_qwen_runtime.py:*)",
+      "Bash(python:*)",
+      "Bash(git rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(NUL)",
+      "Bash(set:*)",
+      "Bash(chcp 65001)",
+      "Bash(nul)",
+      "Bash(ollama list:*)",
+      "Bash(ollama run:*)",
+      "Bash(pip install ollama)",
+      "Bash(tree:*)",
+      "Bash(cat:*)",
+      "Bash(findstr:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
