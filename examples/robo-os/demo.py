@@ -1,12 +1,13 @@
 """
-RoboOS - Interactive Demo
+RoboOS - Interactive Demo (v3.5.0)
 
 This demo showcases the key features of RoboOS:
 1. Natural language robot control via Operator Agent
 2. Safety monitoring via Safety Officer Agent
 3. PreToolUse safety hook preventing dangerous operations
 4. Learner -> Follower cost optimization
-5. Camera feeds and state visualization
+5. Adaptive Agents with DynamicAgentManager (v3.5.0)
+6. Camera feeds and state visualization
 
 Run this to see LLM OS controlling a simulated robotic arm!
 """
@@ -267,6 +268,168 @@ async def demo_multi_agent():
     await llmos.shutdown()
 
 
+async def demo_adaptive_agents():
+    """Demo 5: Adaptive Agents with DynamicAgentManager (v3.5.0)."""
+    print_header("DEMO 5: Adaptive Agents (v3.5.0)")
+
+    print("""
+This demo showcases the Adaptive Agents feature from LLM OS v3.5.0:
+
+The DynamicAgentManager provides:
+  - Sentience-Driven Adaptation: Agent tools/behavior adapt based on valence state
+  - Performance Tracking: Monitor success rates, token usage per agent
+  - Agent Evolution: After 5+ executions, agents can evolve based on patterns
+  - Safety-First Robotics: Low safety valence → restrict dangerous tools
+
+Let's see it in action...
+""")
+
+    # Reset state
+    reset_robot_state()
+    robot_state = get_robot_state()
+
+    # Initialize LLM OS with workspace for robo-os
+    workspace = Path(__file__).parent / "workspace"
+    config = LLMOSConfig.development()
+    config.workspace = workspace
+    llmos = LLMOS(config=config)
+    await llmos.boot()
+
+    # Register tools with dispatcher
+    for tool in ROBOT_CONTROLLER_TOOLS:
+        llmos.dispatcher.register_tool(
+            name=tool['name'],
+            func=tool['function'],
+            description=tool['description']
+        )
+
+    # Try to initialize DynamicAgentManager
+    try:
+        from kernel.dynamic_agents import DynamicAgentManager
+        from kernel.agent_factory import AgentFactory
+        from kernel.sentience import SentienceManager
+
+        print_section("Initializing Adaptive Agents System")
+
+        # Create sentience manager with robotics profile
+        sentience_manager = SentienceManager(workspace)
+        sentience_manager.initialize()
+
+        # Create agent factory and dynamic manager
+        agent_factory = AgentFactory(workspace=workspace)
+        dynamic_manager = DynamicAgentManager(
+            agent_factory=agent_factory,
+            workspace=workspace,
+            sentience_manager=sentience_manager,
+            trace_manager=None,
+            config=config
+        )
+
+        print("DynamicAgentManager initialized successfully!")
+        print(f"Sentience state: safety={sentience_manager.get_state().valence.safety:.2f}, "
+              f"curiosity={sentience_manager.get_state().valence.curiosity:.2f}")
+
+        # Simulate some executions for performance tracking
+        print_section("Simulating Agent Executions for Performance Tracking")
+
+        test_goals = [
+            ("Move robot to (1, 0, 1)", True),
+            ("Activate the gripper", True),
+            ("Check safety status", True),
+            ("Move to prohibited zone", False),  # Simulated failure
+            ("Return to home position", True),
+            ("Deactivate gripper", True),
+        ]
+
+        for goal, success in test_goals:
+            print(f"  Recording: '{goal[:40]}...' - {'SUCCESS' if success else 'FAILURE'}")
+            dynamic_manager.record_execution_result(
+                agent_name="operator",
+                goal=goal,
+                success=success,
+                tokens_used=1200 if success else 800,
+                time_secs=2.5
+            )
+
+        # Get metrics summary
+        print_section("Agent Performance Metrics")
+        metrics = dynamic_manager.get_agent_metrics_summary()
+
+        if metrics and "agent_metrics" in metrics:
+            for agent_name, agent_metrics in metrics.get("agent_metrics", {}).items():
+                print(f"\nAgent: {agent_name}")
+                print(f"  Executions: {agent_metrics.get('executions', 0)}")
+                print(f"  Success Rate: {agent_metrics.get('success_rate', 0):.1%}")
+                print(f"  Avg Tokens: {agent_metrics.get('avg_tokens', 0):.0f}")
+                evolution_ready = agent_metrics.get('executions', 0) >= 5
+                print(f"  Evolution Ready: {evolution_ready}")
+        else:
+            print("  Metrics tracking initialized (run more commands to see data)")
+
+        # Show sentience-driven adaptation
+        print_section("Sentience-Driven Tool Adaptation")
+        state = sentience_manager.get_state()
+        print(f"Current safety valence: {state.valence.safety:.2f}")
+
+        if state.valence.safety < 0.3:
+            print("LOW SAFETY MODE: Would restrict dangerous tools (move_to, toggle_tool)")
+            print("  - Only safe tools: get_camera_feed, go_home, emergency_stop")
+        else:
+            print("NORMAL SAFETY MODE: All tools available")
+            print("  - Full access: move_to, move_relative, toggle_tool, get_camera_feed, etc.")
+
+        # Show adaptation example
+        print_section("Example: Getting Adapted Agent Configuration")
+        adapted = dynamic_manager.get_adapted_agent(
+            agent_name="operator",
+            goal="Perform precision movement to (1.5, 0.5, 1.0)"
+        )
+        if adapted:
+            print(f"Adapted agent: {adapted.name}")
+            print(f"  Model: {adapted.model if hasattr(adapted, 'model') else 'default'}")
+            print(f"  Tools count: {len(adapted.tools) if hasattr(adapted, 'tools') else 'inherited'}")
+            print("  Adaptations applied based on:")
+            print("    - Current sentience state (safety, curiosity)")
+            print("    - Past performance metrics")
+            print("    - Trace patterns from memory")
+        else:
+            print("  Using base agent configuration")
+
+        # Evolution trigger example
+        print_section("Agent Evolution Status")
+        stats = dynamic_manager.get_adaptation_stats()
+        print(f"Total adaptations made: {stats.get('total_adaptations', 0)}")
+
+        # Check if any agent is ready for evolution
+        agent_metrics = dynamic_manager.get_agent_metrics_summary()
+        for agent_name in ["operator", "safety_officer"]:
+            metrics_data = agent_metrics.get("agent_metrics", {}).get(agent_name, {})
+            executions = metrics_data.get("executions", 0)
+            success_rate = metrics_data.get("success_rate", 1.0)
+
+            if executions >= 5:
+                if success_rate < 0.7:
+                    print(f"\n{agent_name}: EVOLUTION RECOMMENDED")
+                    print(f"  Reason: {executions} executions with {success_rate:.1%} success rate")
+                    print("  Would add: failure pattern constraints, safety warnings")
+                else:
+                    print(f"\n{agent_name}: EVOLUTION AVAILABLE")
+                    print(f"  {executions} executions with {success_rate:.1%} success rate")
+                    print("  Could optimize: prompt enhancement, tool patterns")
+            else:
+                print(f"\n{agent_name}: Needs {5 - executions} more executions for evolution")
+
+    except ImportError as e:
+        print(f"\nNote: DynamicAgentManager not available in this installation")
+        print(f"      Error: {e}")
+        print("      The demo shows the concept - full functionality requires kernel.dynamic_agents")
+
+    print("\nAdaptive Agents demo complete!")
+    print("This v3.5.0 feature enables per-query agent adaptation for robotics safety!")
+
+    await llmos.shutdown()
+
+
 async def demo_learner_follower():
     """Demo 4: Learner -> Follower cost optimization."""
     print_header("DEMO 4: Learner -> Follower Cost Optimization")
@@ -428,7 +591,7 @@ async def main():
     print("""
 ╔═══════════════════════════════════════════════════════════════════════╗
 ║                                                                       ║
-║                          ROBO-OS DEMO                                 ║
+║                      ROBO-OS DEMO (v3.5.0)                            ║
 ║                                                                       ║
 ║          LLM OS as the Brain of a Robotic Arm                        ║
 ║                                                                       ║
@@ -442,22 +605,24 @@ Key Features Demonstrated:
   2. Safety hook preventing dangerous operations (PreToolUse hook)
   3. Multi-agent coordination (Operator + Safety Officer)
   4. Learner -> Follower cost optimization
-  5. Camera feeds and state visualization
+  5. Adaptive Agents with DynamicAgentManager (v3.5.0 NEW!)
+  6. Camera feeds and state visualization
 
 Choose a demo:
   1. Basic Robot Operation
   2. Safety Hook Protection
   3. Multi-Agent Operation (Operator + Safety Officer)
   4. Learner -> Follower Cost Savings
-  5. Interactive Mode (send your own commands!)
-  6. Run All Demos
+  5. Adaptive Agents (v3.5.0) - Performance tracking & evolution
+  6. Interactive Mode (send your own commands!)
+  7. Run All Demos
   0. Exit
 
 """)
 
     while True:
         try:
-            choice = input("Select demo (0-6): ").strip()
+            choice = input("Select demo (0-7): ").strip()
 
             if choice == '0':
                 print("\nGoodbye!")
@@ -471,17 +636,20 @@ Choose a demo:
             elif choice == '4':
                 await demo_learner_follower()
             elif choice == '5':
-                await interactive_mode()
+                await demo_adaptive_agents()
             elif choice == '6':
+                await interactive_mode()
+            elif choice == '7':
                 await demo_basic_operation()
                 await demo_safety_hook()
                 await demo_multi_agent()
                 await demo_learner_follower()
+                await demo_adaptive_agents()
                 print_header("ALL DEMOS COMPLETE!")
             else:
-                print("Invalid choice. Please enter 0-6.")
+                print("Invalid choice. Please enter 0-7.")
 
-            if choice != '5' and choice != '0':  # Don't show menu after interactive or exit
+            if choice != '6' and choice != '0':  # Don't show menu after interactive or exit
                 input("\n[Press Enter to return to menu]")
                 print("\n" * 2)
 

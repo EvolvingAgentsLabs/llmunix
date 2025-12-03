@@ -1,5 +1,5 @@
 """
-RoboOS - FastAPI Server (v3.4.0)
+RoboOS - FastAPI Server (v3.5.0)
 
 Production-ready REST API server for robot control via LLM OS.
 
@@ -10,6 +10,7 @@ This server provides:
 - WebSocket for real-time updates
 - Session management
 - Sentience Layer integration for adaptive behavior
+- Adaptive Agents (v3.5.0): Dynamic agent configuration per query
 """
 
 import sys
@@ -75,8 +76,8 @@ class ViewRequest(BaseModel):
 
 app = FastAPI(
     title="RoboOS API",
-    description="LLM OS-powered robot control system with Sentience Layer",
-    version="3.4.0"
+    description="LLM OS-powered robot control system with Sentience Layer and Adaptive Agents",
+    version="3.5.0"
 )
 
 # CORS middleware for frontend integration
@@ -102,15 +103,19 @@ websocket_connections: list[WebSocket] = []
 sentience_manager: Optional[SentienceManager] = None
 cognitive_kernel: Optional[CognitiveKernel] = None
 
+# Adaptive Agents components (v3.5.0)
+dynamic_agent_manager = None
+agent_factory = None
+
 
 # ============================================================================
 # Initialization
 # ============================================================================
 
 def initialize_llmos():
-    """Initialize LLM OS instance, agents, and Sentience Layer."""
+    """Initialize LLM OS instance, agents, Sentience Layer, and Adaptive Agents."""
     global llmos_instance, operator_agent, safety_officer_agent
-    global sentience_manager, cognitive_kernel
+    global sentience_manager, cognitive_kernel, dynamic_agent_manager, agent_factory
 
     if llmos_instance is not None:
         return  # Already initialized
@@ -185,6 +190,31 @@ def initialize_llmos():
     else:
         raise RuntimeError("Failed to load safety officer agent from workspace/agents/safety-officer.md")
 
+    # Initialize Adaptive Agents (v3.5.0)
+    try:
+        from kernel.dynamic_agents import DynamicAgentManager
+        from kernel.agent_factory import AgentFactory
+
+        # Create agent factory
+        agent_factory = AgentFactory(workspace=Path(__file__).parent / "workspace")
+
+        # Create DynamicAgentManager with safety-focused configuration
+        dynamic_agent_manager = DynamicAgentManager(
+            agent_factory=agent_factory,
+            workspace=Path(__file__).parent / "workspace",
+            sentience_manager=sentience_manager,
+            trace_manager=None,  # Could connect to memory_query if available
+            config=config
+        )
+
+        print("✓ Adaptive Agents (v3.5.0) initialized")
+        print(f"  - Sentience-driven adaptation: {sentience_manager is not None}")
+        print(f"  - Safety-focused evolution thresholds")
+    except ImportError as e:
+        print(f"⚠ Adaptive Agents not available: {e}")
+        dynamic_agent_manager = None
+        agent_factory = None
+
     print("✓ LLM OS initialized")
     print("✓ Safety hook registered")
 
@@ -210,14 +240,15 @@ async def root():
     """Root endpoint with service info."""
     return {
         "service": "RoboOS API",
-        "version": "3.4.0",
+        "version": "3.5.0",
         "status": "operational",
-        "message": "LLM OS-powered robot control system with Sentience Layer",
+        "message": "LLM OS-powered robot control system with Sentience Layer and Adaptive Agents",
         "endpoints": {
             "docs": "/docs",
             "health": "/health",
             "state": "/state",
             "sentience": "/sentience",
+            "adaptive": "/adaptive",  # NEW in v3.5.0
             "command": "/command [POST]",
             "move": "/move [POST]",
             "tool": "/tool [POST]",
@@ -291,6 +322,25 @@ async def execute_command(request: CommandRequest):
         if sentience_manager:
             sentience_manager.on_success()
 
+        # Track with Adaptive Agents (v3.5.0)
+        adaptive_metadata = {}
+        if dynamic_agent_manager:
+            try:
+                dynamic_agent_manager.record_execution_result(
+                    agent_name=request.agent,
+                    goal=request.command[:100],
+                    success=True,
+                    tokens_used=0,  # Would need to track from actual execution
+                    time_secs=0
+                )
+                adaptation_summary = dynamic_agent_manager.get_adaptation_summary()
+                adaptive_metadata = {
+                    "total_adaptations": adaptation_summary.get("total_adaptations", 0),
+                    "agent_executions": adaptation_summary.get("by_type", {})
+                }
+            except Exception as ae:
+                pass  # Don't fail on adaptive tracking errors
+
         result = {
             "success": True,
             "command": request.command,
@@ -303,12 +353,31 @@ async def execute_command(request: CommandRequest):
         if sentience_state:
             result["sentience"] = sentience_state
 
+        # Include adaptive state if available (v3.5.0)
+        if adaptive_metadata:
+            result["adaptive"] = adaptive_metadata
+
         return result
 
     except Exception as e:
         # Track failure
         if sentience_manager:
             sentience_manager.on_failure()
+
+        # Track failure with Adaptive Agents
+        if dynamic_agent_manager:
+            try:
+                dynamic_agent_manager.record_execution_result(
+                    agent_name=request.agent,
+                    goal=request.command[:100],
+                    success=False,
+                    tokens_used=0,
+                    time_secs=0,
+                    error=str(e)
+                )
+            except Exception:
+                pass
+
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -458,6 +527,88 @@ async def get_sentience_state():
     }
 
 
+@app.get("/adaptive")
+async def get_adaptive_state():
+    """
+    Get current Adaptive Agents state (v3.5.0).
+
+    Returns agent performance metrics, evolution status, and adaptation history.
+    This is used for monitoring how agents adapt over time for robotics tasks.
+    """
+    if not dynamic_agent_manager:
+        return {
+            "enabled": False,
+            "message": "Adaptive Agents (DynamicAgentManager) not initialized"
+        }
+
+    try:
+        adaptation_summary = dynamic_agent_manager.get_adaptation_summary()
+        metrics_summary = dynamic_agent_manager.get_agent_metrics_summary()
+
+        # Get evolution thresholds
+        thresholds = dynamic_agent_manager.evolution_thresholds
+
+        # Robotics-specific safety analysis
+        robotics_safety_info = {}
+        if sentience_manager:
+            valence = sentience_manager.get_valence()
+            robotics_safety_info = {
+                "safety_valence": valence["safety"],
+                "would_restrict_tools": valence["safety"] < 0.5,  # Low safety = restrict dangerous tools
+                "recommendation": "SAFE" if valence["safety"] > 0.6 else "CAUTION REQUIRED"
+            }
+
+        return {
+            "enabled": True,
+            "summary": {
+                "total_adaptations": adaptation_summary.get("total_adaptations", 0),
+                "adaptations_by_type": adaptation_summary.get("by_type", {})
+            },
+            "agent_metrics": {
+                agent_name: {
+                    "success_rate": f"{metrics['success_rate']:.1%}",
+                    "total_executions": metrics["total_executions"],
+                    "average_tokens": round(metrics["average_tokens"], 1),
+                    "needs_evolution": metrics["needs_evolution"]
+                }
+                for agent_name, metrics in metrics_summary.items()
+            },
+            "evolution": {
+                "thresholds": {
+                    "min_executions": thresholds["min_executions_for_evolution"],
+                    "failure_rate_trigger": f"{thresholds['failure_rate_trigger']:.0%}",
+                    "success_for_crystallization": f"{thresholds['success_rate_for_crystallization']:.0%}"
+                },
+                "agents_ready_for_evolution": [
+                    name for name, metrics in metrics_summary.items()
+                    if metrics["needs_evolution"]
+                ]
+            },
+            "robotics_safety": robotics_safety_info,
+            "recent_adaptations": [
+                {
+                    "timestamp": a.get("timestamp"),
+                    "type": a.get("type"),
+                    "reason": a.get("reason"),
+                    "goal": a.get("goal")
+                }
+                for a in adaptation_summary.get("recent_adaptations", [])[:10]
+            ],
+            "integration": {
+                "sentience_connected": sentience_manager is not None,
+                "safety_hook_active": True
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        return {
+            "enabled": True,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
+
 @app.post("/reset")
 async def reset_system():
     """Reset robot to home position and clear state."""
@@ -501,7 +652,7 @@ async def websocket_endpoint(websocket: WebSocket):
     WebSocket endpoint for real-time robot state updates.
 
     Clients can connect to receive live updates when robot state changes.
-    Includes sentience state in v3.4.0+.
+    Includes sentience state (v3.4.0) and adaptive agents state (v3.5.0).
     """
     await websocket.accept()
     websocket_connections.append(websocket)
@@ -516,7 +667,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 "timestamp": datetime.now().isoformat()
             }
 
-            # Include sentience state in updates
+            # Include sentience state in updates (v3.4.0)
             if sentience_manager and cognitive_kernel:
                 policy = cognitive_kernel.derive_policy()
                 update["sentience"] = {
@@ -524,6 +675,17 @@ async def websocket_endpoint(websocket: WebSocket):
                     "safety_valence": sentience_manager.get_valence()["safety"],
                     "operational_readiness": sentience_manager.get_valence()["energy"] > 0.4
                 }
+
+            # Include adaptive agents state in updates (v3.5.0)
+            if dynamic_agent_manager:
+                try:
+                    metrics = dynamic_agent_manager.get_agent_metrics_summary()
+                    update["adaptive"] = {
+                        "total_agents_tracked": len(metrics),
+                        "agents_needing_evolution": sum(1 for m in metrics.values() if m.get("needs_evolution", False))
+                    }
+                except Exception:
+                    pass
 
             await websocket.send_json(update)
             await asyncio.sleep(1)  # Update every second
