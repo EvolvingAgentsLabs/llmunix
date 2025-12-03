@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-LLM OS Demo Application - Main Entry Point (v3.4.0)
+LLM OS Demo Application - Main Entry Point (v3.5.0)
 
 Interactive menu-driven demonstration of all llmos capabilities including:
 - Sentience Layer with valence variables and latent modes
+- Adaptive Agents (DynamicAgentManager) - NEW in v3.5.0
 - Advanced Tool Use (PTC, Tool Search, Tool Examples)
 - Five Execution Modes: CRYSTALLIZED, FOLLOWER, MIXED, LEARNER, ORCHESTRATOR
 - 90%+ token savings via Programmatic Tool Calling
@@ -31,8 +32,9 @@ from rich import box
 
 from boot import LLMOS
 from kernel.config import LLMOSConfig, SentienceConfig
-from kernel.sentience import SentienceManager
+from kernel.sentience import SentienceManager, LatentMode
 from kernel.cognitive_kernel import CognitiveKernel
+from kernel.dynamic_agents import DynamicAgentManager
 from scenarios.nested_learning_demo import run_nested_learning_demo
 
 
@@ -79,13 +81,13 @@ class DemoApp:
         """Display welcome banner"""
         banner = """
 [bold cyan]╔══════════════════════════════════════════════════════════════╗[/bold cyan]
-[bold cyan]║[/bold cyan]    [bold yellow]LLM OS - Demo Application (v3.4.0)[/bold yellow]                 [bold cyan]║[/bold cyan]
-[bold cyan]║[/bold cyan]    Sentience Layer + Advanced Tool Use                   [bold cyan]║[/bold cyan]
+[bold cyan]║[/bold cyan]    [bold yellow]LLM OS - Demo Application (v3.5.0)[/bold yellow]                 [bold cyan]║[/bold cyan]
+[bold cyan]║[/bold cyan]    Sentience + Adaptive Agents + Advanced Tool Use        [bold cyan]║[/bold cyan]
 [bold cyan]╚══════════════════════════════════════════════════════════════╝[/bold cyan]
 
-[bold]Four-Layer Stack:[/bold] SENTIENCE → LEARNING → EXECUTION → SELF-MODIFICATION
+[bold]Five-Layer Stack:[/bold] SENTIENCE → ADAPTATION → LEARNING → EXECUTION → EVOLUTION
 [bold]Latent Modes:[/bold] AUTO_CREATIVE | AUTO_CONTAINED | BALANCED | RECOVERY | CAUTIOUS
-[bold]Features:[/bold] Valence Variables, PTC (90%+ savings), Tool Search, Multi-Agent
+[bold]Features:[/bold] Adaptive Agents, PTC (90%+ savings), Tool Search, Multi-Agent
 [bold]Budget:[/bold] $""" + f"{self.budget_usd:.2f}"
 
         console.print(Panel(banner, border_style="cyan"))
@@ -95,16 +97,17 @@ class DemoApp:
         console.print("\n[bold cyan]Select a demo scenario:[/bold cyan]\n")
 
         scenarios = [
-            ("1", "🧠 Sentience Layer Demo", "NEW! Valence variables & latent modes 🌟"),
-            ("2", "🧬 Nested Learning Demo", "Semantic matching & MIXED mode ✅"),
-            ("3", "Code Generation Workflow", "Learn-once, execute-free ✅"),
-            ("4", "Cost Optimization Demo", "Dramatic cost savings ✅"),
-            ("5", "Data Processing Pipeline", "Multi-agent orchestration ✅"),
-            ("6", "DevOps Automation", "Automated deployment ✅"),
-            ("7", "Cross-Project Learning", "Learning insights ✅"),
-            ("8", "SDK Hooks Demo", "Budget control & security ✅"),
-            ("9", "Run All Scenarios", "Execute all demos (recommended) ✅"),
-            ("S", "View System Stats", "Show traces, agents, sentience ✅"),
+            ("1", "🧠 Sentience Layer Demo", "Valence variables & latent modes ✅"),
+            ("2", "🤖 Adaptive Agents Demo", "NEW! Dynamic agent adaptation 🌟"),
+            ("3", "🧬 Nested Learning Demo", "Semantic matching & MIXED mode ✅"),
+            ("4", "Code Generation Workflow", "Learn-once, execute-free ✅"),
+            ("5", "Cost Optimization Demo", "Dramatic cost savings ✅"),
+            ("6", "Data Processing Pipeline", "Multi-agent orchestration ✅"),
+            ("7", "DevOps Automation", "Automated deployment ✅"),
+            ("8", "Cross-Project Learning", "Learning insights ✅"),
+            ("9", "SDK Hooks Demo", "Budget control & security ✅"),
+            ("A", "Run All Scenarios", "Execute all demos (recommended) ✅"),
+            ("S", "View System Stats", "Show traces, agents, adaptation ✅"),
             ("0", "Exit", "Exit demo application")
         ]
 
@@ -252,6 +255,206 @@ class DemoApp:
             "• Automatic behavioral adaptation based on context\n"
             "• Homeostatic dynamics that maintain equilibrium\n"
             "• Integration with agents for context-aware responses",
+            border_style="green"
+        ))
+
+    async def scenario_adaptive_agents_demo(self):
+        """Scenario: Adaptive Agents Demo (v3.5.0) - NEW!"""
+        console.print(Panel(
+            "[bold yellow]Adaptive Agents Demo (v3.5.0) - NEW![/bold yellow]\n\n"
+            "Demonstrates the DynamicAgentManager with six adaptation strategies:\n"
+            "1. Sentience-Driven: High curiosity adds exploration tools\n"
+            "2. Trace-Driven: Failure patterns become constraints\n"
+            "3. Memory-Guided: Best agent selected from past performance\n"
+            "4. Model Selection: haiku/sonnet/opus based on complexity\n"
+            "5. Prompt Enhancement: Successful traces as few-shot examples\n"
+            "6. Agent Evolution: Agents improve from accumulated metrics\n\n"
+            "[bold]Features:[/bold] Per-query adaptation, self-evolving agents",
+            border_style="yellow"
+        ))
+
+        if not self.os:
+            await self.boot_os("adaptive_agents_demo")
+
+        # Create a mock agent factory for demonstration
+        console.print("\n[cyan]Initializing DynamicAgentManager...[/cyan]\n")
+
+        # Create the DynamicAgentManager
+        from kernel.agent_loader import AgentFactory
+        from memory.traces_sdk import TraceManager
+
+        workspace_path = Path(__file__).parent / "workspace"
+        workspace_path.mkdir(exist_ok=True)
+
+        agent_factory = AgentFactory(workspace_path)
+        trace_manager = TraceManager(workspace_path)
+
+        dynamic_manager = DynamicAgentManager(
+            agent_factory=agent_factory,
+            workspace=workspace_path,
+            sentience_manager=self.sentience_manager,
+            trace_manager=trace_manager
+        )
+
+        console.print("[green]✓ DynamicAgentManager initialized[/green]\n")
+
+        # Demo 1: Show sentience-driven adaptation
+        console.print("[bold cyan]1. Sentience-Driven Adaptation[/bold cyan]\n")
+
+        # Set high curiosity state
+        console.print("[yellow]Setting HIGH CURIOSITY state...[/yellow]")
+        self.sentience_manager.state.valence.curiosity = 0.7
+        self.sentience_manager.state.latent_mode = LatentMode.AUTO_CREATIVE
+        self._display_sentience_state()
+
+        state = self.sentience_manager.get_state()
+
+        # Create a test agent to demonstrate adaptation
+        from kernel.agent_factory import AgentSpec
+        test_agent = AgentSpec(
+            name="test-researcher",
+            agent_type="specialized",
+            category="research",
+            description="Test agent for adaptation demo",
+            tools=["Read", "Write"],
+            system_prompt="You are a test agent."
+        )
+
+        # Adapt the test agent
+        adapted_agent = dynamic_manager._adapt_for_sentience(test_agent, state, "Research AI trends")
+
+        adaptation_table = Table(title="High Curiosity Adaptations", box=box.ROUNDED)
+        adaptation_table.add_column("Adaptation", style="cyan")
+        adaptation_table.add_column("Value", style="yellow")
+
+        # Show tools added
+        original_tools = {"Read", "Write"}
+        new_tools = [t for t in adapted_agent.tools if t not in original_tools]
+        if new_tools:
+            adaptation_table.add_row("Tools Added", ", ".join(new_tools))
+
+        # Show prompt additions
+        if len(adapted_agent.system_prompt) > len("You are a test agent."):
+            prompt_preview = adapted_agent.system_prompt[len("You are a test agent."):].strip()[:80]
+            adaptation_table.add_row("Prompt Addition", prompt_preview + "...")
+
+        console.print(adaptation_table)
+
+        # Set low safety state
+        console.print("\n[yellow]Setting LOW SAFETY state...[/yellow]")
+        self.sentience_manager.state.valence.safety = -0.6
+        self.sentience_manager.state.latent_mode = LatentMode.CAUTIOUS
+        self._display_sentience_state()
+
+        state = self.sentience_manager.get_state()
+
+        # Create another test agent with dangerous tools
+        test_agent2 = AgentSpec(
+            name="test-coder",
+            agent_type="specialized",
+            category="coding",
+            description="Test agent for safety demo",
+            tools=["Read", "Write", "Edit", "Bash"],
+            system_prompt="You are a test agent."
+        )
+
+        adapted_agent2 = dynamic_manager._adapt_for_sentience(test_agent2, state, "Modify system files")
+
+        adaptation_table = Table(title="Low Safety Adaptations", box=box.ROUNDED)
+        adaptation_table.add_column("Adaptation", style="cyan")
+        adaptation_table.add_column("Value", style="red")
+
+        # Show tools removed
+        original_tools2 = {"Read", "Write", "Edit", "Bash"}
+        remaining_tools = set(adapted_agent2.tools)
+        removed_tools = original_tools2 - remaining_tools
+        if removed_tools:
+            adaptation_table.add_row("Tools Removed", ", ".join(removed_tools))
+
+        # Show constraints added
+        if adapted_agent2.constraints:
+            for constraint in adapted_agent2.constraints[:2]:
+                adaptation_table.add_row("Constraint Added", constraint[:60] + "...")
+
+        console.print(adaptation_table)
+
+        # Demo 2: Show model selection
+        console.print("\n[bold cyan]2. Dynamic Model Selection[/bold cyan]\n")
+
+        test_goals = [
+            ("Write a simple hello world script", "Simple task"),
+            ("Research quantum computing and write a detailed analysis", "Complex research"),
+            ("Create an innovative new algorithm for sorting", "Creative task"),
+        ]
+
+        model_table = Table(title="Model Selection by Task Type", box=box.ROUNDED)
+        model_table.add_column("Goal", style="cyan", width=45)
+        model_table.add_column("Type", style="yellow")
+        model_table.add_column("Model", style="green")
+
+        for goal, task_type in test_goals:
+            # Create a test agent and apply model selection
+            test_agent3 = AgentSpec(
+                name="test-agent",
+                agent_type="general",
+                category="general",
+                description="Test agent",
+                tools=["Read"],
+                system_prompt="You are a test agent."
+            )
+            adapted = dynamic_manager._select_optimal_model(test_agent3, goal, None)
+            model = adapted.model if hasattr(adapted, 'model') else "sonnet"
+            model_table.add_row(goal[:43] + "..." if len(goal) > 43 else goal, task_type, model)
+
+        console.print(model_table)
+
+        # Demo 3: Show adaptation statistics
+        console.print("\n[bold cyan]3. Adaptation Statistics[/bold cyan]\n")
+
+        # The adaptations from the demos above are automatically recorded
+        # Get the adaptation summary
+        stats = dynamic_manager.get_adaptation_summary()
+
+        stats_table = Table(title="Adaptation Statistics", box=box.ROUNDED)
+        stats_table.add_column("Metric", style="cyan")
+        stats_table.add_column("Value", style="yellow")
+
+        stats_table.add_row("Total Adaptations", str(stats.get("total_adaptations", 0)))
+
+        by_type = stats.get("by_type", {})
+        for adapt_type, count in by_type.items():
+            stats_table.add_row(f"  {adapt_type}", str(count))
+
+        console.print(stats_table)
+
+        # Demo 4: Show agent evolution criteria
+        console.print("\n[bold cyan]4. Agent Evolution Criteria[/bold cyan]\n")
+
+        evolution_table = Table(title="Evolution Triggers", box=box.ROUNDED)
+        evolution_table.add_column("Condition", style="cyan")
+        evolution_table.add_column("Threshold", style="yellow")
+        evolution_table.add_column("Action", style="green")
+
+        evolution_table.add_row("Minimum Executions", "5+", "Enable evolution analysis")
+        evolution_table.add_row("Failure Rate", ">30%", "Add constraints from failures")
+        evolution_table.add_row("Success Rate", ">80%", "Crystallize successful patterns")
+        evolution_table.add_row("Tool Patterns", "Recurring", "Optimize tool selection")
+
+        console.print(evolution_table)
+
+        # Reset sentience to balanced state
+        self.sentience_manager.state.valence.curiosity = 0.0
+        self.sentience_manager.state.valence.safety = 0.5
+        self.sentience_manager.state.latent_mode = LatentMode.BALANCED
+
+        console.print(Panel(
+            "[bold green]Adaptive Agents Demo Complete![/bold green]\n\n"
+            "The DynamicAgentManager provides:\n"
+            "• Per-query agent adaptation based on sentience state\n"
+            "• Automatic model selection (haiku/sonnet/opus)\n"
+            "• Learning from failure patterns\n"
+            "• Continuous agent evolution from accumulated metrics\n"
+            "• Integration with Claude SDK subagents",
             border_style="green"
         ))
 
@@ -675,6 +878,7 @@ IMPORTANT CONSTRAINTS:
 
         scenarios = [
             ("Sentience Layer", self.scenario_sentience_demo),
+            ("Adaptive Agents", self.scenario_adaptive_agents_demo),
             ("Nested Learning", self.scenario_nested_learning),
             ("Code Generation", self.scenario_2_code_generation),
             ("Cost Optimization", self.scenario_6_cost_optimization),
@@ -820,7 +1024,7 @@ IMPORTANT CONSTRAINTS:
         while True:
             self.show_menu()
 
-            choice = console.input("[bold cyan]Choice (0-9, S):[/bold cyan] ").strip().upper()
+            choice = console.input("[bold cyan]Choice (0-9, A, S):[/bold cyan] ").strip().upper()
 
             try:
                 if choice == "0":
@@ -829,20 +1033,22 @@ IMPORTANT CONSTRAINTS:
                 elif choice == "1":
                     await self.scenario_sentience_demo()
                 elif choice == "2":
-                    await self.scenario_nested_learning()
+                    await self.scenario_adaptive_agents_demo()
                 elif choice == "3":
-                    await self.scenario_2_code_generation()
+                    await self.scenario_nested_learning()
                 elif choice == "4":
-                    await self.scenario_6_cost_optimization()
+                    await self.scenario_2_code_generation()
                 elif choice == "5":
-                    await self.scenario_1_data_pipeline()
+                    await self.scenario_6_cost_optimization()
                 elif choice == "6":
-                    await self.scenario_4_devops_automation()
+                    await self.scenario_1_data_pipeline()
                 elif choice == "7":
-                    await self.scenario_5_cross_project()
+                    await self.scenario_4_devops_automation()
                 elif choice == "8":
-                    await self.scenario_7_sdk_hooks()
+                    await self.scenario_5_cross_project()
                 elif choice == "9":
+                    await self.scenario_7_sdk_hooks()
+                elif choice == "A":
                     await self.scenario_9_run_all()
                 elif choice == "S":
                     await self.view_system_stats()
@@ -886,13 +1092,14 @@ async def main():
     if args.all:
         demo.show_banner()
         await demo.boot_os()
-        await demo.scenario_8_run_all()
+        await demo.scenario_9_run_all()
     elif args.scenario:
         demo.show_banner()
         await demo.boot_os()
 
         scenario_map = {
             "sentience": demo.scenario_sentience_demo,
+            "adaptive-agents": demo.scenario_adaptive_agents_demo,
             "nested-learning": demo.scenario_nested_learning,
             "data-pipeline": demo.scenario_1_data_pipeline,
             "code-generation": demo.scenario_2_code_generation,
