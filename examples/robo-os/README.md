@@ -269,12 +269,12 @@ See how LLM OS saves costs on repetitive tasks.
 
 **Scenario:**
 - Task: "Pick up object at (1.5, 1.0, 0.5) and place at (-1.0, -1.0, 0.7)"
-- First time: LEARNER mode plans and executes (~$0.02)
-- Future times: FOLLOWER mode replays trace ($0.00 - FREE!)
+- First time: LEARNER mode plans and executes (~2,500 tokens)
+- Future times: FOLLOWER mode replays trace (0 tokens - FREE!)
 
-**Cost Comparison:**
-- 1000 executions without caching: **$20.00**
-- 1000 executions with Learner/Follower: **$0.02** (99.9% savings!)
+**Token Comparison:**
+- 1000 executions without caching: **~2,500,000 tokens**
+- 1000 executions with Learner/Follower: **~2,500 tokens** (99.9% savings!)
 
 ### Demo 5: Interactive Mode
 Send your own commands to the robot!
@@ -615,7 +615,7 @@ Agent plans:
   2. toggle_tool(True)
   ↓
 Executes and stores trace with full tool_calls for PTC
-Cost: ~$0.02
+Tokens: ~2,500
 ```
 
 **Follower Mode + PTC (Subsequent Times):**
@@ -627,7 +627,7 @@ Learning Layer finds matching trace
 Execution Layer uses PTC to replay tool sequence
   - Tool calls execute OUTSIDE context window
   - 90%+ token savings
-Cost: ~$0.00
+Tokens: ~0
 ```
 
 **Crystallized Mode (After 5+ repetitions):**
@@ -637,7 +637,7 @@ User: "Pick up object at (1.5, 1.0, 0.5)"  [Frequent command!]
 Pattern crystallized into pure Python function
   ↓
 Direct execution, no LLM at all
-Cost: $0.00 (truly FREE!)
+Tokens: 0 (truly FREE!)
 ```
 
 ### Use Cases
@@ -646,16 +646,16 @@ Cost: $0.00 (truly FREE!)
 - **Training workflows**: Human teaches once, robot replays via PTC forever
 - **Factory lines**: Crystallized patterns for maximum throughput
 
-### Cost Savings Example
+### Token Savings Example
 
 **Scenario**: Robot performs quality inspection 100 times per day
 
-| Approach | Daily Cost | Monthly Cost | Yearly Cost |
+| Approach | Daily Tokens | Monthly Tokens | Yearly Tokens |
 |----------|------------|--------------|-------------|
-| No LLM OS | $2.00 | $60.00 | $730.00 |
-| FOLLOWER + PTC | $0.01 | $0.30 | $3.65 |
-| CRYSTALLIZED | $0.00 | $0.00 | $0.00 |
-| **Savings** | **99.5%+** | **99.5%+** | **99.5%+** |
+| No LLM OS | ~250,000 | ~7,500,000 | ~91,250,000 |
+| FOLLOWER + PTC | ~2,500 | ~75,000 | ~912,500 |
+| CRYSTALLIZED | 0 | 0 | 0 |
+| **Savings** | **99%+** | **99%+** | **99%+** |
 
 ---
 

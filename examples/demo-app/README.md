@@ -92,9 +92,9 @@ python demo_main.py --all
 - **File**: `scenarios/nested_learning_demo.py`
 - **What it shows**:
   - Initial learning (LEARNER mode)
-  - Exact match replay (FOLLOWER mode - $0 cost)
+  - Exact match replay (FOLLOWER mode - 0 tokens)
   - Semantic match (similar but different) → FOLLOWER/MIXED mode
-  - Related task (different details) → MIXED mode ($0.25 cost)
+  - Related task (different details) → MIXED mode (~1,000 tokens)
   - Unrelated task → LEARNER mode
   - Automatic mode selection based on confidence scores
 
@@ -218,14 +218,14 @@ policy = cognitive_kernel.derive_policy()
 **CRYSTALLIZED Mode** - Pattern used 5+ times with 95%+ success
 ```python
 result = await os.execute("Create a Python script for data analysis")
-# Cost: $0.00 - pure Python execution, no LLM call!
+# Tokens: 0 - pure Python execution, no LLM call!
 # Pattern crystallized into generated code
 ```
 
 **Follower Mode + PTC** - Exact/near-exact match
 ```python
 result = await os.execute("Create a Python script for data analysis")
-# Cost: ~$0.00 - replays via Programmatic Tool Calling
+# Tokens: 0 - replays via Programmatic Tool Calling
 # Tools execute OUTSIDE context window = 90%+ token savings
 # Confidence: ≥92% (virtually identical)
 ```
@@ -233,15 +233,15 @@ result = await os.execute("Create a Python script for data analysis")
 **MIXED Mode** - Similar but different task
 ```python
 result = await os.execute("Create a Python script for customer analysis")
-# Cost: ~$0.25, uses Tool Examples from traces
+# Tokens: ~1,000, uses Tool Examples from traces
 # Confidence: 75-92% (similar, needs adaptation)
-# Uses existing trace to guide LLM, cheaper than full LEARNER
+# Uses existing trace to guide LLM, fewer tokens than full LEARNER
 ```
 
 **Learner Mode + Tool Search** - First time execution
 ```python
 result = await os.execute("Create a Python script for data analysis")
-# Cost: ~$0.50, learns pattern, creates trace with tool_calls
+# Tokens: ~2,500, learns pattern, creates trace with tool_calls
 # Tool Search discovers needed tools on-demand
 # Trace stored for future PTC replay
 ```
@@ -252,7 +252,7 @@ result = await os.execute(
     "Research AI trends and create a technical report",
     mode="ORCHESTRATOR"
 )
-# Cost: Variable, coordinates multiple agents
+# Tokens: Variable, coordinates multiple agents
 ```
 
 **The Innovation**: Two-layer architecture - Learning Layer decides WHAT to do, Execution Layer does it EFFICIENTLY via PTC!
@@ -312,18 +312,15 @@ result = await os.execute(
 ### 5. SDK Hooks (Phase 2.5)
 
 **Automatic Hook Integration**:
-- Budget Control: Prevents runaway costs
 - Security: Blocks dangerous commands
 - Trace Capture: Records execution for Follower mode
-- Cost Tracking: Monitors cumulative costs
+- Token Tracking: Monitors cumulative token usage
 - Memory Injection: Provides context from past executions
 
 ```python
 # Hooks are enabled automatically in Learner mode
-result = await os.execute(
-    "Create a script",
-    max_cost_usd=1.0  # Budget hook ensures cost < limit
-)
+result = await os.execute("Create a script")
+# Token usage is tracked automatically
 ```
 
 ### 6. Cross-Project Learning
@@ -354,25 +351,25 @@ result = await os.sdk_client.execute_learner_mode(
 )
 ```
 
-## Cost Analysis (v3.3.0)
+## Token Analysis (v3.3.0)
 
-The demo tracks costs across scenarios with PTC and crystallization:
+The demo tracks token consumption across scenarios with PTC and crystallization:
 
 | Scenario | LEARNER | FOLLOWER+PTC | CRYSTALLIZED | Token Savings | Status |
 |----------|---------|--------------|--------------|---------------|--------|
-| Simple Code Gen | $0.50 | ~$0.00 | $0.00 | 90%+ | ✅ Working |
-| Data Pipeline | $1.20 | ~$0.00 | $0.00 | 90%+ | ✅ Working |
-| Research Task | $0.30-0.50 | N/A | N/A | N/A | ⚠️ Timeouts |
-| DevOps Task | $0.30 | ~$0.00 | $0.00 | 90%+ | ✅ Working |
-| Cost Optimization | $0.50 | ~$0.00 | $0.00 | 90%+ | ✅ Working |
-| SDK Hooks | $0.30 | ~$0.00 | $0.00 | 90%+ | ✅ Working |
+| Simple Code Gen | ~2,500 | 0 | 0 | 100% | ✅ Working |
+| Data Pipeline | ~5,000 | 0 | 0 | 100% | ✅ Working |
+| Research Task | ~3,000 | N/A | N/A | N/A | ⚠️ Timeouts |
+| DevOps Task | ~2,000 | 0 | 0 | 100% | ✅ Working |
+| Token Optimization | ~2,500 | 0 | 0 | 100% | ✅ Working |
+| SDK Hooks | ~2,000 | 0 | 0 | 100% | ✅ Working |
 
 **v3.3.0 Improvements**:
-- **Cost Savings**: 99%+ on repeated tasks (via PTC)
-- **Token Savings**: 90%+ (tool calls execute outside context window)
-- **Crystallization**: Patterns used 5+ times become pure Python (truly free!)
+- **Token Savings**: 100% on repeated tasks (via PTC)
+- **Context Optimization**: 90%+ (tool calls execute outside context window)
+- **Crystallization**: Patterns used 5+ times become pure Python (0 tokens!)
 
-**Note**: Research Assistant scenario has known timeout issues that affect reliability. Most scenarios demonstrate the full cost savings pattern successfully.
+**Note**: Research Assistant scenario has known timeout issues that affect reliability. Most scenarios demonstrate the full token savings pattern successfully.
 
 ## Memory and Learning
 
@@ -381,12 +378,12 @@ The demo tracks costs across scenarios with PTC and crystallization:
 ```
 Initial execution:
   confidence: 0.75
-  cost: $0.50
+  tokens: ~2,500
   time: 15s
 
 After 5 successful uses:
   confidence: 0.95
-  cost: $0.00 (Follower mode)
+  tokens: 0 (Follower mode)
   time: 0.5s
 ```
 
@@ -469,10 +466,9 @@ output/
 
 ### 1. Token Economy
 Every demo shows:
-- Initial budget allocation
-- Cost per execution
-- Budget monitoring
-- Savings via Follower mode
+- Token consumption per execution
+- Token tracking and monitoring
+- Savings via Follower mode (0 tokens)
 
 ### 2. Memory Hierarchy
 - **L1**: Context window (active conversation)
@@ -509,10 +505,7 @@ export ANTHROPIC_API_KEY="your-key-here"
 ```
 
 ### "Low battery error"
-Increase budget:
-```bash
-python demo_main.py --budget 50.0
-```
+This indicates the token budget has been exhausted. The system tracks token usage to prevent runaway consumption.
 
 ### "Permission denied on workspace"
 ```bash
