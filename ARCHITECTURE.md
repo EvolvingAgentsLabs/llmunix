@@ -101,12 +101,12 @@ tool_calls:
 
 ### Execution Modes
 
-| Mode | When | Cost | LLM calls |
-|------|------|------|-----------|
-| **CRYSTALLIZED** | 5+ uses, 95%+ success | $0.00 | 0 |
-| **FOLLOWER** | >92% trace match | ~$0.00 | 0 |
-| **MIXED** | 75-92% match | ~$0.25 | 1 (reduced) |
-| **LEARNER** | Novel task | ~$0.50 | 1+ (full) |
+| Mode | When | Tokens | LLM Calls |
+|------|------|--------|-----------|
+| **CRYSTALLIZED** | 5+ uses, 95%+ success | 0 | 0 |
+| **FOLLOWER** | >92% trace match | 0 | 0 |
+| **MIXED** | 75-92% match | ~1,000 | 1 (reduced) |
+| **LEARNER** | Novel task | ~2,500 | 1+ (full) |
 | **ORCHESTRATOR** | Multi-step | Variable | Multiple |
 
 ### Semantic Matching
@@ -156,7 +156,7 @@ Patterns that work become Python functions:
 ```
 Pattern used 5 times with 95% success
 → Auto-generates: plugins/generated/create_calculator.py
-→ Future calls: instant Python execution, $0
+→ Future calls: instant Python execution, 0 tokens
 ```
 
 ### Agent Creation
@@ -232,7 +232,6 @@ config = LLMOSConfig.production()
 
 # Custom
 config = LLMOSConfig(
-    budget_usd=50.0,
     sentience_enabled=True,
     auto_crystallization=True
 )
@@ -245,7 +244,7 @@ config = LLMOSConfig(
 ```python
 from llmos.boot import LLMOS
 
-os = LLMOS(budget_usd=10.0)
+os = LLMOS()
 await os.boot()
 
 result = await os.execute("Create a Python calculator")
