@@ -679,7 +679,7 @@ Q-Kids Studio uses LLM OS's **Execution Layer with Programmatic Tool Calling (PT
 │  First Time: Alice makes mistake "only used COIN_FLIP"     │
 │  ↓                                                          │
 │  LEARNER MODE: LLM generates personalized hint             │
-│  Cost: $0.003                                              │
+│  Tokens: ~500                                              │
 │  Trace stored with full tool_calls for PTC replay          │
 └─────────────────────────────────────────────────────────────┘
 
@@ -687,7 +687,7 @@ Q-Kids Studio uses LLM OS's **Execution Layer with Programmatic Tool Calling (PT
 │  Later: Bob makes THE SAME mistake                         │
 │  ↓                                                          │
 │  FOLLOWER MODE + PTC: Replay tool sequence                 │
-│  Cost: ~$0.00 (90%+ savings!)                              │
+│  Tokens: ~0 (90%+ savings!)                                │
 │  Tool calls execute OUTSIDE context window                 │
 └─────────────────────────────────────────────────────────────┘
 
@@ -695,7 +695,7 @@ Q-Kids Studio uses LLM OS's **Execution Layer with Programmatic Tool Calling (PT
 │  After 5+ kids make same mistake:                          │
 │  ↓                                                          │
 │  CRYSTALLIZED MODE: Pure Python execution                  │
-│  Cost: $0.00 (truly FREE!)                                 │
+│  Tokens: 0 (truly FREE!)                                   │
 │  No LLM call at all - instant response                     │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -705,13 +705,13 @@ Q-Kids Studio uses LLM OS's **Execution Layer with Programmatic Tool Calling (PT
 **Scenario:** 1000 kids, each tries Mission 2 three times
 
 **Without LLM OS:**
-- 3000 hint requests × $0.003 = **$9.00**
+- 3000 hint requests × ~500 tokens = **~1,500,000 tokens**
 
 **With LLM OS v3.3.0 (PTC + Crystallization):**
-- ~20 unique mistake patterns (LEARNER) × $0.003 = **$0.06**
-- ~100 PTC replays (FOLLOWER) × $0.0001 = **$0.01**
-- 2880 crystallized executions × $0.00 = **$0.00**
-- **Total: $0.07** (99.2% cost savings!)
+- ~20 unique mistake patterns (LEARNER) × ~500 tokens = **~10,000 tokens**
+- ~100 PTC replays (FOLLOWER) × ~0 tokens = **~0 tokens**
+- 2880 crystallized executions × 0 tokens = **0 tokens**
+- **Total: ~10,000 tokens** (99.3% token savings!)
 
 ### Implementation
 

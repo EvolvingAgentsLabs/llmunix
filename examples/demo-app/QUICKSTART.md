@@ -51,11 +51,11 @@ Select a demo scenario:
 **Choose option 1**: 🧬 Nested Learning Demo (NEW!)
 
 This demo showcases the cutting-edge Nested Learning implementation:
-1. **Initial trace creation** (LEARNER mode: ~$0.50)
-2. **Exact match replay** (FOLLOWER mode: $0.00 - 100% savings)
-3. **Semantic match** (FOLLOWER/MIXED mode: $0-$0.25 - semantic understanding!)
-4. **Related task** (MIXED mode: $0.25 - trace-guided execution)
-5. **Unrelated task** (LEARNER mode: $0.50 - new learning)
+1. **Initial trace creation** (LEARNER mode: ~2,500 tokens)
+2. **Exact match replay** (FOLLOWER mode: 0 tokens - 100% savings)
+3. **Semantic match** (FOLLOWER/MIXED mode: 0-1,000 tokens - semantic understanding!)
+4. **Related task** (MIXED mode: ~1,000 tokens - trace-guided execution)
+5. **Unrelated task** (LEARNER mode: ~2,500 tokens - new learning)
 
 **Key Innovation**: The LLM analyzes semantic similarity, not just exact text matching!
 
@@ -64,19 +64,19 @@ This demo showcases the cutting-edge Nested Learning implementation:
 **Option 2**: Code Generation Workflow
 
 Shows the classic Learner → Follower pattern:
-1. First run: Learner mode (~$0.50) - learns the pattern
-2. Second run: Follower mode ($0.00) - replays for free
+1. First run: Learner mode (~2,500 tokens) - learns the pattern
+2. Second run: Follower mode (0 tokens) - replays for free
 3. **Savings: 100%**
 
 Expected output:
 ```
-First run cost: $0.5000
+First run tokens: ~2,500
 Mode: LEARNER
 
-Second run cost: $0.0000
+Second run tokens: 0
 Mode: FOLLOWER
 
-💰 Savings: 100% ($0.50 → $0.00)
+💰 Savings: 100% (2,500 → 0 tokens)
 ```
 
 ## What's Happening?
@@ -84,7 +84,7 @@ Mode: FOLLOWER
 1. **First execution**: LLM OS uses Claude to solve the problem, records every step
 2. **Execution trace created**: Pattern saved to `workspace/memories/traces/`
 3. **Second execution**: Replays the trace with pure Python - no LLM needed!
-4. **Result**: Same output, zero cost
+4. **Result**: Same output, zero tokens
 
 ## Next Steps
 
@@ -94,13 +94,13 @@ Mode: FOLLOWER
 # Nested Learning (semantic matching)
 python demo_main.py --scenario nested-learning
 
-# Cost optimization (see dramatic savings)
+# Token optimization (see dramatic savings)
 python demo_main.py --scenario cost-optimization
 
 # Multi-agent orchestration
 python demo_main.py --scenario data-pipeline
 
-# SDK hooks (security and budget control)
+# SDK hooks (security and token control)
 python demo_main.py --scenario hooks
 
 # Run everything
@@ -118,13 +118,6 @@ cat utils/demo_helpers.py
 
 # Read comprehensive analysis
 cat ANALYSIS.md
-```
-
-### Customize Budget
-
-```bash
-# Set custom budget (default is $20)
-python demo_main.py --budget 50.0
 ```
 
 ### View Generated Files
@@ -147,7 +140,7 @@ ls output/traces/        # Execution traces
 ║ ✅ Success                                                   ║
 ║                                                              ║
 ║ Mode: FOLLOWER                                               ║
-║ Cost: $0.0000                                                ║
+║ Tokens: 0                                                    ║
 ║ Steps: 3/3                                                   ║
 ║ Time: 0.5s                                                   ║
 ╚══════════════════════════════════════════════════════════════╝
@@ -156,24 +149,24 @@ ls output/traces/        # Execution traces
 **What this means**:
 - ✅ Success: Execution completed successfully
 - FOLLOWER mode: Used free trace replay
-- $0.0000 cost: No LLM tokens used
+- 0 tokens: No LLM tokens consumed
 - 3/3 steps: All steps executed
 - 0.5s: Near-instant execution
 
-### Cost Summary
+### Token Summary
 
 After running multiple scenarios:
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║ Cost Summary                                                 ║
+║ Token Summary                                                ║
 ╠══════════════════════════════════════════════════════════════╣
-║ Scenario                    Cost                             ║
+║ Scenario                    Tokens                           ║
 ║ ────────────────────────────────────────────────────────     ║
-║ Data Pipeline               $1.2000                          ║
-║ Code Generation             $0.5000                          ║
-║ Research Assistant          $2.5000                          ║
+║ Data Pipeline               ~5,000                           ║
+║ Code Generation             ~2,500                           ║
+║ Research Assistant          ~8,000                           ║
 ║ ────────────────────────────────────────────────────────     ║
-║ Total                       $4.2000                          ║
+║ Total                       ~15,500                          ║
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
@@ -197,11 +190,7 @@ echo 'export ANTHROPIC_API_KEY="sk-ant-..."' >> ~/.bashrc
 
 ### "Low battery error"
 
-The budget is exhausted. Increase it:
-
-```bash
-python demo_main.py --budget 50.0
-```
+The token budget is exhausted. The system tracks token usage to prevent runaway consumption.
 
 ### Permission errors
 
@@ -225,12 +214,14 @@ This warning may appear in the Research scenario. It's informational - the syste
 
 ## Key Concepts (Quick Reference)
 
-### Three Execution Modes (+ MIXED Mode!)
+### Four Execution Modes
 
-1. **Learner** ($0.50): First time, uses LLM, creates trace
-2. **Follower** ($0.00): Repeat, replays trace, no LLM
-3. **MIXED** ($0.25): NEW! Similar task, trace-guided LLM execution
-4. **Orchestrator** ($1-3): Complex, coordinates multiple agents
+| Mode | Tokens | Description |
+|------|--------|-------------|
+| **Learner** | ~2,500 | First time, uses LLM, creates trace |
+| **Follower** | 0 | Repeat, replays trace, no LLM |
+| **MIXED** | ~1,000 | Similar task, trace-guided LLM execution |
+| **Orchestrator** | Variable | Complex, coordinates multiple agents |
 
 **The Game Changer**: MIXED mode uses traces as few-shot guidance when the task is similar but not identical!
 
@@ -245,9 +236,9 @@ This warning may appear in the Research scenario. It's informational - the syste
 
 Automatically enabled in Learner mode:
 - 🔒 **Security**: Blocks dangerous commands
-- 💰 **Budget**: Prevents cost overruns
 - 📝 **Trace**: Captures execution for Follower mode
 - 🧠 **Memory**: Injects context from past runs
+- 📊 **Tokens**: Tracks token consumption
 
 ## Help & Documentation
 
@@ -261,7 +252,7 @@ Automatically enabled in Learner mode:
 ```
 1. 🧬 Nested Learning Demo      - NEW! Semantic matching         🌟 RECOMMENDED
 2. Code Generation Workflow     - Learn-once, execute-free        ✅ Working
-3. Cost Optimization Demo       - Dramatic savings                ✅ Working
+3. Token Optimization Demo      - Dramatic savings                ✅ Working
 4. Data Processing Pipeline     - Multi-agent coordination        ✅ Working
 5. DevOps Automation           - Security hooks                  ✅ Working
 6. Cross-Project Learning      - Pattern detection               ✅ Working
@@ -282,20 +273,19 @@ $ python demo_main.py
 Choice (0-9): 2
 
 🚀 Booting LLM OS...
-💰 Token Budget: $20.00
 ✅ LLM OS ready!
 
 First execution (Learner mode)...
 [... Claude generates code ...]
-First run cost: $0.5000
+First run tokens: ~2,500
 Mode: LEARNER
 
 Second execution (Follower mode expected)...
 [... Replays trace instantly ...]
-Second run cost: $0.0000
+Second run tokens: 0
 Mode: FOLLOWER
 
-💰 Savings: 100% ($0.50 → $0.00)
+💰 Savings: 100% (2,500 → 0 tokens)
 
 Press Enter to continue...
 ```
@@ -303,16 +293,16 @@ Press Enter to continue...
 ## What Makes This Special?
 
 **Traditional Approach**:
-- Every execution costs ~$0.50
-- 10 executions = $5.00
-- 100 executions = $50.00
+- Every execution uses ~2,500 tokens
+- 10 executions = 25,000 tokens
+- 100 executions = 250,000 tokens
 
 **LLM OS Approach**:
-- First execution: $0.50 (learns)
-- Next 99 executions: $0.00 (replays)
-- Total for 100: $0.50
+- First execution: ~2,500 tokens (learns)
+- Next 99 executions: 0 tokens (replays)
+- Total for 100: ~2,500 tokens
 
-**Savings**: $49.50 (99% reduction)
+**Savings**: 247,500 tokens (99% reduction)
 
 ## Ready to Build?
 

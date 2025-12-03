@@ -232,20 +232,20 @@ If you prefer to use a separate qiskit-studio installation:
 - LLM reasons about GHZ states
 - Generates Qiskit code using Tool Search to discover tools
 - Tests and validates
-- **Cost: ~$0.05**
+- **Tokens: ~2,500**
 - Execution time: ~5 seconds
 - **Trace saved with full tool_calls for future PTC replay**
 
 **Second Request (FOLLOWER mode with PTC)**:
 - Learning Layer recognizes the intent hash
 - Execution Layer uses PTC to replay tool sequence **outside context window**
-- **Cost: ~$0.00 (90%+ savings!)**
+- **Tokens: ~0 (90%+ savings!)**
 - Execution time: <1 second
 - **Token savings: Hundreds of tokens saved by avoiding context bloat**
 
 **Third+ Request (CRYSTALLIZED mode)** - After 3+ successful runs:
 - Pattern crystallized into pure Python code
-- **Cost: $0.00 (truly FREE!)**
+- **Tokens: 0 (truly FREE!)**
 - Execution time: <100ms
 - No LLM call at all!
 
@@ -254,7 +254,7 @@ Check the response metadata to see PTC activation:
 {
   "metadata": {
     "mode": "FOLLOWER",
-    "cost": 0.0,
+    "tokens": 0,
     "cached": true,
     "ptc_used": true,
     "tokens_saved": 450
@@ -385,7 +385,7 @@ curl http://localhost:8000/sentience | jq
 **Response** (Maestro-compatible format):
 ```json
 {
-  "response": "{\"final_prompt\": \"...\", \"agent\": \"quantum-architect\", \"mode\": \"AUTO\", \"cost\": 0.0234, \"cached\": false}",
+  "response": "{\"final_prompt\": \"...\", \"agent\": \"quantum-architect\", \"mode\": \"AUTO\", \"tokens\": 2500, \"cached\": false}",
   "output": "```python\nfrom qiskit import QuantumCircuit\n...\n```"
 }
 ```
@@ -473,9 +473,9 @@ data: [DONE]
 {
   "version": "3.4.0",
   "token_economy": {
-    "budget_usd": 50.0,
-    "spent_usd": 2.34,
-    "remaining_usd": 47.66,
+    "total_tokens": 25000,
+    "spent_tokens": 12340,
+    "remaining_budget_tokens": 12660,
     "transactions": 15
   },
   "memory": {
@@ -659,7 +659,7 @@ SERVER_HOST=0.0.0.0
 SERVER_PORT=8000
 
 # LLM OS
-LLMOS_BUDGET_USD=50.0
+LLMOS_TOKEN_BUDGET=500000
 LLMOS_PROJECT_NAME=qiskit_studio_session
 
 # LLM OS Execution Layer (v3.3.0)
@@ -703,7 +703,7 @@ sentience=SentienceConfig(
 
 Or use environment variables:
 ```bash
-LLMOS_BUDGET_USD=100.0 LLMOS_USE_EMBEDDINGS=true LLMOS_ENABLE_SENTIENCE=true python server.py
+LLMOS_TOKEN_BUDGET=1000000 LLMOS_USE_EMBEDDINGS=true LLMOS_ENABLE_SENTIENCE=true python server.py
 ```
 
 ---
@@ -713,7 +713,7 @@ LLMOS_BUDGET_USD=100.0 LLMOS_USE_EMBEDDINGS=true LLMOS_ENABLE_SENTIENCE=true pyt
 | Metric | Original (Maestro) | LLM OS v3.4.0 | Improvement |
 |--------|-------------------|---------------|-------------|
 | **Microservices** | 3 (chat, codegen, coderun) | 1 (unified) | **67% reduction** |
-| **Repeated Pattern Cost** | Full LLM call each time | ~$0.00 (PTC) | **90%+ savings** |
+| **Repeated Pattern Tokens** | Full LLM call each time | ~0 tokens (PTC) | **90%+ savings** |
 | **Token Usage** | All tools in context | On-demand via Tool Search | **85% context reduction** |
 | **Memory Sharing** | None (isolated services) | Cross-project + PTC traces | **Full history** |
 | **Security** | Per-service validation | Unified hooks | **Consistent enforcement** |
@@ -866,10 +866,10 @@ Same as parent LLM OS project (see root LICENSE)
 - Check if code contains restricted operations
 - Review logs for detailed error messages
 
-**High costs**:
+**High token usage**:
 - Check if FOLLOWER mode is activating (metadata.cached field)
-- Reduce `LLMOS_BUDGET_USD` to enforce stricter limits
-- Review `/stats` endpoint to monitor spending
+- Reduce `LLMOS_TOKEN_BUDGET` to enforce stricter limits
+- Review `/stats` endpoint to monitor token usage
 
 ---
 

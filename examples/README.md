@@ -67,7 +67,7 @@ These are the primary examples showcasing LLM OS capabilities:
 
 **What it demonstrates:**
 - 📝 **Markdown Agents**: Agents defined in `workspace/agents/*.md` files (no Python!)
-- 💰 **Cost Reduction**: Learner → Follower caching (100% savings on repeated tasks)
+- 💰 **Token Savings**: Learner → Follower caching (100% savings on repeated tasks)
 - 🔒 **Enhanced Security**: Multi-layer code execution protection
 - 🧠 **Unified Memory**: Cross-project learning and semantic memory
 - ⚡ **Simplified Architecture**: Single process replaces 3+ microservices
@@ -89,7 +89,7 @@ cd qiskit-studio
 
 **What it demonstrates:**
 - 📊 **7 Real-World Scenarios**: Data pipelines, code generation, research, DevOps, etc.
-- 💡 **Cost Analysis**: Detailed cost tracking and savings demonstrations
+- 💡 **Token Analysis**: Detailed token tracking and savings demonstrations
 - 📈 **Visual Feedback**: Beautiful terminal UI using Rich library
 - ⏱️  **Performance Metrics**: Execution time, steps completed, success rates
 - 🎯 **Targeted Demos**: Each scenario highlights specific LLM OS features
@@ -106,7 +106,7 @@ python demo_main.py
 3. **Research Assistant** - Complex orchestration (⚠️ has timeouts)
 4. **DevOps Automation** - Security hooks in action
 5. **Cross-Project Learning** - Pattern detection across projects
-6. **Cost Optimization** - Run same task 5x, show savings
+6. **Token Optimization** - Run same task 5x, show savings
 7. **SDK Hooks** - All Phase 2.5 hooks demonstrated
 
 **Command-line options:**
@@ -128,7 +128,7 @@ python demo_main.py --all                  # Run all scenarios
 - 🎮 **Kid-Friendly Learning**: Block-based programming (like Scratch for quantum!)
 - 🦉 **AI Tutoring**: Professor Q agent explains quantum concepts with stories
 - 🎯 **Adaptive Difficulty**: Game Master adjusts challenges based on performance
-- 💰 **Cost Optimization**: Learner → Follower saves 99%+ on repeated hints
+- 💰 **Token Optimization**: Learner → Follower saves 99%+ on repeated hints
 - 🔒 **Safety-First**: Multiple layers protecting kids from dangerous operations
 - 📊 **Progress Tracking**: Skill trees, badges, missions, leaderboards
 - 🌟 **6 Progressive Missions**: Superposition → Entanglement → VQE algorithms
@@ -160,7 +160,7 @@ cd q-kids-studio
 - 🛡️ **Multi-Layer Safety**: PreToolUse hook prevents dangerous operations
 - 👥 **Multi-Agent Coordination**: Operator + Safety Officer collaboration
 - 📹 **State Visualization**: ASCII cockpit view and overhead map
-- 💰 **Learner → Follower**: Teach once, replay forever (100% cost savings)
+- 💰 **Learner → Follower**: Teach once, replay forever (100% token savings)
 - 🔌 **FastAPI Backend**: Production-ready REST API
 - 🌊 **WebSocket Support**: Real-time state updates
 
@@ -214,7 +214,7 @@ The `legacy/` directory contains examples from earlier versions (v3.1.0 and befo
 | Control robots with natural language | **RoboOS** | LLM as robot brain with multi-layer safety |
 | Run impressive demos with visuals | **Demo App** | Rich terminal UI, 7 scenarios, perfect for stakeholders |
 | Learn about quantum computing | **Qiskit Studio** or **Q-Kids Studio** | Domain-specific quantum agents and tools |
-| Understand cost savings | **Qiskit Studio** or **Demo App** | Learner→Follower demo with metrics |
+| Understand token savings | **Qiskit Studio** or **Demo App** | Learner→Follower demo with metrics |
 | See multi-agent orchestration | **Demo App (Scenario 1)** or **Qiskit Studio** | Multiple agents collaborating |
 | Test security hooks | **RoboOS** or **Demo App (Scenario 4)** | Safety validation in action |
 | Build adaptive AI tutors | **Q-Kids Studio** | Professor Q agent with context-aware hints |
@@ -297,7 +297,7 @@ Make sure to:
 | **UI** | Interactive prompts | REST API | REST API + Blocks | REST API + WebSocket | Rich terminal UI |
 | **Lines of Code** | ~260 | ~3,000 | ~2,500 | ~2,000 | ~700 |
 | **Best For** | Understanding v3.2.0 | Production deployment | Educational apps | Robotics | Stakeholder demos |
-| **Key Feature** | **Self-modification** | Cost optimization | Kid safety | Multi-layer safety | Visual feedback |
+| **Key Feature** | **Self-modification** | Token optimization | Kid safety | Multi-layer safety | Visual feedback |
 | **Agents** | Creates haiku-poet | 2 quantum specialists | 2 tutors | 2 (Operator + Safety) | 3-7 per scenario |
 | **Tools** | create_agent, modify_agent | 2 Qiskit tools | 3 kid-safe tools | 7 robot control | Standard toolkit |
 | **Target Audience** | Everyone (sci-fi magic!) | Quantum developers | Kids ages 8-12 | Roboticists | Stakeholders, managers |
@@ -324,11 +324,11 @@ Permission denied: ./run.sh
 ```
 Solution: Make script executable with `chmod +x run.sh`
 
-**Budget exceeded:**
+**Token budget exceeded:**
 ```
-BudgetExceededError: Remaining budget $0.00
+BudgetExceededError: Token budget exhausted
 ```
-Solution: Increase budget when initializing LLMOS or in example configuration.
+Solution: Increase token budget when initializing LLMOS or in example configuration.
 
 ---
 
