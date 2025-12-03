@@ -168,13 +168,17 @@ Work systematically and document your steps.
         Returns:
             True if successful
         """
-        print(f"⚡ Follower Mode: Executing {len(trace.steps)} steps...")
+        # Support both old 'steps' and new 'tool_calls' attributes
+        steps = getattr(trace, 'tool_calls', None) or getattr(trace, 'steps', []) or []
+
+        print(f"⚡ Follower Mode: Executing {len(steps)} steps...")
 
         try:
-            for step in trace.steps:
+            for step in steps:
                 # Execute each step deterministically
-                # TODO: Implement actual tool execution
-                print(f"  → {step['tool']}")
+                # Support both dict formats: {'tool': ...} and {'name': ...}
+                tool_name = step.get('tool') or step.get('name', 'unknown')
+                print(f"  → {tool_name}")
                 await asyncio.sleep(0.1)  # Simulate execution
 
             print("✅ Follower Mode Complete")

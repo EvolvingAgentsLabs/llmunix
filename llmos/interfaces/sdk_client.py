@@ -16,6 +16,15 @@ except ImportError:
     SDK_AVAILABLE = False
     AgentDefinition = None
     StreamEvent = None
+    ClaudeSDKClient = None
+    ClaudeAgentOptions = None
+    HookEvent = None
+    HookMatcher = None
+    Message = None
+    AssistantMessage = None
+    ResultMessage = None
+    TextBlock = None
+    ToolUseBlock = None
     print("Warning: claude-agent-sdk not installed. Install with: pip install claude-agent-sdk")
 
 from memory.traces_sdk import ExecutionTrace
