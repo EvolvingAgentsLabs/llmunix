@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Demo script for Qiskit Studio Backend - LLM OS v3.3.0 Edition
+Demo script for Qiskit Studio Backend - LLM OS v3.5.0 Edition
 
-This script demonstrates the key features including Advanced Tool Use:
+This script demonstrates the key features including:
 1. Code generation via chat endpoint
 2. Direct code execution
 3. Learner → Follower → CRYSTALLIZED mode progression
 4. PTC (Programmatic Tool Calling) for 90%+ token savings
 5. Execution Layer statistics
+6. Sentience Layer state (v3.4.0)
+7. Adaptive Agents (v3.5.0) - dynamic agent configuration per query
 """
 
 import asyncio
@@ -17,7 +19,7 @@ from pathlib import Path
 
 
 class QiskitStudioDemo:
-    """Demo client for Qiskit Studio Backend with v3.3.0 features"""
+    """Demo client for Qiskit Studio Backend with v3.5.0 features"""
 
     def __init__(self, base_url: str = "http://localhost:8000"):
         self.base_url = base_url
@@ -45,6 +47,16 @@ class QiskitStudioDemo:
     async def get_stats(self):
         """Get backend statistics including Execution Layer metrics"""
         response = await self.client.get(f"{self.base_url}/stats")
+        return response.json()
+
+    async def get_sentience(self):
+        """Get Sentience Layer state (v3.4.0)"""
+        response = await self.client.get(f"{self.base_url}/sentience")
+        return response.json()
+
+    async def get_adaptive(self):
+        """Get Adaptive Agents state (v3.5.0)"""
+        response = await self.client.get(f"{self.base_url}/adaptive")
         return response.json()
 
     async def close(self):
@@ -216,9 +228,9 @@ os.system("echo 'Attempting system access...'")
 
 
 async def demo_statistics():
-    """Demo 5: View backend statistics including Execution Layer"""
+    """Demo 5: View backend statistics including Execution Layer and Adaptive Agents"""
     print("\n" + "="*60)
-    print("DEMO 5: Backend Statistics (v3.3.0 with Execution Layer)")
+    print("DEMO 5: Backend Statistics (v3.5.0 with Adaptive Agents)")
     print("="*60)
 
     demo = QiskitStudioDemo()
@@ -288,15 +300,163 @@ async def demo_statistics():
             print(f"   LEARNER:      {mode_dist.get('learner', 0)}")
             print(f"   ORCHESTRATOR: {mode_dist.get('orchestrator', 0)}")
 
+        # Sentience Layer stats (v3.4.0)
+        sentience = stats.get('sentience', {})
+        if sentience.get('enabled'):
+            print("\n🧠 Sentience Layer (v3.4.0):")
+            print(f"   Latent Mode: {sentience.get('latent_mode', 'N/A')}")
+            valence = sentience.get('valence', {})
+            print(f"   Valence:")
+            print(f"      Safety:     {valence.get('safety', 0):.3f}")
+            print(f"      Curiosity:  {valence.get('curiosity', 0):.3f}")
+            print(f"      Energy:     {valence.get('energy', 0):.3f}")
+            print(f"      Confidence: {valence.get('self_confidence', 0):.3f}")
+
+        # Adaptive Agents stats (v3.5.0)
+        adaptive = stats.get('adaptive_agents', {})
+        if adaptive.get('enabled'):
+            print("\n🤖 Adaptive Agents (v3.5.0):")
+            print(f"   Total Adaptations: {adaptive.get('total_adaptations', 0)}")
+            by_type = adaptive.get('adaptations_by_type', {})
+            if by_type:
+                print(f"   By Type: {by_type}")
+
+    finally:
+        await demo.close()
+
+
+async def demo_sentience_layer():
+    """Demo 6: Sentience Layer - view internal state (v3.4.0)"""
+    print("\n" + "="*60)
+    print("DEMO 6: Sentience Layer (v3.4.0)")
+    print("="*60)
+
+    demo = QiskitStudioDemo()
+
+    try:
+        print("\n🧠 Fetching Sentience Layer state...")
+        sentience = await demo.get_sentience()
+
+        if not sentience.get('enabled'):
+            print("\n⚠️  Sentience Layer is not enabled")
+            return
+
+        latent_mode = sentience.get('latent_mode', {})
+        print(f"\n🎭 Latent Mode: {latent_mode.get('current', 'N/A')}")
+        print(f"   Description: {latent_mode.get('description', 'N/A')}")
+
+        print("\n📊 Valence Vector:")
+        valence = sentience.get('valence', {})
+        for var_name, var_data in valence.items():
+            if isinstance(var_data, dict):
+                value = var_data.get('value', 0)
+                setpoint = var_data.get('setpoint', 0)
+                deviation = var_data.get('deviation', 0)
+                # Visual bar
+                bar_pos = int((value + 1) * 10)  # -1 to 1 -> 0 to 20
+                bar = "█" * max(0, bar_pos) + "░" * max(0, 20 - bar_pos)
+                print(f"   {var_name:15s} [{bar}] {value:+.3f} (setpoint: {setpoint:.2f})")
+
+        print(f"\n⚖️  Homeostatic Cost: {sentience.get('homeostatic_cost', 0):.4f}")
+
+        # Policy
+        policy = sentience.get('policy', {})
+        if policy:
+            print("\n📋 Behavioral Policy:")
+            print(f"   Prefer Cheap Modes:   {policy.get('prefer_cheap_modes', False)}")
+            print(f"   Prefer Safe Modes:    {policy.get('prefer_safe_modes', False)}")
+            print(f"   Allow Exploration:    {policy.get('allow_exploration', True)}")
+            print(f"   Auto-Improvement:     {policy.get('enable_auto_improvement', False)}")
+
+        # Improvement suggestions
+        suggestions = sentience.get('improvement_suggestions', [])
+        if suggestions:
+            print(f"\n💡 Self-Improvement Suggestions:")
+            for s in suggestions[:3]:
+                print(f"   - [{s.get('type', 'N/A')}] {s.get('description', 'N/A')}")
+
+    finally:
+        await demo.close()
+
+
+async def demo_adaptive_agents():
+    """Demo 7: Adaptive Agents - dynamic agent configuration (v3.5.0)"""
+    print("\n" + "="*60)
+    print("DEMO 7: Adaptive Agents (v3.5.0) - NEW!")
+    print("="*60)
+
+    demo = QiskitStudioDemo()
+
+    try:
+        print("\n🤖 Fetching Adaptive Agents state...")
+        adaptive = await demo.get_adaptive()
+
+        if not adaptive.get('enabled'):
+            print("\n⚠️  Adaptive Agents is not enabled")
+            print(f"   Reason: {adaptive.get('message', 'Unknown')}")
+            return
+
+        # Summary
+        summary = adaptive.get('summary', {})
+        print(f"\n📊 Adaptation Summary:")
+        print(f"   Total Adaptations: {summary.get('total_adaptations', 0)}")
+
+        by_type = summary.get('adaptations_by_type', {})
+        if by_type:
+            print(f"   By Type:")
+            for atype, count in by_type.items():
+                print(f"      {atype}: {count}")
+
+        # Agent metrics
+        metrics = adaptive.get('agent_metrics', {})
+        if metrics:
+            print(f"\n📈 Agent Performance Metrics:")
+            for agent_name, agent_metrics in metrics.items():
+                print(f"\n   {agent_name}:")
+                print(f"      Success Rate:    {agent_metrics.get('success_rate', 'N/A')}")
+                print(f"      Total Executions: {agent_metrics.get('total_executions', 0)}")
+                print(f"      Avg Tokens:      {agent_metrics.get('average_tokens', 0):.1f}")
+                if agent_metrics.get('needs_evolution'):
+                    print(f"      ⚠️  Needs evolution!")
+
+        # Evolution info
+        evolution = adaptive.get('evolution', {})
+        if evolution:
+            print(f"\n🧬 Evolution Status:")
+            thresholds = evolution.get('thresholds', {})
+            print(f"   Thresholds:")
+            print(f"      Min Executions:       {thresholds.get('min_executions', 'N/A')}")
+            print(f"      Failure Rate Trigger: {thresholds.get('failure_rate_trigger', 'N/A')}")
+
+            ready = evolution.get('agents_ready_for_evolution', [])
+            if ready:
+                print(f"   Agents Ready for Evolution: {', '.join(ready)}")
+            else:
+                print(f"   No agents currently need evolution")
+
+        # Integration status
+        integration = adaptive.get('integration', {})
+        if integration:
+            print(f"\n🔗 Integration Status:")
+            print(f"   Sentience Connected:     {integration.get('sentience_connected', False)}")
+            print(f"   Trace Manager Connected: {integration.get('trace_manager_connected', False)}")
+
+        # Recent adaptations
+        recent = adaptive.get('recent_adaptations', [])
+        if recent:
+            print(f"\n📝 Recent Adaptations:")
+            for a in recent[:5]:
+                print(f"   - [{a.get('type', 'N/A')}] {a.get('reason', 'N/A')[:50]}...")
+
     finally:
         await demo.close()
 
 
 async def run_all_demos():
-    """Run all demos including v3.3.0 Execution Layer features"""
+    """Run all demos including v3.5.0 Adaptive Agents features"""
     print("\n" + "="*70)
-    print(" "*10 + "Qiskit Studio Backend - LLM OS v3.3.0 Edition")
-    print(" "*15 + "with Advanced Tool Use (PTC, Tool Search)")
+    print(" "*10 + "Qiskit Studio Backend - LLM OS v3.5.0 Edition")
+    print(" "*5 + "Advanced Tool Use | Sentience Layer | Adaptive Agents")
     print("="*70)
 
     try:
@@ -327,6 +487,12 @@ async def run_all_demos():
         await asyncio.sleep(1)
 
         await demo_statistics()
+        await asyncio.sleep(1)
+
+        await demo_sentience_layer()
+        await asyncio.sleep(1)
+
+        await demo_adaptive_agents()
 
         print("\n" + "="*70)
         print("✅ All demos completed successfully!")
@@ -335,6 +501,7 @@ async def run_all_demos():
         print("  1. Check the backend logs for detailed execution info")
         print("  2. Try the Qiskit Studio frontend at http://localhost:3000")
         print("  3. Review the README.md for more examples")
+        print("  4. Try /sentience and /adaptive endpoints for detailed state")
         print()
 
     except Exception as e:

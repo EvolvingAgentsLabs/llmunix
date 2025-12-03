@@ -2,9 +2,10 @@
 Configuration module for Qiskit Studio Backend
 
 Loads environment variables and provides configuration settings.
-Integrates with LLM OS v3.4.0 features including:
+Integrates with LLM OS v3.5.0 features including:
 - Advanced Tool Use (PTC, Tool Search, Tool Examples)
 - Sentience Layer (valence, homeostatic dynamics, cognitive kernel)
+- Adaptive Agents (dynamic agent configuration per query)
 """
 
 import os
@@ -55,6 +56,11 @@ class Config:
     LLMOS_INJECT_INTERNAL_STATE: bool = os.getenv("LLMOS_INJECT_INTERNAL_STATE", "true").lower() == "true"
     LLMOS_ENABLE_AUTO_IMPROVEMENT: bool = os.getenv("LLMOS_ENABLE_AUTO_IMPROVEMENT", "true").lower() == "true"
 
+    # LLM OS Adaptive Agents settings (v3.5.0)
+    LLMOS_ENABLE_ADAPTIVE_AGENTS: bool = os.getenv("LLMOS_ENABLE_ADAPTIVE_AGENTS", "true").lower() == "true"
+    LLMOS_AGENT_EVOLUTION_MIN_EXECUTIONS: int = int(os.getenv("LLMOS_AGENT_EVOLUTION_MIN_EXECUTIONS", "5"))
+    LLMOS_AGENT_EVOLUTION_FAILURE_THRESHOLD: float = float(os.getenv("LLMOS_AGENT_EVOLUTION_FAILURE_THRESHOLD", "0.3"))
+
     # Logging
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
@@ -68,11 +74,12 @@ class Config:
     @classmethod
     def get_llmos_config(cls):
         """
-        Build LLMOSConfig with Execution Layer and Sentience Layer settings.
+        Build LLMOSConfig with Execution Layer, Sentience Layer, and Adaptive Agents settings.
 
         Returns an LLMOSConfig instance configured for Qiskit Studio with:
         - Advanced Tool Use features (PTC, Tool Search, Tool Examples)
         - Sentience Layer (valence, homeostatic dynamics, cognitive kernel)
+        - Adaptive Agents (v3.5.0) - dynamic agent configuration per query
         """
         from kernel.config import (
             LLMOSConfig,
