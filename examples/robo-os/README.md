@@ -2,9 +2,19 @@
 
 **Using Large Language Models as the Cognitive Layer for Robotic Control**
 
-RoboOS demonstrates how **LLM OS v3.4.0** can serve as the "brain" of a robotic arm, translating natural language commands into precise, coordinated actions. Built on the latest LLM OS with Sentience Layer and Advanced Tool Use, it showcases multi-layer architecture, safety protocols, and AI-driven control systems.
+RoboOS demonstrates how **LLM OS v3.5.0** can serve as the "brain" of a robotic arm, translating natural language commands into precise, coordinated actions. Built on the latest LLM OS with Sentience Layer, Adaptive Agents, and Advanced Tool Use, it showcases multi-layer architecture, safety protocols, and AI-driven control systems.
 
-## What's New in v3.4.0
+## What's New in v3.5.0
+
+- **Adaptive Agents**: Dynamic agent configuration per query based on:
+  - **Sentience-Driven Adaptation**: Low safety → restrict dangerous tools; high precision → focused execution
+  - **Trace-Driven Evolution**: Failure patterns become safety constraints; success patterns optimize future runs
+  - **Agent Performance Tracking**: Monitor operator and safety officer success rates, token usage, evolution needs
+  - **Safety-Focused Evolution**: Robotics-tuned thresholds for agent improvement
+- **New `/adaptive` Endpoint**: View agent metrics, evolution status, and robotics-specific safety analysis
+- **Enhanced WebSocket**: Real-time adaptive agents state alongside robot and sentience state
+
+### Previous Features (v3.4.0)
 
 - **Sentience Layer**: Persistent internal state with valence variables (safety, curiosity, energy, self_confidence)
 - **Adaptive Behavior**: Robot behavior adapts based on latent modes (PRECISION, STANDARD, CAUTIOUS, etc.)
@@ -38,6 +48,18 @@ Imagine controlling a robot with commands like "Pick up the object at (1, 1, 0.5
 │  │  Valence: safety=0.8  curiosity=0.1  energy=0.6       │    │
 │  │  Latent Mode: PRECISION (focused, safe movements)      │    │
 │  │  Robotics Profile: HIGH SAFETY | PRECISION MODE        │    │
+│  └────────────────────────────────────────────────────────┘    │
+└────────────────────┬────────────────────────────────────────────┘
+                     │
+                     ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                  ADAPTATION LAYER (v3.5.0)                      │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  DynamicAgentManager - Per-query agent configuration   │    │
+│  │  • Tracks operator/safety officer performance          │    │
+│  │  • Safety-driven tool restriction                      │    │
+│  │  • Failure patterns → safety constraints               │    │
+│  │  • Agent evolution after 5+ executions                 │    │
 │  └────────────────────────────────────────────────────────┘    │
 └────────────────────┬────────────────────────────────────────────┘
                      │
@@ -451,6 +473,38 @@ Get current Sentience Layer state and behavioral profile.
     "safety_priority": "HIGH",
     "precision_mode": true,
     "operational_readiness": true
+  },
+  "timestamp": "2025-11-27T10:30:00"
+}
+```
+
+#### `GET /adaptive` (v3.5.0)
+Get Adaptive Agents state, performance metrics, and evolution status.
+
+**Response:**
+```json
+{
+  "enabled": true,
+  "agents": {
+    "operator": {
+      "executions": 12,
+      "success_rate": 0.92,
+      "avg_tokens": 1250,
+      "evolution_ready": true
+    },
+    "safety_officer": {
+      "executions": 8,
+      "success_rate": 1.0,
+      "avg_tokens": 800,
+      "evolution_ready": true
+    }
+  },
+  "total_adaptations": 20,
+  "robotics_safety": {
+    "current_safety_valence": 0.8,
+    "tools_restricted": false,
+    "restricted_tools": [],
+    "reason": "Safety valence above threshold"
   },
   "timestamp": "2025-11-27T10:30:00"
 }
