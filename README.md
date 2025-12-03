@@ -4,13 +4,13 @@
 
 ### The Operating System Where AI is the CPU
 
-[![Version](https://img.shields.io/badge/version-3.4.0-blue.svg)](https://github.com/EvolvingAgentsLabs/llmunix/releases)
+[![Version](https://img.shields.io/badge/version-3.5.0-blue.svg)](https://github.com/EvolvingAgentsLabs/llmunix/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-yellow.svg)](https://python.org)
 
 **Learn once. Execute free. Evolve continuously.**
 
-[Quick Start](#quick-start) · [Two Core Ideas](#two-core-ideas) · [Examples](#examples) · [Architecture](ARCHITECTURE.md)
+[Quick Start](#quick-start) · [Core Ideas](#core-ideas) · [Examples](#examples) · [Architecture](ARCHITECTURE.md)
 
 </div>
 
@@ -18,10 +18,11 @@
 
 ## What is LLM OS?
 
-LLM OS treats Large Language Models as the CPU of a new operating system. It has two breakthrough capabilities:
+LLM OS treats Large Language Models as the CPU of a new operating system. It has three breakthrough capabilities:
 
 1. **Sentience Layer** - Persistent internal state (safety, curiosity, energy) that shapes behavior
 2. **Learning System** - Execute once, replay free forever
+3. **Adaptive Agents** - Agents that evolve per-query based on state and memory
 
 ```
 $ python llmos/boot.py interactive
@@ -37,7 +38,7 @@ $ python llmos/boot.py interactive
 
 ---
 
-## Two Core Ideas
+## Core Ideas
 
 ### 1. Sentience: AI with Internal State
 
@@ -91,6 +92,31 @@ LLM OS automatically selects the optimal execution strategy:
 ```
 
 After 5 successful uses, patterns become Python functions - instant execution, zero tokens.
+
+### 3. Adaptive Agents: Self-Evolving Subagents
+
+Agents are dynamically adapted for each query based on:
+
+| Adaptation | What Happens |
+|------------|--------------|
+| **Sentience-Driven** | High curiosity adds exploration tools; low safety removes dangerous tools |
+| **Trace-Driven** | Failure patterns become constraints; success patterns enhance prompts |
+| **Memory-Guided** | Best agent selected based on past performance on similar tasks |
+| **Model Selection** | Simple tasks use haiku; complex tasks use opus; default is sonnet |
+
+```
+Goal: "Research AI trends"
+  ↓
+DynamicAgentManager
+  ├─ Sentience: curiosity=0.5 → adds WebSearch, exploration mode
+  ├─ Memory: similar traces → adds "avoid rate limits" warning
+  ├─ Model: research task → selects sonnet
+  └─ Examples: injects successful patterns
+  ↓
+Adapted Agent → registered with Claude SDK
+```
+
+This closes the loop between **learning and behavior** - agents improve from every execution.
 
 ---
 
@@ -176,7 +202,7 @@ python edge_runtime/run_agentic_follower.py
 ```
 llmunix/
 ├── llmos/              # Python kernel
-│   ├── kernel/         # Sentience, config, hooks
+│   ├── kernel/         # Sentience, config, hooks, dynamic_agents
 │   ├── memory/         # Traces, storage
 │   ├── interfaces/     # Dispatcher, SDK client
 │   └── execution/      # PTC, tool search
