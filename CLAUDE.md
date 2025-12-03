@@ -70,12 +70,12 @@ LLM-OS treats Large Language Models as the **CPU** of a new kind of operating sy
 
 LLM-OS automatically selects the optimal execution mode based on the Learning Layer's analysis:
 
-| Mode | When Used | Cost | Execution Layer |
-|------|-----------|------|-----------------|
-| **CRYSTALLIZED** | Pattern used 5+ times, 95%+ success | $0.00 | Python execution |
-| **FOLLOWER** | Very similar trace found (>92% confidence) | ~$0.00 | PTC (tool replay) |
-| **MIXED** | Related trace found (75-92% confidence) | ~$0.25 | Tool Examples + LLM |
-| **LEARNER** | Novel scenario, no relevant traces | ~$0.50 | Tool Search + Full LLM |
+| Mode | When Used | Tokens | Execution Layer |
+|------|-----------|--------|-----------------|
+| **CRYSTALLIZED** | Pattern used 5+ times, 95%+ success | 0 | Python execution |
+| **FOLLOWER** | Very similar trace found (>92% confidence) | 0 | PTC (tool replay) |
+| **MIXED** | Related trace found (75-92% confidence) | ~1,000 | Tool Examples + LLM |
+| **LEARNER** | Novel scenario, no relevant traces | ~2,500 | Tool Search + Full LLM |
 | **ORCHESTRATOR** | Complex task requiring multiple agents | Variable | Multi-agent coordination |
 
 ### Mode Flow Example
@@ -86,16 +86,16 @@ User: "Create a Python calculator"
 1. LEARNER MODE (First time)
    - Learning Layer: "No matching trace found"
    - Execution Layer: Tool Search discovers needed tools
-   - Cost: ~$0.50
+   - Tokens: ~2,500
 
 2. FOLLOWER MODE (Second time)
    - Learning Layer: "Found trace with 98% confidence"
    - Execution Layer: PTC replays tool sequence (zero context!)
-   - Cost: ~$0.00
+   - Tokens: 0
 
 3. CRYSTALLIZED MODE (After 5+ successful runs)
    - Pattern crystallized into Python tool
-   - Cost: $0.00, <1s
+   - Tokens: 0, <1s
 ```
 
 ---
@@ -268,12 +268,12 @@ await os.execute("Create a haiku-poet agent that writes beautiful haikus")
 
 ### 5. Token Economy
 
-Explicit budget management with hooks:
+Explicit token tracking with hooks:
 
 ```python
-economy = TokenEconomy(budget_usd=10.0)
-economy.check_budget(0.50)  # Check before execution
-economy.deduct(0.45, "Learn: Create script")  # Track spending
+economy = TokenEconomy()
+economy.track_tokens(2500, "Learn: Create script")  # Track consumption
+economy.get_total_tokens()  # Total tokens used
 ```
 
 ### 6. Security Hooks
@@ -314,7 +314,7 @@ python edge_runtime/run_follower.py
 ```
 
 Executes pre-learned traces deterministically:
-- Cost: $0
+- Tokens: 0
 - Speed: 0.01-0.1s
 - Requires: PyYAML only
 
@@ -325,7 +325,7 @@ python edge_runtime/run_agentic_follower.py
 ```
 
 Executes with local LLM reasoning (Granite/Qwen via Ollama):
-- Cost: $0 (local)
+- Tokens: 0 (local model)
 - Speed: 0.5-3s
 - Adapts to variations
 
@@ -340,18 +340,15 @@ from kernel.config import LLMOSConfig
 
 # Development - fast iteration
 config = LLMOSConfig.development()
-# - Low budget ($1.00)
 # - Sentience enabled, auto-improvement disabled
 
 # Production - full features
 config = LLMOSConfig.production()
-# - Higher budget ($100.00)
 # - Full sentience with auto-improvement
 # - Auto-crystallization enabled
 
 # Testing - deterministic
 config = LLMOSConfig.testing()
-# - Minimal budget ($0.10)
 # - Sentience disabled
 ```
 
@@ -359,7 +356,6 @@ config = LLMOSConfig.testing()
 
 ```bash
 ANTHROPIC_API_KEY=your-key
-LLMOS_BUDGET=10.0
 LLMOS_WORKSPACE=/path/to/workspace
 ```
 
@@ -438,9 +434,8 @@ Automatic hooks for safety and efficiency:
 | Hook | Purpose |
 |------|---------|
 | **Security** | Blocks dangerous commands |
-| **Budget** | Prevents runaway costs |
 | **Trace** | Captures tool_calls for PTC |
-| **Cost** | Real-time monitoring |
+| **Tokens** | Real-time token monitoring |
 | **Memory** | Injects relevant context |
 | **Sentience** | Injects internal state |
 
@@ -454,7 +449,7 @@ Automatic hooks for safety and efficiency:
 from llmos.boot import LLMOS
 
 # Initialize
-os = LLMOS(budget_usd=10.0)
+os = LLMOS()
 
 # Boot
 await os.boot()

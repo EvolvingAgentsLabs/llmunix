@@ -28,11 +28,11 @@ $ python llmos/boot.py interactive
 
 > Create a Python calculator
 [LEARNER] Novel task - learning...
-[COST] $0.45 | Time: 12s
+[TOKENS] 2,847 | Time: 12s
 
 > Create a Python calculator
 [FOLLOWER] Found pattern (98% match)
-[COST] $0.00 | Time: 0.8s
+[TOKENS] 0 | Time: 0.8s
 ```
 
 ---
@@ -73,11 +73,11 @@ mode=auto_contained
 
 LLM OS automatically selects the optimal execution strategy:
 
-| Mode | When Used | Cost | Best For |
-|------|-----------|------|----------|
-| **LEARNER** | Novel tasks, ad hoc requests | ~$0.50 | Creative problem-solving, unique challenges |
-| **FOLLOWER** | Repetitive, deterministic tasks | $0.00 | Same logic, predictable patterns |
-| **CRYSTALLIZED** | 5+ successful executions | $0.00, <1s | High-frequency operations |
+| Mode | When Used | Tokens | Best For |
+|------|-----------|--------|----------|
+| **LEARNER** | Novel tasks, ad hoc requests | ~2,500 | Creative problem-solving, unique challenges |
+| **FOLLOWER** | Repetitive, deterministic tasks | 0 | Same logic, predictable patterns |
+| **CRYSTALLIZED** | 5+ successful executions | 0 | High-frequency operations |
 | **ORCHESTRATOR** | Complex multi-step tasks | Variable | Tasks requiring coordination |
 
 **FOLLOWER mode** works for tasks with **deterministic logic** - where the same input always produces the same output (e.g., "create a calculator", "generate a report template"). These patterns can be captured once and replayed exactly.
@@ -90,7 +90,7 @@ LLM OS automatically selects the optimal execution strategy:
 "Write a poem about my day"      → LEARNER (creative, context-dependent)
 ```
 
-After 5 successful uses, patterns become Python functions - instant execution, zero cost.
+After 5 successful uses, patterns become Python functions - instant execution, zero tokens.
 
 ---
 
@@ -111,13 +111,13 @@ python llmos/boot.py interactive
 from llmos.boot import LLMOS
 
 async def main():
-    os = LLMOS(budget_usd=10.0)
+    os = LLMOS()
     await os.boot()
 
-    # First: learns ($0.50)
+    # First: learns (~2,500 tokens)
     await os.execute("Create a Python calculator")
 
-    # Second: replays free ($0.00)
+    # Second: replays free (0 tokens)
     await os.execute("Create a Python calculator")
 
     await os.shutdown()
