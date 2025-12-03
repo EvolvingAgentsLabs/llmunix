@@ -30,9 +30,9 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
 
 from boot import LLMOS
-from boot.config import LLMOSConfig, SentienceConfig
-from sentience.sentience import SentienceManager
-from sentience.cognitive_kernel import CognitiveKernel
+from kernel.config import LLMOSConfig, SentienceConfig
+from kernel.sentience import SentienceManager
+from kernel.cognitive_kernel import CognitiveKernel
 from scenarios.nested_learning_demo import run_nested_learning_demo
 
 
@@ -140,12 +140,14 @@ class DemoApp:
             )
 
             self.sentience_manager = SentienceManager(
-                safety_setpoint=sentience_config.safety_setpoint,
-                curiosity_setpoint=sentience_config.curiosity_setpoint,
-                energy_setpoint=sentience_config.energy_setpoint,
-                self_confidence_setpoint=sentience_config.self_confidence_setpoint,
-                boredom_threshold=sentience_config.boredom_threshold
+                state_path=Path(self.demo_output_dir) / sentience_config.state_file,
+                auto_persist=sentience_config.auto_persist
             )
+            # Configure valence setpoints
+            self.sentience_manager.state.valence.safety_setpoint = sentience_config.safety_setpoint
+            self.sentience_manager.state.valence.curiosity_setpoint = sentience_config.curiosity_setpoint
+            self.sentience_manager.state.valence.energy_setpoint = sentience_config.energy_setpoint
+            self.sentience_manager.state.valence.self_confidence_setpoint = sentience_config.self_confidence_setpoint
             self.cognitive_kernel = CognitiveKernel(self.sentience_manager)
 
             self.os = LLMOS(
@@ -182,53 +184,53 @@ class DemoApp:
         # Simulate interactions and show state changes
         console.print("\n[cyan]Simulating interactions...[/cyan]\n")
 
+        # Import TriggerType for proper state updates
+        from kernel.sentience import TriggerType
+
         # Simulate a successful task
         console.print("[yellow]1. Simulating successful task execution...[/yellow]")
-        self.sentience_manager.on_interaction()
-        self.sentience_manager.on_success()
+        self.sentience_manager.trigger(TriggerType.TASK_SUCCESS, reason="Completed first demo task")
         console.print("[green]   ✓ Task completed successfully[/green]")
         self._display_sentience_state()
 
         # Simulate another successful task (builds confidence)
         console.print("\n[yellow]2. Simulating another successful task...[/yellow]")
-        self.sentience_manager.on_interaction()
-        self.sentience_manager.on_success()
+        self.sentience_manager.trigger(TriggerType.TASK_SUCCESS, reason="Completed second demo task")
         console.print("[green]   ✓ Task completed successfully[/green]")
         self._display_sentience_state()
 
         # Simulate a failure (decreases safety/confidence)
         console.print("\n[yellow]3. Simulating a task failure...[/yellow]")
-        self.sentience_manager.on_interaction()
-        self.sentience_manager.on_failure()
+        self.sentience_manager.trigger(TriggerType.TASK_FAILURE, reason="Third demo task failed")
         console.print("[red]   ✗ Task failed[/red]")
         self._display_sentience_state()
 
         # Simulate novel input (increases curiosity)
         console.print("\n[yellow]4. Simulating novel/surprising input...[/yellow]")
-        self.sentience_manager.on_novel_input(surprise_level=0.8)
-        console.print("[magenta]   ? Novel input detected (surprise=0.8)[/magenta]")
+        self.sentience_manager.trigger(TriggerType.NOVEL_TASK, reason="Novel task detected")
+        console.print("[magenta]   ? Novel input detected[/magenta]")
         self._display_sentience_state()
 
         # Simulate boredom trigger (repetitive tasks)
         console.print("\n[yellow]5. Simulating repetitive tasks (boredom)...[/yellow]")
         for i in range(3):
-            self.sentience_manager.on_interaction()
-            self.sentience_manager.on_success()
-        console.print("[dim]   ... Repetitive successful tasks[/dim]")
+            self.sentience_manager.trigger(TriggerType.TASK_REPETITION, reason="Repetitive task", context={"repetition_count": i+1})
+        console.print("[dim]   ... Repetitive tasks[/dim]")
         self._display_sentience_state()
 
         # Show final policy
         console.print("\n[cyan]Final Cognitive Policy:[/cyan]\n")
         policy = self.cognitive_kernel.derive_policy()
+        state = self.sentience_manager.get_state()
 
         policy_table = Table(title="Behavioral Policy", box=box.ROUNDED)
         policy_table.add_column("Parameter", style="cyan")
         policy_table.add_column("Value", style="yellow")
 
-        policy_table.add_row("Latent Mode", policy.latent_mode.value.upper())
-        policy_table.add_row("Exploration Rate", f"{policy.exploration_rate:.2f}")
-        policy_table.add_row("Verbosity", policy.verbosity)
-        policy_table.add_row("Self-Improvement", str(policy.self_improvement_enabled))
+        policy_table.add_row("Latent Mode", state.latent_mode.value.upper())
+        policy_table.add_row("Exploration Budget", f"{policy.exploration_budget_multiplier:.2f}x")
+        policy_table.add_row("Allow Exploration", str(policy.allow_exploration))
+        policy_table.add_row("Self-Improvement", str(policy.enable_auto_improvement))
 
         console.print(policy_table)
 
@@ -241,7 +243,7 @@ class DemoApp:
             "cautious": "LOW SAFETY - Extra validation, careful execution"
         }
 
-        console.print(f"\n[bold]Mode Description:[/bold] {mode_descriptions.get(policy.latent_mode.value, 'Unknown')}")
+        console.print(f"\n[bold]Mode Description:[/bold] {mode_descriptions.get(state.latent_mode.value, 'Unknown')}")
 
         console.print(Panel(
             "[bold green]Sentience Layer Demo Complete![/bold green]\n\n"
@@ -259,8 +261,9 @@ class DemoApp:
             console.print("[dim]Sentience Layer not initialized[/dim]")
             return
 
-        valence = self.sentience_manager.get_valence()
-        policy = self.cognitive_kernel.derive_policy()
+        state = self.sentience_manager.get_state()
+        valence = state.valence.as_dict()
+        valence_obj = state.valence
 
         table = Table(box=box.SIMPLE)
         table.add_column("Valence", style="cyan", width=18)
@@ -269,20 +272,22 @@ class DemoApp:
         table.add_column("Setpoint", style="dim", width=10)
 
         setpoints = {
-            "safety": self.sentience_manager.safety_setpoint,
-            "curiosity": self.sentience_manager.curiosity_setpoint,
-            "energy": self.sentience_manager.energy_setpoint,
-            "self_confidence": self.sentience_manager.self_confidence_setpoint
+            "safety": valence_obj.safety_setpoint,
+            "curiosity": valence_obj.curiosity_setpoint,
+            "energy": valence_obj.energy_setpoint,
+            "self_confidence": valence_obj.self_confidence_setpoint
         }
 
         for name, value in valence.items():
-            bar_length = int(value * 20)
+            # Normalize value from [-1, 1] to [0, 1] for display bar
+            normalized_value = (value + 1) / 2
+            bar_length = int(normalized_value * 20)
             bar = "█" * bar_length + "░" * (20 - bar_length)
             setpoint = setpoints.get(name, 0.5)
             table.add_row(name.replace("_", " ").title(), f"{value:.2f}", bar, f"({setpoint:.1f})")
 
         console.print(table)
-        console.print(f"[bold]Latent Mode:[/bold] {policy.latent_mode.value.upper()}")
+        console.print(f"[bold]Latent Mode:[/bold] {state.latent_mode.value.upper()}")
 
     async def scenario_1_data_pipeline(self):
         """Scenario 1: Data Processing Pipeline"""
