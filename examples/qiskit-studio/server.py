@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Qiskit Studio Backend - LLM OS Edition (v3.4.0)
+Qiskit Studio Backend - LLM OS Edition (v3.5.0)
 
 This FastAPI server acts as a bridge between the Qiskit Studio frontend
 and the LLM OS backend, replacing the original Maestro-based microservices
@@ -10,9 +10,10 @@ Key features:
 - Drop-in replacement for qiskit-studio API endpoints
 - Advanced Tool Use integration (PTC, Tool Search, Tool Examples)
 - Sentience Layer (valence, homeostatic dynamics, cognitive kernel)
+- Adaptive Agents (v3.5.0): Dynamic agent configuration per query
 - Five execution modes: CRYSTALLIZED, FOLLOWER, MIXED, LEARNER, ORCHESTRATOR
 - 90%+ token savings via Programmatic Tool Calling (PTC)
-- Adaptive behavior based on internal state
+- Adaptive behavior based on internal state and memory
 - Built-in security hooks
 - Unified memory management
 
@@ -20,8 +21,9 @@ API Endpoints (matching original qiskit-studio):
 - POST /chat          - Chat agent (port 8000 in original)
 - POST /chat/stream   - Streaming chat (SSE)
 - POST /run           - Code execution (port 8002 in original)
-- GET  /stats         - Enhanced stats with Execution Layer and Sentience metrics
-- GET  /sentience     - NEW: View current internal state (v3.4.0)
+- GET  /stats         - Enhanced stats with Execution Layer, Sentience and Adaptive Agents metrics
+- GET  /sentience     - View current internal state (v3.4.0)
+- GET  /adaptive      - NEW: View Adaptive Agents metrics (v3.5.0)
 """
 
 import asyncio
@@ -66,8 +68,8 @@ logger = logging.getLogger(__name__)
 # Create FastAPI app
 app = FastAPI(
     title="Qiskit Studio Backend - LLM OS Edition",
-    description="Drop-in replacement for qiskit-studio backend using LLM OS v3.4.0 with Advanced Tool Use and Sentience Layer",
-    version="3.4.0"
+    description="Drop-in replacement for qiskit-studio backend using LLM OS v3.5.0 with Advanced Tool Use, Sentience Layer, and Adaptive Agents",
+    version="3.5.0"
 )
 
 # Configure CORS for Next.js frontend
@@ -86,6 +88,10 @@ session_memory: Dict[str, List[Dict[str, str]]] = {}  # Session-based chat histo
 # Sentience components (initialized on startup)
 sentience_manager = None
 cognitive_kernel = None
+
+# Adaptive Agents components (v3.5.0)
+dynamic_agent_manager = None
+agent_factory = None
 
 
 def analyze_intent(user_input: str, conversation_history: List[Dict[str, str]] = None) -> Dict[str, Any]:
@@ -146,13 +152,14 @@ def analyze_intent(user_input: str, conversation_history: List[Dict[str, str]] =
 
 @app.on_event("startup")
 async def startup():
-    """Initialize LLM OS on server startup with Advanced Tool Use and Sentience Layer"""
-    global os_instance, sentience_manager, cognitive_kernel
+    """Initialize LLM OS on server startup with Advanced Tool Use, Sentience Layer, and Adaptive Agents"""
+    global os_instance, sentience_manager, cognitive_kernel, dynamic_agent_manager, agent_factory
 
     logger.info("="*60)
-    logger.info("Starting Qiskit Studio Backend (LLM OS v3.4.0)")
+    logger.info("Starting Qiskit Studio Backend (LLM OS v3.5.0)")
     logger.info("Advanced Tool Use: PTC, Tool Search, Tool Examples")
     logger.info("Sentience Layer: Valence, Homeostatic Dynamics, Cognitive Kernel")
+    logger.info("Adaptive Agents: Dynamic agent configuration per query")
     logger.info("="*60)
 
     # Get LLMOSConfig with Execution Layer and Sentience settings
@@ -199,6 +206,32 @@ async def startup():
             logger.warning(f"Sentience Layer not available: {e}")
             sentience_manager = None
             cognitive_kernel = None
+
+    # Initialize Adaptive Agents (v3.5.0)
+    try:
+        from kernel.dynamic_agents import DynamicAgentManager
+        from kernel.agent_factory import AgentFactory
+
+        # Create agent factory
+        agent_factory = AgentFactory(workspace=Path(__file__).parent / "workspace")
+
+        # Create DynamicAgentManager with full integration
+        dynamic_agent_manager = DynamicAgentManager(
+            agent_factory=agent_factory,
+            workspace=Path(__file__).parent / "workspace",
+            sentience_manager=sentience_manager,
+            trace_manager=os_instance.memory_query if hasattr(os_instance, 'memory_query') else None,
+            config=llmos_config
+        )
+
+        logger.info(f"Adaptive Agents (v3.5.0) initialized")
+        logger.info(f"  - Dynamic agent adaptation: enabled")
+        logger.info(f"  - Sentience-driven adaptation: {sentience_manager is not None}")
+        logger.info(f"  - Memory-guided selection: {os_instance.memory_query is not None if hasattr(os_instance, 'memory_query') else False}")
+    except ImportError as e:
+        logger.warning(f"Adaptive Agents not available: {e}")
+        dynamic_agent_manager = None
+        agent_factory = None
 
     # Register our custom Qiskit tools with the dispatcher for Execution Layer support
     logger.info("Registering Qiskit tools with Execution Layer...")
@@ -465,6 +498,34 @@ Current request: {user_message}"""
             except Exception as e:
                 logger.warning(f"Sentience tracking error: {e}")
 
+        # Update Adaptive Agents (v3.5.0) with execution result
+        adaptive_metadata = {}
+        if dynamic_agent_manager:
+            try:
+                success = not result.get("error", False)
+                dynamic_agent_manager.record_execution_result(
+                    agent_name=intent["agent"],
+                    goal=user_message[:100],
+                    success=success,
+                    tokens_used=result.get("tokens_used", 0),
+                    time_secs=result.get("time_secs", 0),
+                    error=result.get("error_message") if not success else None
+                )
+
+                # Get adaptation summary for response
+                adaptation_summary = dynamic_agent_manager.get_adaptation_summary()
+                adaptive_metadata = {
+                    "total_adaptations": adaptation_summary.get("total_adaptations", 0),
+                    "recent_adaptation": adaptation_summary.get("recent_adaptations", [{}])[0] if adaptation_summary.get("recent_adaptations") else None
+                }
+
+                # Log adaptive agents activity
+                if adaptation_summary.get("total_adaptations", 0) > 0:
+                    logger.info(f"[Adaptive] Total adaptations: {adaptation_summary['total_adaptations']}, "
+                               f"By type: {adaptation_summary.get('by_type', {})}")
+            except Exception as e:
+                logger.warning(f"Adaptive agents tracking error: {e}")
+
         # Log interesting stats
         if ptc_used:
             logger.info("✨ PTC activated - Tool sequence replayed outside context (90%+ savings!)")
@@ -507,7 +568,9 @@ Current request: {user_message}"""
                 "tool_examples_enabled": Config.LLMOS_ENABLE_TOOL_EXAMPLES
             },
             # v3.4.0 Sentience Layer metadata
-            "sentience": sentience_metadata
+            "sentience": sentience_metadata,
+            # v3.5.0 Adaptive Agents metadata
+            "adaptive": adaptive_metadata
         }
 
         return {
@@ -522,7 +585,9 @@ Current request: {user_message}"""
                 "ptc_used": ptc_used,
                 "tokens_saved": tokens_saved,
                 # v3.4.0 Sentience metadata
-                "sentience": sentience_metadata
+                "sentience": sentience_metadata,
+                # v3.5.0 Adaptive Agents metadata
+                "adaptive": adaptive_metadata
             }
         }
 
@@ -696,9 +761,10 @@ async def stats_endpoint():
     """
     Statistics endpoint - shows LLM OS performance metrics.
 
-    This endpoint showcases LLM OS v3.4.0 capabilities including:
+    This endpoint showcases LLM OS v3.5.0 capabilities including:
     - Execution Layer (PTC, Tool Search, Tool Examples) statistics
     - Sentience Layer (valence, latent mode, homeostatic cost) statistics
+    - Adaptive Agents (dynamic adaptation, agent evolution) statistics
     """
     if not os_instance:
         raise HTTPException(status_code=503, detail="LLM OS not initialized")
@@ -758,7 +824,7 @@ async def stats_endpoint():
                 ]
 
     return {
-        "version": "3.4.0",
+        "version": "3.5.0",
         "token_economy": {
             "budget_usd": Config.LLMOS_BUDGET_USD,
             "spent_usd": total_spent,
@@ -811,8 +877,30 @@ async def stats_endpoint():
             "orchestrator": execution_layer_stats.get("mode_orchestrator", 0)
         },
         # v3.4.0 Sentience Layer statistics
-        "sentience": sentience_stats
+        "sentience": sentience_stats,
+        # v3.5.0 Adaptive Agents statistics
+        "adaptive_agents": _get_adaptive_agents_stats()
     }
+
+
+def _get_adaptive_agents_stats() -> Dict[str, Any]:
+    """Get Adaptive Agents statistics for the stats endpoint."""
+    if not dynamic_agent_manager:
+        return {"enabled": False}
+
+    try:
+        adaptation_summary = dynamic_agent_manager.get_adaptation_summary()
+        metrics_summary = dynamic_agent_manager.get_agent_metrics_summary()
+
+        return {
+            "enabled": True,
+            "total_adaptations": adaptation_summary.get("total_adaptations", 0),
+            "adaptations_by_type": adaptation_summary.get("by_type", {}),
+            "agent_metrics": metrics_summary,
+            "recent_adaptations": adaptation_summary.get("recent_adaptations", [])[:5]
+        }
+    except Exception as e:
+        return {"enabled": True, "error": str(e)}
 
 
 @app.get("/sentience")
@@ -903,6 +991,82 @@ def _get_latent_mode_description(mode: str) -> str:
         "cautious": "Low safety - requiring extra verification and confirmation"
     }
     return descriptions.get(mode, "Unknown mode")
+
+
+@app.get("/adaptive")
+async def adaptive_endpoint():
+    """
+    Adaptive Agents endpoint - view dynamic agent adaptation state.
+
+    NEW in v3.5.0: This endpoint provides detailed access to the
+    Adaptive Agents system including:
+    - Agent performance metrics
+    - Adaptation history
+    - Evolution status
+    - Memory-guided selection stats
+    """
+    if not dynamic_agent_manager:
+        return {
+            "enabled": False,
+            "message": "Adaptive Agents (DynamicAgentManager) is not enabled"
+        }
+
+    try:
+        adaptation_summary = dynamic_agent_manager.get_adaptation_summary()
+        metrics_summary = dynamic_agent_manager.get_agent_metrics_summary()
+
+        # Get evolution thresholds
+        thresholds = dynamic_agent_manager.evolution_thresholds
+
+        response = {
+            "enabled": True,
+            "summary": {
+                "total_adaptations": adaptation_summary.get("total_adaptations", 0),
+                "adaptations_by_type": adaptation_summary.get("by_type", {})
+            },
+            "agent_metrics": {
+                agent_name: {
+                    "success_rate": f"{metrics['success_rate']:.1%}",
+                    "total_executions": metrics["total_executions"],
+                    "average_tokens": round(metrics["average_tokens"], 1),
+                    "needs_evolution": metrics["needs_evolution"]
+                }
+                for agent_name, metrics in metrics_summary.items()
+            },
+            "evolution": {
+                "thresholds": {
+                    "min_executions": thresholds["min_executions_for_evolution"],
+                    "failure_rate_trigger": f"{thresholds['failure_rate_trigger']:.0%}",
+                    "success_for_crystallization": f"{thresholds['success_rate_for_crystallization']:.0%}"
+                },
+                "agents_ready_for_evolution": [
+                    name for name, metrics in metrics_summary.items()
+                    if metrics["needs_evolution"]
+                ]
+            },
+            "recent_adaptations": [
+                {
+                    "timestamp": a.get("timestamp"),
+                    "type": a.get("type"),
+                    "reason": a.get("reason"),
+                    "goal": a.get("goal")
+                }
+                for a in adaptation_summary.get("recent_adaptations", [])[:10]
+            ],
+            "integration": {
+                "sentience_connected": sentience_manager is not None,
+                "trace_manager_connected": dynamic_agent_manager.trace_manager is not None
+            }
+        }
+
+        return response
+
+    except Exception as e:
+        logger.error(f"Error in adaptive endpoint: {str(e)}", exc_info=True)
+        return {
+            "enabled": True,
+            "error": str(e)
+        }
 
 
 @app.post("/clear_session")

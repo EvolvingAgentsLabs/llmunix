@@ -1,10 +1,21 @@
-# Qiskit Studio - LLM OS v3.4.0 Edition
+# Qiskit Studio - LLM OS v3.5.0 Edition
 
-> **A flagship example of LLM OS using Advanced Tool Use and Sentience Layer.**
+> **A flagship example of LLM OS using Advanced Tool Use, Sentience Layer, and Adaptive Agents.**
 
-This project reimplements the [Qiskit Studio](https://github.com/AI4quantum/qiskit-studio) backend using **LLM OS v3.4.0**, demonstrating how a unified operating system for LLMs can replace multiple specialized microservices while providing superior memory management, cost efficiency, security, and adaptive behavior.
+This project reimplements the [Qiskit Studio](https://github.com/AI4quantum/qiskit-studio) backend using **LLM OS v3.5.0**, demonstrating how a unified operating system for LLMs can replace multiple specialized microservices while providing superior memory management, cost efficiency, security, and adaptive behavior.
 
-## What's New in v3.4.0
+## What's New in v3.5.0
+
+- **Adaptive Agents**: Dynamic agent configuration per query based on:
+  - **Sentience-Driven Adaptation**: High curiosity → add exploration tools; low safety → remove dangerous tools
+  - **Trace-Driven Evolution**: Failure patterns become constraints; success patterns enhance prompts
+  - **Memory-Guided Selection**: Best agent selected based on past performance on similar tasks
+  - **Dynamic Model Selection**: Simple tasks use haiku; complex tasks use opus; default is sonnet
+  - **Prompt Enhancement**: Successful traces injected as few-shot examples
+  - **Agent Evolution**: After 5+ executions, agents evolve based on metrics
+- **New `/adaptive` Endpoint**: View agent performance, evolution status, and adaptation history
+
+## What's in v3.4.0
 
 - **Sentience Layer**: Persistent internal state that influences behavior
   - **Valence Variables**: Safety, curiosity, energy, self_confidence
@@ -12,7 +23,7 @@ This project reimplements the [Qiskit Studio](https://github.com/AI4quantum/qisk
   - **Latent Modes**: Auto-creative vs auto-contained behavior emergence
   - **Cognitive Kernel**: Policy derivation and self-improvement detection
 - **Adaptive Behavior**: System adapts based on task outcomes and patterns
-- **New `/sentience` Endpoint**: View internal state and behavioral guidance
+- **`/sentience` Endpoint**: View internal state and behavioral guidance
 
 ## What's in v3.3.0
 
@@ -40,6 +51,7 @@ The original Qiskit Studio uses **Maestro** to orchestrate three distinct micros
 5. **Same Frontend**: Drop-in API compatibility with existing Qiskit Studio UI
 6. **Auto-Crystallization**: Repeated patterns become zero-cost Python code
 7. **Adaptive Behavior** (v3.4.0): System learns from outcomes and adapts its approach over time
+8. **Adaptive Agents** (v3.5.0): Agents dynamically configure per-query based on sentience, memory, and traces
 
 ---
 
@@ -55,10 +67,11 @@ The original Qiskit Studio uses **Maestro** to orchestrate three distinct micros
                │                                         │
                ▼                                         ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                FastAPI Bridge Server (server.py v3.4.0)              │
+│                FastAPI Bridge Server (server.py v3.5.0)              │
 │  • Intent analysis (coding vs. question)                             │
 │  • Session management with Execution Layer metadata                  │
 │  • Sentience state tracking and response metadata                    │
+│  • Adaptive Agents integration (v3.5.0)                              │
 │  • API compatibility layer                                           │
 └──────────────┬───────────────────────────────────────────────────────┘
                │
@@ -71,6 +84,19 @@ The original Qiskit Studio uses **Maestro** to orchestrate three distinct micros
 │  │  • Derives behavioral policy from internal state               │ │
 │  │  • Influences mode selection (prefer cheap/safe modes)         │ │
 │  │  • Detects self-improvement opportunities                      │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+└──────────────┬───────────────────────────────────────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                  ADAPTATION LAYER (Agency) - v3.5.0                  │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │  DynamicAgentManager - Per-query agent configuration           │ │
+│  │  • Sentience-driven adaptation (tools, prompts)                │ │
+│  │  • Trace-driven evolution (failure → constraints)              │ │
+│  │  • Memory-guided selection (best agent for task)               │ │
+│  │  • Dynamic model selection (haiku/sonnet/opus)                 │ │
+│  │  • Prompt enhancement from successful examples                 │ │
 │  └────────────────────────────────────────────────────────────────┘ │
 └──────────────┬───────────────────────────────────────────────────────┘
                │
@@ -425,7 +451,7 @@ data: [DONE]
 }
 ```
 
-### GET `/sentience` (NEW in v3.4.0)
+### GET `/sentience` (v3.4.0)
 
 **Purpose**: View detailed Sentience Layer state including valence, latent mode, and behavioral policy
 
@@ -464,14 +490,55 @@ data: [DONE]
 }
 ```
 
-### GET `/stats`
+### GET `/adaptive` (v3.5.0)
 
-**Purpose**: View LLM OS v3.4.0 performance metrics including Execution Layer and Sentience stats
+**Purpose**: View Adaptive Agents state including agent metrics, evolution status, and adaptation history
 
 **Response**:
 ```json
 {
-  "version": "3.4.0",
+  "enabled": true,
+  "summary": {
+    "total_adaptations": 12,
+    "adaptations_by_type": {"sentience": 5, "model": 4, "trace": 3}
+  },
+  "agent_metrics": {
+    "quantum-architect": {
+      "success_rate": "92.0%",
+      "total_executions": 25,
+      "average_tokens": 2350.5,
+      "needs_evolution": false
+    },
+    "quantum-tutor": {
+      "success_rate": "88.0%",
+      "total_executions": 16,
+      "average_tokens": 1890.2,
+      "needs_evolution": false
+    }
+  },
+  "evolution": {
+    "thresholds": {
+      "min_executions": 5,
+      "failure_rate_trigger": "30%",
+      "success_for_crystallization": "95%"
+    },
+    "agents_ready_for_evolution": []
+  },
+  "integration": {
+    "sentience_connected": true,
+    "trace_manager_connected": true
+  }
+}
+```
+
+### GET `/stats`
+
+**Purpose**: View LLM OS v3.5.0 performance metrics including Execution Layer, Sentience, and Adaptive Agents stats
+
+**Response**:
+```json
+{
+  "version": "3.5.0",
   "token_economy": {
     "total_tokens": 25000,
     "spent_tokens": 12340,
@@ -635,6 +702,7 @@ This example teaches:
 6. **Security**: Implementing safe code execution
 7. **Memory Management**: Cross-project learning and caching
 8. **Sentience Layer** (v3.4.0): Implementing adaptive behavior with internal state
+9. **Adaptive Agents** (v3.5.0): Dynamic agent configuration based on sentience, memory, and traces
 
 ---
 
@@ -673,6 +741,11 @@ LLMOS_ENABLE_SENTIENCE=true        # Enable adaptive internal state
 LLMOS_INJECT_INTERNAL_STATE=true   # Agents see their internal state
 LLMOS_ENABLE_AUTO_IMPROVEMENT=true # Auto-detect improvement opportunities
 
+# LLM OS Adaptive Agents (v3.5.0)
+LLMOS_ENABLE_ADAPTIVE_AGENTS=true                 # Enable dynamic agent configuration
+LLMOS_AGENT_EVOLUTION_MIN_EXECUTIONS=5           # Min executions before evolution
+LLMOS_AGENT_EVOLUTION_FAILURE_THRESHOLD=0.3      # Failure rate that triggers evolution
+
 # Logging
 LOG_LEVEL=INFO
 ```
@@ -710,7 +783,7 @@ LLMOS_TOKEN_BUDGET=1000000 LLMOS_USE_EMBEDDINGS=true LLMOS_ENABLE_SENTIENCE=true
 
 ## Performance Comparison
 
-| Metric | Original (Maestro) | LLM OS v3.4.0 | Improvement |
+| Metric | Original (Maestro) | LLM OS v3.5.0 | Improvement |
 |--------|-------------------|---------------|-------------|
 | **Microservices** | 3 (chat, codegen, coderun) | 1 (unified) | **67% reduction** |
 | **Repeated Pattern Tokens** | Full LLM call each time | ~0 tokens (PTC) | **90%+ savings** |
@@ -720,6 +793,7 @@ LLMOS_TOKEN_BUDGET=1000000 LLMOS_USE_EMBEDDINGS=true LLMOS_ENABLE_SENTIENCE=true
 | **Deployment Complexity** | Docker Compose + K8s | Single process | **90% simpler** |
 | **Pattern Evolution** | Manual optimization | Auto-crystallization | **Self-optimizing** |
 | **Adaptive Behavior** | None | Sentience Layer | **Self-aware** |
+| **Agent Adaptation** | Static agents | DynamicAgentManager | **Per-query optimization** |
 
 ---
 
