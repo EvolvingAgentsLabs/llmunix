@@ -2,7 +2,7 @@
 
 > A Self-Modifying LLM Operating System with Learning, Execution Optimization, and Sentience-Like Architecture
 
-**Current Version**: 3.4.0 (Sentience Layer)
+**Current Version**: 3.5.0 (Dynamic Agent Manager)
 
 ---
 

@@ -122,13 +122,20 @@ class Dispatcher:
         self.memory_query = MemoryQueryInterface(trace_manager, memory_store)
 
         # Initialize SDK client (if available)
+        # Now with full DynamicAgentManager support for adaptive subagents
         self.sdk_client: Optional[LLMOSSDKClient] = None
+        self.sentience_manager = None  # Will be set externally if available
+        self.agent_factory = None  # Will be lazy-loaded
+
         if is_sdk_available():
             self.sdk_client = LLMOSSDKClient(
                 workspace=self.workspace,
                 trace_manager=self.trace_manager,
                 token_economy=self.token_economy,  # For budget control hooks
-                memory_query=self.memory_query  # For context injection hooks
+                memory_query=self.memory_query,  # For context injection hooks
+                sentience_manager=self.sentience_manager,  # For sentience-driven adaptation
+                agent_factory=self.agent_factory,  # For dynamic agent management
+                config=self.config  # For configuration
             )
         else:
             print("⚠️  Claude Agent SDK not available - using fallback cortex mode")
@@ -823,6 +830,92 @@ Use the above as guidance, but adapt as needed for the current goal.
 
         return self.tool_search.search(query, top_k=top_k)
 
+    def set_sentience_manager(self, sentience_manager):
+        """
+        Set the sentience manager for dynamic agent adaptation.
+
+        This enables the DynamicAgentManager to adapt agents based on
+        current sentience state (curiosity, safety, energy, confidence).
+
+        Args:
+            sentience_manager: SentienceManager instance
+        """
+        self.sentience_manager = sentience_manager
+
+        # Update SDK client if available
+        if self.sdk_client:
+            self.sdk_client.sentience_manager = sentience_manager
+            if self.sdk_client.dynamic_agent_manager:
+                self.sdk_client.dynamic_agent_manager.sentience_manager = sentience_manager
+                print("✓ Sentience manager connected to DynamicAgentManager")
+
+    def set_agent_factory(self, agent_factory):
+        """
+        Set the agent factory for dynamic agent management.
+
+        This enables the DynamicAgentManager to create and evolve agents
+        based on traces and performance metrics.
+
+        Args:
+            agent_factory: AgentFactory instance
+        """
+        from kernel.dynamic_agents import DynamicAgentManager
+
+        self.agent_factory = agent_factory
+
+        # Reinitialize DynamicAgentManager in SDK client
+        if self.sdk_client and self.sdk_client.dynamic_agent_manager is None:
+            try:
+                self.sdk_client.dynamic_agent_manager = DynamicAgentManager(
+                    agent_factory=agent_factory,
+                    workspace=self.workspace,
+                    sentience_manager=self.sentience_manager,
+                    trace_manager=self.trace_manager,
+                    config=self.config
+                )
+                print("✓ DynamicAgentManager initialized (adaptive subagents enabled)")
+            except Exception as e:
+                print(f"⚠️ Could not initialize DynamicAgentManager: {e}")
+
+    def get_dynamic_agent_stats(self) -> dict:
+        """
+        Get statistics about dynamic agent adaptations.
+
+        Returns information about:
+        - Total adaptations made
+        - Adaptations by type (sentience, trace, memory, model)
+        - Agent performance metrics
+        """
+        if not self.sdk_client or not self.sdk_client.dynamic_agent_manager:
+            return {"enabled": False}
+
+        manager = self.sdk_client.dynamic_agent_manager
+        return {
+            "enabled": True,
+            "adaptation_summary": manager.get_adaptation_summary(),
+            "agent_metrics": manager.get_agent_metrics_summary()
+        }
+
+    def trigger_agent_evolution(self, agent_name: str, force: bool = False):
+        """
+        Manually trigger agent evolution based on accumulated traces.
+
+        Args:
+            agent_name: Name of agent to evolve
+            force: Force evolution even if thresholds not met
+
+        Returns:
+            Evolved AgentSpec or None if no evolution needed
+        """
+        if not self.sdk_client or not self.sdk_client.dynamic_agent_manager:
+            print("⚠️ DynamicAgentManager not available")
+            return None
+
+        return self.sdk_client.dynamic_agent_manager.analyze_and_evolve_agent(
+            agent_name=agent_name,
+            force=force
+        )
+
     def shutdown(self):
         """
         Shutdown the Dispatcher and cleanup resources
@@ -836,3 +929,8 @@ Use the above as guidance, but adapt as needed for the current goal.
         if self.tool_examples:
             self.tool_examples.clear_cache()
             print("✓ Tool examples cache cleared")
+
+        # Clear dynamic agent cache
+        if self.sdk_client and self.sdk_client.dynamic_agent_manager:
+            self.sdk_client.dynamic_agent_manager.clear_cache()
+            print("✓ Dynamic agent cache cleared")

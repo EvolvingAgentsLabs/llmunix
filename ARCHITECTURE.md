@@ -1,6 +1,6 @@
 # LLM OS Architecture
 
-**Version 3.4.0**
+**Version 3.5.0**
 
 ---
 
@@ -8,18 +8,21 @@
 
 LLM OS is built on a simple premise: treat the LLM as a CPU that can learn and remember.
 
-Two innovations make this work:
+Three innovations make this work:
 
 1. **Sentience Layer** - Internal state that persists and influences behavior
 2. **Learning Layer** - Traces that enable free replay of learned patterns
+3. **Adaptive Agents** - Subagents that evolve per-query based on state and memory
 
 ---
 
-## The Four Layers
+## The Five Layers
 
 ```
 ┌─────────────────────────────────────────┐
 │  SENTIENCE    "How do I feel?"          │  ← Internal state
+├─────────────────────────────────────────┤
+│  ADAPTATION   "Who should handle this?" │  ← Dynamic agent selection
 ├─────────────────────────────────────────┤
 │  LEARNING     "Have I done this?"       │  ← Pattern matching
 ├─────────────────────────────────────────┤
@@ -81,7 +84,88 @@ Events update internal state:
 
 ---
 
-## 2. Learning Layer
+## 2. Adaptation Layer (Dynamic Agent Manager)
+
+The Adaptation Layer dynamically configures agents per-query based on multiple factors:
+
+### Six Adaptation Strategies
+
+| Strategy | Input | Output |
+|----------|-------|--------|
+| **Sentience-Driven** | Curiosity, safety, energy | Add/remove tools, modify prompts |
+| **Trace-Driven** | Failure patterns | New constraints, warnings |
+| **Memory-Guided** | Past performance | Best agent selection |
+| **Model Selection** | Task complexity | haiku/sonnet/opus |
+| **Prompt Enhancement** | Successful traces | Few-shot examples |
+| **Agent Evolution** | Accumulated metrics | Evolved agent version |
+
+### How It Works
+
+```
+Goal arrives
+    ↓
+┌─────────────────────────────────────────────────┐
+│ DynamicAgentManager.get_adapted_agent()         │
+│                                                 │
+│  1. Get sentience state (curiosity, safety)     │
+│  2. Get similar traces from memory              │
+│  3. Adapt for sentience                         │
+│     - High curiosity → add exploration tools    │
+│     - Low safety → remove dangerous tools       │
+│     - Low energy → add conservation guidance    │
+│  4. Adapt from memory                           │
+│     - Add warnings from failed traces           │
+│     - Add successful tool patterns              │
+│  5. Select optimal model                        │
+│     - Simple + high success → haiku             │
+│     - Complex/creative → opus                   │
+│     - Default → sonnet                          │
+│  6. Enhance with examples                       │
+│     - Inject successful traces as few-shot      │
+└─────────────────────────────────────────────────┘
+    ↓
+Adapted AgentSpec → AgentDefinition → Claude SDK
+```
+
+### Sentience → Agent Behavior Mapping
+
+| Sentience State | Agent Adaptation |
+|-----------------|------------------|
+| High curiosity (AUTO_CREATIVE) | Adds WebFetch, WebSearch, Glob; encourages exploration |
+| Low curiosity (AUTO_CONTAINED) | Reduces to essential tools; focus mode guidance |
+| Low safety (CAUTIOUS) | Removes Bash, Write, Edit; adds confirmation constraints |
+| Low energy (RECOVERY) | Adds energy conservation guidance |
+| Low confidence | Adds verification guidance, breaks into smaller steps |
+
+### Agent Evolution
+
+After sufficient executions (default: 5+), agents can be evolved based on patterns:
+
+```python
+# Automatic evolution triggers
+if failure_rate > 30%:
+    evolved_agent = manager.analyze_and_evolve_agent("researcher")
+    # Adds constraints from failure patterns
+    # Updates tools based on success sequences
+    # Enhances prompt with lessons learned
+```
+
+### Integration with Claude SDK
+
+The adapted agents are registered as subagents with the SDK:
+
+```python
+AgentDefinition(
+    description="Expert researcher (adapted for current goal)",
+    prompt=adapted_prompt,  # Includes sentience guidance, examples
+    tools=adapted_tools,    # Modified based on state
+    model=selected_model    # haiku/sonnet/opus based on complexity
+)
+```
+
+---
+
+## 3. Learning Layer
 
 ### Traces
 
@@ -122,7 +206,7 @@ Goals match semantically, not literally:
 
 ---
 
-## 3. Execution Layer
+## 4. Execution Layer
 
 ### Programmatic Tool Calling (PTC)
 
@@ -147,7 +231,7 @@ search_tools("file operations")
 
 ---
 
-## 4. Evolution Layer (HOPE)
+## 5. Evolution Layer (HOPE)
 
 ### Crystallization
 
@@ -167,6 +251,40 @@ The system can create new agents:
 User: "Create a haiku poet agent"
 → System writes: workspace/agents/haiku-poet.md
 → Agent available immediately (hot-reload)
+```
+
+---
+
+## Complete Data Flow
+
+```
+User Goal: "Research AI trends"
+    │
+    ├─[1. Sentience Layer]──────────────────────────────────┐
+    │   curiosity=0.3, safety=0.5, energy=0.8               │
+    │   latent_mode=AUTO_CREATIVE                           │
+    │                                                       ↓
+    ├─[2. Adaptation Layer]─────────────────────────────────┤
+    │   DynamicAgentManager:                                │
+    │   ├─ Select agent: "researcher" (best for research)   │
+    │   ├─ Adapt tools: +WebSearch (high curiosity)         │
+    │   ├─ Select model: sonnet (research task)             │
+    │   └─ Enhance: add 3 successful examples               │
+    │                                                       ↓
+    ├─[3. Learning Layer]───────────────────────────────────┤
+    │   Check traces: no match (novel task)                 │
+    │   Mode: LEARNER                                       │
+    │                                                       ↓
+    ├─[4. Execution Layer]──────────────────────────────────┤
+    │   Execute via Claude SDK with adapted agent           │
+    │   Tools: WebSearch, WebFetch, Read, Write             │
+    │   Trace captured for future replay                    │
+    │                                                       ↓
+    └─[5. Evolution Layer]──────────────────────────────────┤
+        Record execution metrics                            │
+        Update agent performance (success=1)                │
+        If 5+ uses: crystallize into Python function        │
+        └───────────────────────────────────────────────────┘
 ```
 
 ---
@@ -241,6 +359,8 @@ config = LLMOSConfig(
 
 ## API
 
+### Core Usage
+
 ```python
 from llmos.boot import LLMOS
 
@@ -250,6 +370,57 @@ await os.boot()
 result = await os.execute("Create a Python calculator")
 
 await os.shutdown()
+```
+
+### Dynamic Agent Management
+
+```python
+from llmos.interfaces.dispatcher import Dispatcher
+
+# Get adaptation statistics
+stats = dispatcher.get_dynamic_agent_stats()
+print(f"Total adaptations: {stats['adaptation_summary']['total_adaptations']}")
+print(f"By type: {stats['adaptation_summary']['by_type']}")
+
+# Manually trigger agent evolution
+evolved = dispatcher.trigger_agent_evolution("researcher", force=True)
+if evolved:
+    print(f"Evolved to version {evolved.version}")
+
+# Connect sentience for state-driven adaptation
+dispatcher.set_sentience_manager(sentience_manager)
+dispatcher.set_agent_factory(agent_factory)
+```
+
+### DynamicAgentManager Direct Usage
+
+```python
+from llmos.kernel.dynamic_agents import DynamicAgentManager
+
+manager = DynamicAgentManager(
+    agent_factory=factory,
+    workspace=workspace,
+    sentience_manager=sentience_manager,
+    trace_manager=trace_manager
+)
+
+# Get adapted agent for specific goal
+adapted = manager.get_adapted_agent(
+    agent_name="researcher",
+    goal="Research quantum computing trends"
+)
+
+# Record execution results for learning
+manager.record_execution_result(
+    agent_name="researcher",
+    goal="Research quantum computing",
+    success=True,
+    tokens_used=2500,
+    time_secs=12.5
+)
+
+# Get performance metrics
+metrics = manager.get_agent_metrics_summary()
 ```
 
 ---
