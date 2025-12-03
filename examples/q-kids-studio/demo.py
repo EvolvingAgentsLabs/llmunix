@@ -13,8 +13,10 @@ from typing import List, Dict
 
 # Add llmos to path
 sys.path.insert(0, str(Path(__file__).parents[2] / "llmos"))
+# Add local plugins to path
+sys.path.insert(0, str(Path(__file__).parent / "plugins"))
 
-from plugins.kid_circuit_tools import run_kid_circuit, get_hint, check_mission
+from kid_circuit_tools import run_kid_circuit, get_hint, check_mission
 
 
 def print_banner(text: str):

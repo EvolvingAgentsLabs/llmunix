@@ -23,7 +23,7 @@ import uvicorn
 # Add llmos to path
 sys.path.insert(0, str(Path(__file__).parents[2] / "llmos"))
 
-from kernel.llm_os import LLMOS
+from boot import LLMOS
 from kernel.agent_factory import AgentSpec
 from kernel.agent_loader import AgentLoader
 
