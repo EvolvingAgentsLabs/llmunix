@@ -1,59 +1,41 @@
 # LLM OS - Examples
 
-This directory contains comprehensive examples demonstrating LLM OS capabilities.
+This directory contains comprehensive examples demonstrating LLM OS v3.5.0 capabilities.
 
-## 🌟 NEW: Hybrid Architecture (v3.2.0) - The Flagship Feature
+## 🌟 NEW: Adaptive Agents (v3.5.0) - The Flagship Feature
 
-**The future of LLM OS is here**: Markdown-defined agents that the system can create and modify on the fly!
+**Per-query agent adaptation** that evolves based on sentience state and learned patterns!
 
-### Hybrid Architecture Demo (`hybrid_architecture_demo.py`)
+### DynamicAgentManager - The Core Innovation
 
-**The most important example** - demonstrates how LLM OS combines:
-- **Markdown Mind**: Agents defined in simple `.md` files (flexibility + self-modification)
-- **Python Kernel**: Robust tooling, security, performance (stability)
-- **HOPE Pattern**: System writes its own code through crystallization
+The **DynamicAgentManager** provides six adaptation strategies that work together:
 
-**What it demonstrates:**
-- 📝 **Markdown Agents**: Define agents in `workspace/agents/*.md` (no Python!)
-- 🔧 **Self-Modification**: System creates new agents using `create_agent` tool
-- 🔄 **Hot-Reloading**: New agents available instantly (no restart)
-- 📊 **Agent Management**: List, create, modify agents dynamically
-- 🎯 **Example Flow**: Creates a haiku-poet agent and uses it immediately
+| Strategy | What It Does |
+|----------|--------------|
+| **Sentience-Driven** | High curiosity → add exploration tools; Low safety → remove dangerous tools |
+| **Trace-Driven** | Failure patterns → constraints; Success patterns → prompt enhancement |
+| **Memory-Guided** | Select best agent based on past performance on similar tasks |
+| **Model Selection** | Simple tasks → haiku; Complex/creative → opus; Default → sonnet |
+| **Prompt Enhancement** | Inject successful traces as few-shot examples |
+| **Agent Evolution** | After 5+ executions, evolve agents based on metrics |
 
 **Quick Start:**
 ```bash
-python examples/hybrid_architecture_demo.py
+cd examples/demo-app && python demo_main.py
+# Select "5. Adaptive Agents" demo
 ```
 
-**5 Interactive Demonstrations:**
-1. **List Agents** - See Markdown-defined agents
-2. **Create Agent** - System creates haiku-poet agent by writing a file
-3. **Use Agent** - Immediately delegate to newly created agent
-4. **Modify Agent** - System improves agent capabilities
-5. **Inspect Files** - View the actual Markdown files
+**All examples now include `/adaptive` endpoints** for monitoring agent metrics:
+```bash
+curl http://localhost:8000/adaptive
+# Returns: agent metrics, evolution status, sentience-driven adaptations
+```
 
 **Why This Matters:**
-- **Self-Modification**: System evolves its own capabilities
-- **No Restart**: Changes take effect immediately
-- **Human-Readable**: Agents are just Markdown files
-- **Version Control**: Track agent evolution in git
-- **LLM-Friendly**: System can read/write its own agent definitions
-
-**Full Documentation:** See [../HYBRID_ARCHITECTURE.md](../HYBRID_ARCHITECTURE.md) (531 lines)
-
-**Sample Markdown Agent:**
-```markdown
----
-name: deep-researcher
-description: Expert at web research and data synthesis
-tools: ["WebFetch", "Read", "Write", "Bash"]
-model: sonnet
----
-
-# Deep Researcher Agent
-
-You are an expert researcher specializing in...
-```
+- **Closes the learning loop**: Agents improve from every execution
+- **Safety-first adaptation**: Low safety valence restricts dangerous tools
+- **Performance tracking**: Monitor success rates and token usage per agent
+- **Automatic evolution**: Agents evolve after sufficient executions
 
 ---
 
@@ -61,17 +43,19 @@ You are an expert researcher specializing in...
 
 These are the primary examples showcasing LLM OS capabilities:
 
-### 1. Qiskit Studio (`qiskit-studio/`)
+### 1. Qiskit Studio (`qiskit-studio/`) - v3.5.0
 
-**A flagship example** showing LLM OS using the **Hybrid Architecture with Markdown Agents**.
+**A flagship example** showing LLM OS with **Adaptive Agents and Quantum-Optimized Model Selection**.
 
 **What it demonstrates:**
+- 🧬 **Adaptive Agents (v3.5.0)**: DynamicAgentManager with quantum-optimized model selection
 - 📝 **Markdown Agents**: Agents defined in `workspace/agents/*.md` files (no Python!)
 - 💰 **Token Savings**: Learner → Follower caching (100% savings on repeated tasks)
 - 🔒 **Enhanced Security**: Multi-layer code execution protection
 - 🧠 **Unified Memory**: Cross-project learning and semantic memory
 - ⚡ **Simplified Architecture**: Single process replaces 3+ microservices
 - 🎨 **API Compatibility**: Works with existing Qiskit Studio frontend
+- 📊 **New `/adaptive` Endpoint**: Monitor agent metrics and evolution status
 
 **Quick Start:**
 ```bash
@@ -83,11 +67,12 @@ cd qiskit-studio
 
 ---
 
-### 2. Demo App (`demo-app/`)
+### 2. Demo App (`demo-app/`) - v3.5.0
 
 **Rich interactive terminal application** with menu-driven scenarios.
 
 **What it demonstrates:**
+- 🧬 **Adaptive Agents (v3.5.0)**: New demo scenario for DynamicAgentManager
 - 📊 **7 Real-World Scenarios**: Data pipelines, code generation, research, DevOps, etc.
 - 💡 **Token Analysis**: Detailed token tracking and savings demonstrations
 - 📈 **Visual Feedback**: Beautiful terminal UI using Rich library
@@ -151,18 +136,20 @@ cd q-kids-studio
 
 ---
 
-### 4. RoboOS (`robo-os/`)
+### 4. RoboOS (`robo-os/`) - v3.5.0
 
 **LLM OS as the brain of a robotic arm** - Natural language robot control with multi-layer safety.
 
 **What it demonstrates:**
+- 🧬 **Adaptive Agents (v3.5.0)**: Safety-driven tool restriction when safety valence is low
 - 🤖 **Natural Language Control**: Command robots with plain English
 - 🛡️ **Multi-Layer Safety**: PreToolUse hook prevents dangerous operations
 - 👥 **Multi-Agent Coordination**: Operator + Safety Officer collaboration
 - 📹 **State Visualization**: ASCII cockpit view and overhead map
 - 💰 **Learner → Follower**: Teach once, replay forever (100% token savings)
 - 🔌 **FastAPI Backend**: Production-ready REST API
-- 🌊 **WebSocket Support**: Real-time state updates
+- 🌊 **WebSocket Support**: Real-time state updates with adaptive agent state
+- 📊 **New `/adaptive` Endpoint**: Monitor robotics-specific safety analysis
 
 **Quick Start:**
 ```bash
@@ -207,18 +194,19 @@ The `legacy/` directory contains examples from earlier versions (v3.1.0 and befo
 
 | If you want to... | Use | Why |
 |------------------|-----|-----|
-| **⭐ Understand the Hybrid Architecture** | **Hybrid Architecture Demo** | **The flagship - self-modifying agents, the future** |
-| See self-modification in action | **Hybrid Architecture Demo** | Watch the system create its own agents |
-| See a production-ready backend | **Qiskit Studio** | Drop-in microservice replacement with FastAPI + Markdown agents |
+| **⭐ Understand Adaptive Agents (v3.5.0)** | **Demo App** | **The flagship - per-query adaptation, agent evolution** |
+| See DynamicAgentManager in action | **Demo App (Scenario 5)** or **Qiskit Studio** | Full adaptive agents demo |
+| See a production-ready backend | **Qiskit Studio** | Drop-in microservice replacement with FastAPI + Adaptive Agents |
 | Build educational tools for kids | **Q-Kids Studio** | Kid-safe, gamified, adaptive quantum learning |
-| Control robots with natural language | **RoboOS** | LLM as robot brain with multi-layer safety |
+| Control robots with natural language | **RoboOS** | Safety-driven adaptation, multi-layer safety |
 | Run impressive demos with visuals | **Demo App** | Rich terminal UI, 7 scenarios, perfect for stakeholders |
 | Learn about quantum computing | **Qiskit Studio** or **Q-Kids Studio** | Domain-specific quantum agents and tools |
 | Understand token savings | **Qiskit Studio** or **Demo App** | Learner→Follower demo with metrics |
 | See multi-agent orchestration | **Demo App (Scenario 1)** or **Qiskit Studio** | Multiple agents collaborating |
 | Test security hooks | **RoboOS** or **Demo App (Scenario 4)** | Safety validation in action |
 | Build adaptive AI tutors | **Q-Kids Studio** | Professor Q agent with context-aware hints |
-| Robot safety systems | **RoboOS** | Workspace bounds, prohibited zones, emergency stop |
+| Robot safety systems | **RoboOS** | Safety-driven tool restriction, workspace bounds |
+| Monitor agent performance | **Qiskit Studio** or **RoboOS** | `/adaptive` endpoint for metrics |
 | Explore Python API internals | **legacy/multi_agent_example.py** | Programmatic agent creation (archived) |
 
 ---
@@ -252,14 +240,17 @@ All examples require:
 
 | Version | Date | Key Features |
 |---------|------|--------------|
-| **3.2.0** | 2025-11-23 | **Hybrid Architecture**: Markdown agents, self-modification, HOPE |
-| 3.1.0 | 2025-11-23 | Phase 1 Patterns: Config, Strategy, DI |
-| 3.0.0 | 2025-11-22 | Phase 3.0: HOPE Architecture (Crystallization) |
-| 2.5.0 | 2025-11-21 | Phase 2.5: Nested Learning (Semantic Matching) |
-| 2.0.0 | 2025-11-20 | Phase 2.0: Multi-Agent Orchestration |
-| 1.0.0 | 2025-11-19 | Phase 1.0: Learner/Follower Pattern |
+| **3.5.0** | 2025-12 | **Adaptive Agents**: DynamicAgentManager, per-query adaptation, agent evolution |
+| 3.4.0 | 2025-11 | Sentience Layer: Valence variables, latent modes, homeostasis |
+| 3.3.0 | 2025-11 | Advanced Tool Use: PTC, Tool Search, Tool Examples |
+| 3.2.0 | 2025-11 | Hybrid Architecture: Markdown agents, self-modification, HOPE |
+| 3.1.0 | 2025-11 | Phase 1 Patterns: Config, Strategy, DI |
+| 3.0.0 | 2025-11 | Phase 3.0: HOPE Architecture (Crystallization) |
+| 2.5.0 | 2025-11 | Phase 2.5: Nested Learning (Semantic Matching) |
+| 2.0.0 | 2025-11 | Phase 2.0: Multi-Agent Orchestration |
+| 1.0.0 | 2025-11 | Phase 1.0: Learner/Follower Pattern |
 
-**All examples maintain backward compatibility** - examples from v1.0.0 still work in v3.2.0!
+**All examples maintain backward compatibility** - examples from v1.0.0 still work in v3.5.0!
 
 ---
 
@@ -288,19 +279,19 @@ Make sure to:
 
 ## 📊 Example Comparison
 
-| Feature | Hybrid Demo | Qiskit Studio | Q-Kids Studio | RoboOS | Demo App |
-|---------|-------------|--------------|---------------|---------|----------|
-| **Type** | Core tech demo | Backend application | Educational platform | Robot control system | Rich TUI demo |
-| **Complexity** | Low (focused) | High (production) | High (kid-safe) | High (safety-critical) | Medium (comprehensive) |
-| **Use Case** | Learn architecture | Backend replacement | STEM education | Robot control | Presentations |
-| **Documentation** | In HYBRID_ARCHITECTURE.md | 700+ lines README | 900+ lines README | 800+ lines README | Inline help |
-| **UI** | Interactive prompts | REST API | REST API + Blocks | REST API + WebSocket | Rich terminal UI |
-| **Lines of Code** | ~260 | ~3,000 | ~2,500 | ~2,000 | ~700 |
-| **Best For** | Understanding v3.2.0 | Production deployment | Educational apps | Robotics | Stakeholder demos |
-| **Key Feature** | **Self-modification** | Token optimization | Kid safety | Multi-layer safety | Visual feedback |
-| **Agents** | Creates haiku-poet | 2 quantum specialists | 2 tutors | 2 (Operator + Safety) | 3-7 per scenario |
-| **Tools** | create_agent, modify_agent | 2 Qiskit tools | 3 kid-safe tools | 7 robot control | Standard toolkit |
-| **Target Audience** | Everyone (sci-fi magic!) | Quantum developers | Kids ages 8-12 | Roboticists | Stakeholders, managers |
+| Feature | Qiskit Studio | Q-Kids Studio | RoboOS | Demo App |
+|---------|--------------|---------------|---------|----------|
+| **Version** | v3.5.0 | v3.4.0 | v3.5.0 | v3.5.0 |
+| **Type** | Backend application | Educational platform | Robot control system | Rich TUI demo |
+| **Adaptive Agents** | ✅ Quantum-optimized | - | ✅ Safety-focused | ✅ Full demo |
+| **Complexity** | High (production) | High (kid-safe) | High (safety-critical) | Medium (comprehensive) |
+| **Use Case** | Backend replacement | STEM education | Robot control | Presentations |
+| **UI** | REST API + `/adaptive` | REST API + Blocks | REST API + WebSocket | Rich terminal UI |
+| **Best For** | Production deployment | Educational apps | Robotics | Stakeholder demos |
+| **Key Feature** | Token optimization | Kid safety | Safety-driven adaptation | Visual feedback |
+| **Agents** | 2 quantum specialists | 2 tutors | 2 (Operator + Safety) | 3-7 per scenario |
+| **New Endpoints** | `/adaptive`, `/sentience` | `/sentience` | `/adaptive`, `/sentience` | N/A (CLI) |
+| **Target Audience** | Quantum developers | Kids ages 8-12 | Roboticists | Stakeholders, managers |
 
 ---
 
