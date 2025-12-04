@@ -1,30 +1,32 @@
 # LLM OS Examples
 
-This directory contains example applications demonstrating LLM OS v3.4.0 capabilities, including the Sentience Layer, Advanced Tool Use (PTC, Tool Search), and Multi-Agent Orchestration.
+This directory contains example applications demonstrating LLM OS v3.5.0 capabilities, including **Adaptive Agents** (DynamicAgentManager), Sentience Layer, Advanced Tool Use (PTC, Tool Search), and Multi-Agent Orchestration.
 
 ## Examples Overview
 
 | Example | Description | Key Features |
 |---------|-------------|--------------|
-| [Qiskit Studio](#qiskit-studio) | Quantum computing IDE backend | PTC, Tool Search, Sentience Layer |
+| [Qiskit Studio](#qiskit-studio) | Quantum computing IDE backend | **Adaptive Agents**, PTC, Tool Search, Sentience Layer |
 | [Q-Kids Studio](#q-kids-studio) | Educational quantum computing for kids | Kid-safe execution, Adaptive teaching |
-| [RoboOS](#roboos) | LLM-powered robotic arm control | Safety hooks, Multi-agent, Real-time |
-| [Demo App](#demo-app) | Comprehensive feature demonstration | All v3.4.0 features, Interactive CLI |
+| [RoboOS](#roboos) | LLM-powered robotic arm control | **Adaptive Agents**, Safety-driven adaptation, Multi-agent |
+| [Demo App](#demo-app) | Comprehensive feature demonstration | **Adaptive Agents demo**, All v3.5.0 features, Interactive CLI |
 
 ---
 
 ## Qiskit Studio
 
-**[View README](qiskit-studio/README.md)**
+**[View README](qiskit-studio/README.md)** | **v3.5.0**
 
 A flagship example that reimplements the Qiskit Studio backend using LLM OS, demonstrating how a unified operating system can replace multiple specialized microservices.
 
 ### Highlights
 
+- **Adaptive Agents (v3.5.0)**: DynamicAgentManager with quantum-optimized model selection
 - **90%+ Cost Savings**: PTC-powered tool replay for repeated patterns
 - **Unified Architecture**: Single LLM OS instance replaces 3 microservices
 - **Security Hooks**: Built-in protection against malicious code execution
 - **Adaptive Behavior**: Sentience Layer adjusts to task patterns
+- **New `/adaptive` Endpoint**: Monitor agent metrics and evolution status
 - **Drop-in Compatibility**: Works with existing Qiskit Studio frontend
 
 ### Quick Start
@@ -63,17 +65,19 @@ cd examples/q-kids-studio
 
 ## RoboOS
 
-**[View README](robo-os/README.md)**
+**[View README](robo-os/README.md)** | **v3.5.0**
 
 Demonstrates LLM OS as the "brain" of a robotic arm, translating natural language commands into safe, coordinated actions.
 
 ### Highlights
 
+- **Adaptive Agents (v3.5.0)**: Safety-driven tool restriction when safety valence is low
 - **Natural Language Control**: "Move 30cm to the right"
 - **Multi-Layer Safety**: PreToolUse hooks prevent dangerous operations
 - **Sentience-Aware**: High safety setpoint (0.8) for robot control
 - **Multi-Agent Coordination**: Operator + Safety Officer agents
-- **WebSocket Real-time Updates**: Live robot state streaming
+- **New `/adaptive` Endpoint**: Monitor robotics-specific safety analysis
+- **WebSocket Real-time Updates**: Live robot state with adaptive agent state
 
 ### Quick Start
 
@@ -86,12 +90,13 @@ cd examples/robo-os
 
 ## Demo App
 
-**[View README](demo-app/README.md)**
+**[View README](demo-app/README.md)** | **v3.5.0**
 
-A comprehensive CLI application showcasing all LLM OS v3.4.0 capabilities through interactive scenarios.
+A comprehensive CLI application showcasing all LLM OS v3.5.0 capabilities through interactive scenarios.
 
 ### Highlights
 
+- **Adaptive Agents Demo (v3.5.0)**: Full DynamicAgentManager demonstration
 - **Sentience Layer Demo**: Interactive valence and latent mode simulation
 - **Nested Learning Demo**: Semantic trace matching with confidence scoring
 - **Five Execution Modes**: CRYSTALLIZED, FOLLOWER, MIXED, LEARNER, ORCHESTRATOR
@@ -119,13 +124,22 @@ python demo_main.py
 
 ## Architecture Comparison
 
-All examples share the LLM OS Four-Layer Stack:
+All examples share the LLM OS Five-Layer Stack:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  SENTIENCE LAYER (v3.4.0)                                   │
 │  Valence Variables: safety, curiosity, energy, confidence   │
 │  Latent Modes: AUTO_CREATIVE, BALANCED, CAUTIOUS, etc.      │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  ADAPTATION LAYER (v3.5.0) - NEW!                           │
+│  DynamicAgentManager: Per-query agent configuration         │
+│  Six Strategies: Sentience-driven, Trace-driven, Memory,    │
+│                  Model Selection, Prompt Enhancement,       │
+│                  Agent Evolution                            │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
@@ -166,7 +180,7 @@ All examples share the LLM OS Four-Layer Stack:
 
 All examples require:
 - Python 3.10+
-- LLM OS v3.4.0+
+- LLM OS v3.5.0+
 - Anthropic API key (or OpenAI for some examples)
 
 ---
@@ -178,8 +192,8 @@ To add a new example:
 1. Create a directory under `examples/`
 2. Include a comprehensive `README.md`
 3. Add to this file with link and description
-4. Ensure it demonstrates v3.4.0 features
+4. Ensure it demonstrates v3.5.0 features (especially Adaptive Agents)
 
 ---
 
-**Built with LLM OS - The Self-Evolving LLM Operating System**
+**Built with LLM OS v3.5.0 - The Self-Evolving LLM Operating System with Adaptive Agents**
