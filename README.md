@@ -105,9 +105,33 @@ graph TB
 
 ---
 
-## Sentience Crons: The Living Processes
+## Sentience Crons: Your AI Companions
 
-**Sentience Crons** are autonomous background processes that analyze, evolve, and improve your volumes. They're not just scheduled jobs - they're intelligent entities that understand context.
+**Sentience Crons** are not just background jobs - they're **creative thinking partners** that work alongside you. They analyze your work, learn from your team, and proactively suggest new approaches.
+
+```mermaid
+graph LR
+    subgraph What["What Crons Do"]
+        direction TB
+        A1["📊 Analyze traces"]
+        A2["✨ Evolve artifacts"]
+        A3["💡 Suggest new approaches"]
+        A4["🔮 Predict next steps"]
+        A5["🎨 Creative problem-solving"]
+    end
+
+    subgraph Learn["Learning From"]
+        direction TB
+        L1["👤 Your work"]
+        L2["👥 Team patterns"]
+        L3["🌐 System knowledge"]
+    end
+
+    Learn --> What
+
+    style What fill:#6366f1,color:#fff
+    style Learn fill:#10b981,color:#fff
+```
 
 ```mermaid
 graph TB
@@ -163,9 +187,24 @@ graph TB
 
 | Cron | Runs Every | Responsibilities |
 |------|------------|------------------|
-| **UserCron** | 30 min | Analyze personal traces, detect patterns, suggest crystallization |
-| **TeamCron** | 1 hour | Aggregate team patterns, promote successful artifacts |
-| **SystemCron** | 2 hours | Global optimization, coordinate all crons, system health |
+| **UserCron** | 30 min | Analyze your traces, suggest next steps, creative problem-solving, personal insights |
+| **TeamCron** | 1 hour | Cross-pollinate ideas, find team patterns, suggest collaborative opportunities |
+| **SystemCron** | 2 hours | Global optimization, coordinate all crons, surface organization-wide insights |
+
+### Creative Capabilities
+
+Crons don't just organize - they **think creatively**:
+
+```
+🔮 "Based on your recent database tasks and the team's API patterns,
+    consider using the cached-query approach that worked well for Bob"
+
+💡 "I noticed you've been debugging auth issues. The system volume has
+    a battle-tested auth-validator tool that might help"
+
+🎯 "Your next logical step might be: write integration tests.
+    Similar traces in the team show 40% fewer bugs when tested early"
+```
 
 ---
 
@@ -222,6 +261,51 @@ changes = kernel.get_artifact_changes(volume_type="user")
 
 # Show me the full report
 print(kernel.format_activity_report())
+```
+
+---
+
+## The Cron Terminal: Interactive Dashboard
+
+LLM OS includes an interactive terminal for monitoring and interacting with your crons:
+
+```
+┌─────────────────────────────────────┬────────────────────────────────────────────────┐
+│ 🤖 CRON PROCESSES                   │ 📋 CRON DETAILS: UserCron:alice                │
+│                                     │                                                │
+│ ▼ 🧠 SystemCron                     │ ┌─ Current Thinking ──────────────────────────┐│
+│   │ ├─ Analyzing global patterns... │ │ Analyzing 12 recent traces...               ││
+│   │ └─ 3 insights generated         │ │ Found pattern: "API integration tasks"      ││
+│   │                                 │ │ Considering crystallization opportunity...  ││
+│   ├─▼ 👥 TeamCron:engineering       │ └─────────────────────────────────────────────┘│
+│   │   │ ├─ Aggregating team data... │                                                │
+│   │   │ └─ 1 promotion pending      │ ┌─ Suggested Next Steps ──────────────────────┐│
+│   │   │                             │ │ 1. 🎯 Complete the API error handling       ││
+│   │   ├─ 👤 UserCron:alice [YOU]    │ │ 2. 💡 Consider using team's retry-logic     ││
+│   │   │   ├─ 💭 Thinking...         │ │ 3. 🔮 Write tests (reduces bugs by 40%)     ││
+│   │   │   └─ 2 suggestions ready    │ └─────────────────────────────────────────────┘│
+│   │   │                             │                                                │
+│   │   └─ 👤 UserCron:bob            │ ┌─ Recent Activity ───────────────────────────┐│
+│   │       └─ Idle (last: 5m ago)    │ │ [10:32] Created insight: "API patterns"     ││
+│   │                                 │ │ [10:31] Analyzed trace: api_handler_v3      ││
+│   └─▼ 👥 TeamCron:design            │ │ [10:30] Cycle started                       ││
+│       └─ 👤 UserCron:carol          │ └─────────────────────────────────────────────┘│
+│           └─ 1 insight ready        │                                                │
+│                                     │ ┌─ Interactive ────────────────────────────────┐│
+│ [r] Refresh  [q] Quit               │ │ > Ask your cron: _                          ││
+│                                     │ │                                              ││
+└─────────────────────────────────────┴────────────────────────────────────────────────┘
+```
+
+**Features:**
+- **Left Panel**: Live tree of all cron processes with activity summaries
+- **Right Panel**: Detailed view of selected cron
+- **Interactive Mode**: Chat with your UserCron to ask questions or give directions
+- **Read-Only Mode**: View other crons' activity (team/system) without interaction
+
+```bash
+# Launch the cron terminal
+python llmos/boot.py terminal --user alice --team engineering
 ```
 
 ---
