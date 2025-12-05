@@ -4,7 +4,7 @@
 
 ### The Operating System Where AI is the CPU
 
-[![Version](https://img.shields.io/badge/version-3.5.0-blue.svg)](https://github.com/EvolvingAgentsLabs/llmunix/releases)
+[![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)](https://github.com/EvolvingAgentsLabs/llmunix/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-yellow.svg)](https://python.org)
 
@@ -18,11 +18,12 @@
 
 ## What is LLM OS?
 
-LLM OS treats Large Language Models as the CPU of a new operating system. It has three breakthrough capabilities:
+LLM OS treats Large Language Models as the CPU of a new operating system. It has four breakthrough capabilities:
 
 1. **Sentience Layer** - Persistent internal state (safety, curiosity, energy) that shapes behavior
 2. **Learning System** - Execute once, replay free forever
 3. **Adaptive Agents** - Agents that evolve per-query based on state and memory
+4. **Sentience Crons** - Background processes that continuously evolve the system's artifacts
 
 ```
 $ python llmos/boot.py interactive
@@ -118,6 +119,52 @@ Adapted Agent → registered with Claude SDK
 
 This closes the loop between **learning and behavior** - agents improve from every execution.
 
+### 4. Sentience Crons: Living Background Processes
+
+LLM OS introduces **Sentience Crons** - autonomous background processes that analyze, summarize, and evolve artifacts across the system. Think of them as "living entities" that work alongside users.
+
+```
+                    ┌─────────────────┐
+                    │   SystemCron    │  ← Global patterns, cross-team insights
+                    │  (full access)  │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              ↓              ↓              ↓
+       ┌──────────┐   ┌──────────┐   ┌──────────┐
+       │ TeamCron │   │ TeamCron │   │ TeamCron │  ← Team-level optimization
+       └────┬─────┘   └────┬─────┘   └────┬─────┘
+            │              │              │
+       UserCrons...   UserCrons...   UserCrons...  ← Personal evolution
+```
+
+**Three Volume Scopes:**
+
+| Volume | Purpose | Access |
+|--------|---------|--------|
+| **User** | Personal artifacts | UserCron: read/write |
+| **Team** | Shared team resources | TeamCron: read/write |
+| **System** | Global tools & patterns | SystemCron: read/write |
+
+**What Crons Do:**
+
+- **Analyze traces** - Find patterns, identify crystallization candidates
+- **Evolve tools** - Suggest improvements to frequently-used tools
+- **Summarize old traces** - Consolidate memory, reduce storage
+- **Generate insights** - Surface optimization opportunities
+- **Promote artifacts** - Move successful patterns up the hierarchy
+
+**Observable & Notifiable:**
+
+```python
+# All cron activity is tracked and visible on demand
+notifications = kernel.get_cron_notifications()
+activity = kernel.get_activity_feed()
+changes = kernel.get_artifact_changes(volume_type="user")
+```
+
+The crons represent **crystallized learning** - tools and patterns that have proven valuable become permanent system capabilities. The system literally learns and improves while you sleep.
+
 ---
 
 ## Quick Start
@@ -160,11 +207,13 @@ Learning Layer     →  "Do I know how to do this?"
        ↓
 Execution Layer    →  "Execute efficiently"
        ↓
-Self-Modification  →  "How can I improve?"
-       ↑_______________↓ (feedback loop)
+Evolution Layer    →  "How can I improve?"
+       ↓
+Cron Layer         →  "What should I do in the background?"
+       ↑_____________________↓ (continuous feedback loop)
 ```
 
-**Hybrid design**: Markdown agents (flexible, self-modifiable) + Python kernel (fast, secure)
+**Hybrid design**: Markdown agents (flexible, self-modifiable) + Python kernel (fast, secure) + Living crons (background evolution)
 
 ---
 
@@ -201,16 +250,24 @@ python edge_runtime/run_agentic_follower.py
 
 ```
 llmunix/
-├── llmos/              # Python kernel
-│   ├── kernel/         # Sentience, config, hooks, dynamic_agents
-│   ├── memory/         # Traces, storage
-│   ├── interfaces/     # Dispatcher, SDK client
-│   └── execution/      # PTC, tool search
-├── workspace/          # Markdown mind
-│   ├── agents/         # Agent definitions
-│   └── memories/       # Traces, sessions
-├── edge_runtime/       # Offline execution
-└── examples/           # Production examples
+├── llmos/                  # Python kernel
+│   ├── kernel/             # Core components
+│   │   ├── sentience.py    # Sentience Layer (valence, triggers)
+│   │   ├── cognitive_kernel.py  # Cognitive coordination
+│   │   ├── sentience_cron.py    # Background crons (User/Team/System)
+│   │   ├── volumes.py      # Volume architecture
+│   │   ├── observability.py # Event tracking & notifications
+│   │   ├── evolution.py    # Artifact evolution analyzers
+│   │   └── dynamic_agents.py    # Adaptive agent management
+│   ├── memory/             # Traces, storage
+│   ├── interfaces/         # Dispatcher, SDK client
+│   └── execution/          # PTC, tool search
+├── workspace/              # Markdown mind
+│   ├── agents/             # Agent definitions
+│   ├── memories/           # Traces, sessions
+│   └── volumes/            # Artifact storage (User/Team/System)
+├── edge_runtime/           # Offline execution
+└── examples/               # Production examples
 ```
 
 ---
