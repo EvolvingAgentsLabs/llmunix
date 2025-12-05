@@ -184,12 +184,37 @@ sequenceDiagram
 
 ### What Makes Them "Sentient"?
 
-Unlike traditional cron jobs that blindly execute, Sentience Crons:
+Unlike traditional cron jobs that blindly execute, Sentience Crons are **creative thinking partners**:
 
-- **Understand context** - They know what artifacts mean
+- **Understand context** - They know what artifacts mean and how they relate
+- **Think creatively** - They suggest new approaches, not just optimize existing ones
+- **Predict next steps** - They anticipate what you might need next
+- **Learn across boundaries** - They learn from your work, team patterns, AND system knowledge
 - **Make decisions** - They propose, don't just execute
-- **Learn from patterns** - They get better at finding opportunities
 - **Respect state** - They consider safety, energy, curiosity
+
+```mermaid
+graph TB
+    subgraph Capabilities["🧠 Cron Capabilities"]
+        direction TB
+        C1["📊 Trace Analysis<br/>Understand work patterns"]
+        C2["✨ Artifact Evolution<br/>Improve existing tools"]
+        C3["💡 Creative Suggestions<br/>New approaches to problems"]
+        C4["🔮 Next Step Prediction<br/>Anticipate needs"]
+        C5["🔗 Cross-Learning<br/>Learn from team & system"]
+    end
+
+    subgraph Sources["📚 Knowledge Sources"]
+        S1["👤 Your traces"]
+        S2["👥 Team artifacts"]
+        S3["🌐 System patterns"]
+    end
+
+    Sources --> Capabilities
+
+    style Capabilities fill:#6366f1,color:#fff
+    style Sources fill:#10b981,color:#fff
+```
 
 ```mermaid
 graph TB
@@ -528,7 +553,277 @@ summary = hub.get_global_summary()
 
 ---
 
-## Part 4: The Enabling Mechanisms
+## Part 4: The Cron Terminal - Interactive Dashboard
+
+The Cron Terminal provides a visual interface to monitor and interact with your crons in real-time.
+
+### Terminal Layout
+
+```
+┌─────────────────────────────────────┬────────────────────────────────────────────────┐
+│ 🤖 CRON PROCESSES                   │ 📋 DETAIL PANEL                                │
+│                                     │                                                │
+│ ┌─ Tree View ─────────────────────┐ │ ┌─ Thinking Process ─────────────────────────┐ │
+│ │                                 │ │ │ Current cognitive state of selected cron   │ │
+│ │ ▼ 🧠 SystemCron                 │ │ │ Shows live analysis and reasoning          │ │
+│ │   ├─▼ 👥 TeamCron:engineering   │ │ └─────────────────────────────────────────────┘ │
+│ │   │   ├─ 👤 UserCron:alice ◄── │ │                                                │
+│ │   │   └─ 👤 UserCron:bob       │ │ ┌─ Suggestions ────────────────────────────────┐ │
+│ │   └─▼ 👥 TeamCron:design       │ │ │ Next steps predicted by the cron            │ │
+│ │       └─ 👤 UserCron:carol     │ │ │ Creative approaches based on cross-learning │ │
+│ │                                 │ │ └─────────────────────────────────────────────┘ │
+│ └─────────────────────────────────┘ │                                                │
+│                                     │ ┌─ Activity Log ──────────────────────────────┐ │
+│ ┌─ Status Bar ────────────────────┐ │ │ Recent events from this cron                │ │
+│ │ Each cron shows:                │ │ └─────────────────────────────────────────────┘ │
+│ │ - Current activity              │ │                                                │
+│ │ - Pending notifications         │ │ ┌─ Interaction ───────────────────────────────┐ │
+│ │ - Last cycle time               │ │ │ Chat with YOUR cron (UserCron only)         │ │
+│ └─────────────────────────────────┘ │ │ Read-only for team/system crons             │ │
+│                                     │ └─────────────────────────────────────────────┘ │
+└─────────────────────────────────────┴────────────────────────────────────────────────┘
+```
+
+### Panel Architecture
+
+```mermaid
+graph TB
+    subgraph Terminal["🖥️ Cron Terminal"]
+        direction LR
+
+        subgraph Left["Left Panel: Tree View"]
+            direction TB
+            Tree["Cron Hierarchy"]
+            Status["Live Status"]
+            Nav["Navigation"]
+        end
+
+        subgraph Right["Right Panel: Detail View"]
+            direction TB
+            Think["💭 Thinking Process"]
+            Suggest["💡 Suggestions"]
+            Activity["📋 Activity Log"]
+            Chat["💬 Interaction"]
+        end
+
+        Left --> Right
+    end
+
+    subgraph Data["Data Sources"]
+        Hub["ObservabilityHub"]
+        Crons["Active Crons"]
+        Vol["Volumes"]
+    end
+
+    Data --> Terminal
+
+    style Terminal fill:#1e1b4b,color:#fff
+    style Left fill:#6366f1,color:#fff
+    style Right fill:#8b5cf6,color:#fff
+```
+
+### Left Panel: Cron Tree
+
+The tree shows all crons in the system hierarchy with live status:
+
+```mermaid
+graph TB
+    subgraph TreeView["🌳 Cron Tree"]
+        SC["🧠 SystemCron"]
+        TC1["👥 TeamCron:engineering"]
+        TC2["👥 TeamCron:design"]
+        UC1["👤 UserCron:alice [YOU]"]
+        UC2["👤 UserCron:bob"]
+        UC3["👤 UserCron:carol"]
+
+        SC --> TC1
+        SC --> TC2
+        TC1 --> UC1
+        TC1 --> UC2
+        TC2 --> UC3
+    end
+
+    subgraph Status["Status Indicators"]
+        S1["💭 Thinking..."]
+        S2["✅ Idle"]
+        S3["🔔 2 notifications"]
+        S4["⏱️ Last: 5m ago"]
+    end
+
+    style TreeView fill:#1e1b4b,color:#fff
+    style SC fill:#dc2626,color:#fff
+    style TC1 fill:#ea580c,color:#fff
+    style TC2 fill:#ea580c,color:#fff
+    style UC1 fill:#16a34a,color:#fff
+    style UC2 fill:#16a34a,color:#fff
+    style UC3 fill:#16a34a,color:#fff
+```
+
+**Tree Node Information:**
+- Cron name and type
+- Current state (thinking, idle, error)
+- Pending notifications count
+- Last activity timestamp
+- [YOU] marker for your personal cron
+
+### Right Panel: Detail View
+
+When you select a cron, the right panel shows:
+
+#### 1. Thinking Process (Live)
+
+Shows the cron's current cognitive state - what it's analyzing and considering:
+
+```
+┌─ Current Thinking ──────────────────────────────────────────┐
+│ 💭 Analyzing 12 recent traces...                            │
+│                                                             │
+│ Found patterns:                                             │
+│   • "API integration tasks" - 4 similar traces              │
+│   • "Database queries" - 3 traces with common structure     │
+│                                                             │
+│ Considering:                                                │
+│   → Crystallization opportunity for API pattern             │
+│   → Team has retry-logic tool that might help               │
+│   → Bob solved similar issue last week - reviewing...       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 2. Suggestions & Predictions
+
+Creative suggestions based on cross-learning:
+
+```
+┌─ Suggested Next Steps ──────────────────────────────────────┐
+│                                                             │
+│ 🎯 IMMEDIATE                                                │
+│    Complete the API error handling you started              │
+│    Confidence: 92% (based on your trace pattern)            │
+│                                                             │
+│ 💡 RECOMMENDATION                                           │
+│    Consider using the team's `retry-logic` tool             │
+│    "Similar to what worked for Bob's auth service"          │
+│                                                             │
+│ 🔮 PREDICTION                                               │
+│    You'll likely need integration tests next                │
+│    "Team data shows 40% fewer bugs with early testing"      │
+│                                                             │
+│ 🎨 CREATIVE APPROACH                                        │
+│    Have you considered the event-driven pattern?            │
+│    "System volume has proven templates for this"            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 3. Activity Log
+
+Recent events from this cron:
+
+```
+┌─ Recent Activity ───────────────────────────────────────────┐
+│ [10:32:15] 💡 Created insight: "API integration patterns"   │
+│ [10:32:10] 📊 Analyzed trace: api_handler_v3.md             │
+│ [10:32:05] 🔍 Cross-referenced with team volume             │
+│ [10:32:00] ▶️  Cycle started                                │
+│ [10:02:00] ✅ Previous cycle completed (3 insights)         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 4. Interaction Panel
+
+**For YOUR UserCron** - interactive chat:
+
+```
+┌─ Chat with Your Cron ───────────────────────────────────────┐
+│                                                             │
+│ You: What patterns have you noticed in my work this week?   │
+│                                                             │
+│ 🤖 UserCron: I've noticed three main patterns:              │
+│    1. API integration work (60% of traces)                  │
+│    2. Database optimization (25%)                           │
+│    3. Testing tasks (15%)                                   │
+│                                                             │
+│    The API work often involves retry logic - I'd suggest    │
+│    crystallizing this into a reusable tool.                 │
+│                                                             │
+│ You: Can you create that tool for me?                       │
+│                                                             │
+│ 🤖 UserCron: I'll create a proposal for `api-retry-tool`.   │
+│    You'll find it in your suggestions shortly.              │
+│                                                             │
+│ > _                                                         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**For OTHER crons** - read-only view:
+
+```
+┌─ TeamCron:engineering Activity ─────────────────────────────┐
+│                                                             │
+│ 🔒 READ-ONLY VIEW                                           │
+│                                                             │
+│ This cron's recent thinking:                                │
+│ • Aggregating patterns from 5 users                         │
+│ • Found common tool: retry-logic (used by 3 users)          │
+│ • Considering promotion to system volume                    │
+│                                                             │
+│ [You can view but not interact with team/system crons]      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Terminal Commands
+
+```bash
+# Launch terminal
+python llmos/boot.py terminal --user alice --team engineering
+
+# Keyboard shortcuts
+↑/↓     Navigate cron tree
+Enter   Select cron for detail view
+Tab     Switch between panels
+r       Refresh all data
+n       Show notifications only
+q       Quit terminal
+```
+
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant T as 🖥️ Terminal
+    participant Hub as 📊 ObservabilityHub
+    participant Cron as 🤖 Crons
+    participant Vol as 📦 Volumes
+
+    Note over T: User opens terminal
+
+    T->>Hub: Subscribe to events
+    T->>Cron: Get hierarchy
+    Cron-->>T: Tree structure
+
+    loop Every 5 seconds
+        T->>Hub: Poll for updates
+        Hub-->>T: New events
+        T->>T: Update tree status
+    end
+
+    Note over T: User selects UserCron:alice
+
+    T->>Cron: Get cron state
+    Cron-->>T: Thinking process, suggestions
+    T->>Hub: Get activity log
+    Hub-->>T: Recent events
+
+    Note over T: User sends message (own cron only)
+
+    T->>Cron: User message
+    Cron->>Vol: Analyze & respond
+    Cron-->>T: Response
+```
+
+---
+
+## Part 5: The Enabling Mechanisms
 
 The living system is enabled by several underlying mechanisms:
 
@@ -662,7 +957,7 @@ graph TB
 
 ---
 
-## Part 5: Complete System Flow
+## Part 6: Complete System Flow
 
 ### A Day in the Life
 
