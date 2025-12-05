@@ -2,168 +2,292 @@
 
 # LLM OS
 
-### The Operating System Where AI is the CPU
+### An AI That Learns While You Sleep
 
 [![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)](https://github.com/EvolvingAgentsLabs/llmunix/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-yellow.svg)](https://python.org)
 
-**Learn once. Execute free. Evolve continuously.**
+**Your AI doesn't just execute tasks. It evolves.**
 
-[Quick Start](#quick-start) · [Core Ideas](#core-ideas) · [Examples](#examples) · [Architecture](ARCHITECTURE.md)
+[The Vision](#the-vision) · [How It Works](#how-it-works) · [Quick Start](#quick-start) · [Architecture](ARCHITECTURE.md)
 
 </div>
 
 ---
 
-## What is LLM OS?
+## The Vision
 
-LLM OS treats Large Language Models as the CPU of a new operating system. It has four breakthrough capabilities:
+Imagine an AI system that:
 
-1. **Sentience Layer** - Persistent internal state (safety, curiosity, energy) that shapes behavior
-2. **Learning System** - Execute once, replay free forever
-3. **Adaptive Agents** - Agents that evolve per-query based on state and memory
-4. **Sentience Crons** - Background processes that continuously evolve the system's artifacts
+- **Learns from every interaction** and never forgets
+- **Works in the background** analyzing and improving itself
+- **Shares knowledge** across users, teams, and the entire organization
+- **Tells you what it learned** with full transparency
 
-```
-$ python llmos/boot.py interactive
+This is LLM OS - an operating system where AI is the CPU, and **living processes** continuously evolve the system's capabilities.
 
-> Create a Python calculator
-[LEARNER] Novel task - learning...
-[TOKENS] 2,847 | Time: 12s
+```mermaid
+graph TB
+    subgraph "What happens when you're NOT using LLM OS"
+        Sleep["😴 You sleep"]
+        Crons["🤖 Sentience Crons wake up"]
+        Analyze["📊 Analyze your traces"]
+        Evolve["✨ Evolve artifacts"]
+        Notify["📬 Prepare notifications"]
 
-> Create a Python calculator
-[FOLLOWER] Found pattern (98% match)
-[TOKENS] 0 | Time: 0.8s
+        Sleep --> Crons --> Analyze --> Evolve --> Notify
+    end
+
+    subgraph "What you see in the morning"
+        Report["📋 Activity Report"]
+        Insights["💡 New Insights"]
+        Tools["🔧 Improved Tools"]
+        Suggestions["🎯 Suggestions"]
+    end
+
+    Notify --> Report
+    Notify --> Insights
+    Notify --> Tools
+    Notify --> Suggestions
+
+    style Crons fill:#6366f1,color:#fff
+    style Evolve fill:#10b981,color:#fff
+    style Report fill:#f59e0b,color:#fff
 ```
 
 ---
 
-## Core Ideas
+## The Core Idea: Living Volumes
 
-### 1. Sentience: AI with Internal State
+At the heart of LLM OS are **Volumes** - organized spaces where your AI's knowledge lives and grows.
 
-LLM OS maintains persistent state that influences all decisions, enabling **simulated behaviors** like creativity, caution, and focus:
+```mermaid
+graph TB
+    subgraph System["🌐 System Volume"]
+        ST["Global Tools"]
+        SA["Shared Agents"]
+        SI["Cross-team Insights"]
+    end
 
-| Dimension | What it represents |
-|-----------|-------------------|
-| **Safety** | Trust in current environment |
-| **Curiosity** | Drive to explore vs. stay focused |
-| **Energy** | Available resources for expensive operations |
-| **Confidence** | Belief in own capabilities |
+    subgraph Team["👥 Team Volume"]
+        TT["Team Tools"]
+        TA["Team Agents"]
+        TI["Team Insights"]
+    end
 
-These combine into **emergent behavioral modes**:
+    subgraph User["👤 User Volume"]
+        UT["My Tools"]
+        UA["My Agents"]
+        UI["My Insights"]
+        UTr["My Traces"]
+    end
 
-- **Auto-Creative** - High curiosity: explores novel solutions, suggests improvements, tries unconventional approaches
-- **Auto-Contained** - Low curiosity: efficient, task-focused, follows established patterns
-- **Recovery** - Low energy: prefers cheap operations
-- **Cautious** - Low safety: extra verification, asks for confirmation
+    User -->|"promote"| Team
+    Team -->|"promote"| System
+    System -.->|"inherit"| Team
+    Team -.->|"inherit"| User
 
-The Sentience Layer enables the system to **simulate creativity** - when curiosity is high and confidence is strong, the AI actively explores alternatives, proposes innovations, and goes beyond literal task requirements. This isn't random behavior; it's state-driven intelligence that adapts to context.
+    style System fill:#6366f1,color:#fff
+    style Team fill:#8b5cf6,color:#fff
+    style User fill:#a78bfa,color:#fff
+```
+
+**Volumes contain five artifact types:**
+
+| Artifact | What it is | How it evolves |
+|----------|------------|----------------|
+| **Traces** | Recorded task executions | Summarized, consolidated, crystallized |
+| **Tools** | Python functions | Optimized, improved, promoted |
+| **Agents** | AI personalities | Refined, enhanced, specialized |
+| **Insights** | Discovered patterns | Generated from analysis |
+| **Suggestions** | Improvement ideas | Created by crons |
+
+---
+
+## Sentience Crons: The Living Processes
+
+**Sentience Crons** are autonomous background processes that analyze, evolve, and improve your volumes. They're not just scheduled jobs - they're intelligent entities that understand context.
+
+```mermaid
+graph TB
+    subgraph SC["🧠 SystemCron"]
+        direction TB
+        SC1["Analyze all volumes"]
+        SC2["Coordinate team crons"]
+        SC3["Promote global patterns"]
+        SC4["System optimization"]
+    end
+
+    subgraph TC1["👥 TeamCron: Engineering"]
+        direction TB
+        TC1a["Aggregate user patterns"]
+        TC1b["Team insights"]
+        TC1c["Promote to system"]
+    end
+
+    subgraph TC2["👥 TeamCron: Design"]
+        direction TB
+        TC2a["Aggregate user patterns"]
+        TC2b["Team insights"]
+        TC2c["Promote to system"]
+    end
+
+    subgraph UC1["👤 UserCron: Alice"]
+        direction TB
+        UC1a["Analyze traces"]
+        UC1b["Generate insights"]
+        UC1c["Suggest improvements"]
+    end
+
+    subgraph UC2["👤 UserCron: Bob"]
+        direction TB
+        UC2a["Analyze traces"]
+        UC2b["Generate insights"]
+        UC2c["Suggest improvements"]
+    end
+
+    SC --> TC1
+    SC --> TC2
+    TC1 --> UC1
+    TC1 --> UC2
+
+    style SC fill:#dc2626,color:#fff
+    style TC1 fill:#ea580c,color:#fff
+    style TC2 fill:#ea580c,color:#fff
+    style UC1 fill:#16a34a,color:#fff
+    style UC2 fill:#16a34a,color:#fff
+```
+
+### What Each Cron Does
+
+| Cron | Runs Every | Responsibilities |
+|------|------------|------------------|
+| **UserCron** | 30 min | Analyze personal traces, detect patterns, suggest crystallization |
+| **TeamCron** | 1 hour | Aggregate team patterns, promote successful artifacts |
+| **SystemCron** | 2 hours | Global optimization, coordinate all crons, system health |
+
+---
+
+## Full Observability: See Everything
+
+Every action taken by crons is tracked and visible. You're never in the dark about what your AI is doing.
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant UC as 🤖 UserCron
+    participant Hub as 📊 ObservabilityHub
+    participant N as 📬 Notifications
+
+    Note over UC: Background analysis cycle
+    UC->>Hub: record_artifact_created("insight_001")
+    UC->>Hub: record_proposal_created("crystallize_pattern")
+    UC->>Hub: record_cycle_complete(3 tasks, 2.5s)
+
+    Note over U: User checks in
+    U->>Hub: get_activity_feed()
+    Hub-->>U: [3 events in last hour]
+
+    U->>Hub: get_pending_notifications()
+    Hub-->>U: [1 insight, 1 suggestion]
+
+    U->>Hub: acknowledge("insight_001")
+    Hub-->>N: Mark as read
+```
+
+### Observable Events
 
 ```python
-# Agents see their internal state
-[INTERNAL_STATE]
-safety=0.50
-curiosity=-0.40  # bored - may suggest improvements
-energy=0.80
-mode=auto_contained
-[/INTERNAL_STATE]
+# Everything is tracked
+EventType.CRON_STARTED          # Cron began running
+EventType.ARTIFACT_CREATED      # New insight, tool, or agent
+EventType.ARTIFACT_EVOLVED      # Existing artifact improved
+EventType.ARTIFACT_PROMOTED     # Moved up the hierarchy
+EventType.INSIGHT_GENERATED     # Pattern discovered
+EventType.SUGGESTION_CREATED    # Improvement opportunity
 ```
 
-### 2. Intelligent Execution: Right Mode for Each Task
-
-LLM OS automatically selects the optimal execution strategy:
-
-| Mode | When Used | Tokens | Best For |
-|------|-----------|--------|----------|
-| **LEARNER** | Novel tasks, ad hoc requests | ~2,500 | Creative problem-solving, unique challenges |
-| **FOLLOWER** | Repetitive, deterministic tasks | 0 | Same logic, predictable patterns |
-| **CRYSTALLIZED** | 5+ successful executions | 0 | High-frequency operations |
-| **ORCHESTRATOR** | Complex multi-step tasks | Variable | Tasks requiring coordination |
-
-**FOLLOWER mode** works for tasks with **deterministic logic** - where the same input always produces the same output (e.g., "create a calculator", "generate a report template"). These patterns can be captured once and replayed exactly.
-
-**LEARNER mode** handles **ad hoc requests** requiring real intelligence - novel problems, creative solutions, tasks with variable context. The LLM reasons through each step, adapting to the specific situation.
-
-```
-"Create a Python calculator"     → FOLLOWER (deterministic pattern)
-"Debug this specific error..."   → LEARNER (requires analysis)
-"Write a poem about my day"      → LEARNER (creative, context-dependent)
-```
-
-After 5 successful uses, patterns become Python functions - instant execution, zero tokens.
-
-### 3. Adaptive Agents: Self-Evolving Subagents
-
-Agents are dynamically adapted for each query based on:
-
-| Adaptation | What Happens |
-|------------|--------------|
-| **Sentience-Driven** | High curiosity adds exploration tools; low safety removes dangerous tools |
-| **Trace-Driven** | Failure patterns become constraints; success patterns enhance prompts |
-| **Memory-Guided** | Best agent selected based on past performance on similar tasks |
-| **Model Selection** | Simple tasks use haiku; complex tasks use opus; default is sonnet |
-
-```
-Goal: "Research AI trends"
-  ↓
-DynamicAgentManager
-  ├─ Sentience: curiosity=0.5 → adds WebSearch, exploration mode
-  ├─ Memory: similar traces → adds "avoid rate limits" warning
-  ├─ Model: research task → selects sonnet
-  └─ Examples: injects successful patterns
-  ↓
-Adapted Agent → registered with Claude SDK
-```
-
-This closes the loop between **learning and behavior** - agents improve from every execution.
-
-### 4. Sentience Crons: Living Background Processes
-
-LLM OS introduces **Sentience Crons** - autonomous background processes that analyze, summarize, and evolve artifacts across the system. Think of them as "living entities" that work alongside users.
-
-```
-                    ┌─────────────────┐
-                    │   SystemCron    │  ← Global patterns, cross-team insights
-                    │  (full access)  │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              ↓              ↓              ↓
-       ┌──────────┐   ┌──────────┐   ┌──────────┐
-       │ TeamCron │   │ TeamCron │   │ TeamCron │  ← Team-level optimization
-       └────┬─────┘   └────┬─────┘   └────┬─────┘
-            │              │              │
-       UserCrons...   UserCrons...   UserCrons...  ← Personal evolution
-```
-
-**Three Volume Scopes:**
-
-| Volume | Purpose | Access |
-|--------|---------|--------|
-| **User** | Personal artifacts | UserCron: read/write |
-| **Team** | Shared team resources | TeamCron: read/write |
-| **System** | Global tools & patterns | SystemCron: read/write |
-
-**What Crons Do:**
-
-- **Analyze traces** - Find patterns, identify crystallization candidates
-- **Evolve tools** - Suggest improvements to frequently-used tools
-- **Summarize old traces** - Consolidate memory, reduce storage
-- **Generate insights** - Surface optimization opportunities
-- **Promote artifacts** - Move successful patterns up the hierarchy
-
-**Observable & Notifiable:**
+### Query Your AI's Activity
 
 ```python
-# All cron activity is tracked and visible on demand
+# What happened while I was away?
+activity = kernel.get_activity_feed(since_hours=24)
+
+# Any notifications for me?
 notifications = kernel.get_cron_notifications()
-activity = kernel.get_activity_feed()
+
+# What changed in my volume?
 changes = kernel.get_artifact_changes(volume_type="user")
+
+# Show me the full report
+print(kernel.format_activity_report())
 ```
 
-The crons represent **crystallized learning** - tools and patterns that have proven valuable become permanent system capabilities. The system literally learns and improves while you sleep.
+---
+
+## The Evolution Journey
+
+When you use LLM OS, your knowledge flows through a continuous evolution cycle:
+
+```mermaid
+graph LR
+    subgraph Execute["1️⃣ Execute"]
+        Task["Run a task"]
+        Trace["Create trace"]
+    end
+
+    subgraph Learn["2️⃣ Learn"]
+        Pattern["Detect pattern"]
+        Match["Semantic match"]
+    end
+
+    subgraph Evolve["3️⃣ Evolve"]
+        Analyze["Cron analyzes"]
+        Propose["Propose changes"]
+        Apply["Apply evolution"]
+    end
+
+    subgraph Promote["4️⃣ Promote"]
+        User2["User → Team"]
+        Team2["Team → System"]
+    end
+
+    Task --> Trace --> Pattern --> Match
+    Match --> Analyze --> Propose --> Apply
+    Apply --> User2 --> Team2
+    Team2 -.-> Task
+
+    style Execute fill:#3b82f6,color:#fff
+    style Learn fill:#8b5cf6,color:#fff
+    style Evolve fill:#10b981,color:#fff
+    style Promote fill:#f59e0b,color:#fff
+```
+
+### A Concrete Example
+
+```
+Day 1: You create a Python calculator
+       → Trace saved to User Volume
+
+Day 2: You create another calculator
+       → UserCron notices: "Pattern detected!"
+       → Insight generated: "Calculator tasks are common"
+
+Day 5: Fifth calculator request
+       → UserCron proposes: "Crystallize into tool?"
+       → Tool created: calc_generator.py
+       → Notification: "New tool available!"
+
+Day 10: Your teammate creates a calculator
+        → TeamCron notices: "Alice's tool works great"
+        → Tool promoted to Team Volume
+        → Team notification: "New team tool!"
+
+Day 30: Multiple teams use the tool
+        → SystemCron promotes to System Volume
+        → Now available to everyone, forever
+```
 
 ---
 
@@ -180,6 +304,8 @@ export ANTHROPIC_API_KEY="your-key"
 python llmos/boot.py interactive
 ```
 
+### Start with Crons
+
 ```python
 from llmos.boot import LLMOS
 
@@ -187,62 +313,59 @@ async def main():
     os = LLMOS()
     await os.boot()
 
-    # First: learns (~2,500 tokens)
+    # Start background evolution for your user
+    os.kernel.start_crons(user_id="alice", team_id="engineering")
+
+    # Work normally - crons evolve in the background
     await os.execute("Create a Python calculator")
 
-    # Second: replays free (0 tokens)
-    await os.execute("Create a Python calculator")
+    # Check what the crons discovered
+    notifications = os.kernel.get_cron_notifications()
+    for n in notifications:
+        print(f"📬 {n['title']}: {n['description']}")
 
     await os.shutdown()
 ```
 
 ---
 
-## Architecture
+## How the Mechanisms Work
 
+The cron and volume system is enabled by several underlying mechanisms:
+
+```mermaid
+graph TB
+    subgraph Core["🎯 Core Feature"]
+        Crons["Sentience Crons"]
+        Volumes["Volume Architecture"]
+        Observe["Observability Hub"]
+    end
+
+    subgraph Enable["⚙️ Enabling Mechanisms"]
+        Sentience["Sentience Layer"]
+        Learning["Learning System"]
+        Evolution["Evolution Engine"]
+        Agents["Adaptive Agents"]
+    end
+
+    Sentience -->|"state-aware decisions"| Crons
+    Learning -->|"traces to analyze"| Crons
+    Evolution -->|"propose changes"| Crons
+    Agents -->|"execute analysis"| Crons
+
+    Crons --> Volumes
+    Crons --> Observe
+
+    style Core fill:#6366f1,color:#fff
+    style Enable fill:#64748b,color:#fff
 ```
-Sentience Layer    →  "How do I feel about this task?"
-       ↓
-Learning Layer     →  "Do I know how to do this?"
-       ↓
-Execution Layer    →  "Execute efficiently"
-       ↓
-Evolution Layer    →  "How can I improve?"
-       ↓
-Cron Layer         →  "What should I do in the background?"
-       ↑_____________________↓ (continuous feedback loop)
-```
 
-**Hybrid design**: Markdown agents (flexible, self-modifiable) + Python kernel (fast, secure) + Living crons (background evolution)
-
----
-
-## Examples
-
-| Example | What it shows |
-|---------|---------------|
-| `examples/demo-app/` | All execution modes, cost tracking |
-| `examples/qiskit-studio/` | Quantum computing with PTC |
-| `examples/q-kids-studio/` | Educational platform at scale |
-| `examples/robo-os/` | Safety hooks for robotics |
-
-```bash
-cd examples/demo-app && python demo_main.py
-```
-
----
-
-## Edge Runtime
-
-Run learned patterns offline:
-
-```bash
-# No LLM needed - pure Python replay
-python edge_runtime/run_follower.py
-
-# Local LLM (Ollama) for flexibility
-python edge_runtime/run_agentic_follower.py
-```
+| Mechanism | What it enables |
+|-----------|-----------------|
+| **Sentience Layer** | Crons make state-aware decisions (curiosity, safety, energy) |
+| **Learning System** | Traces provide the data crons analyze |
+| **Evolution Engine** | Proposes how artifacts should change |
+| **Adaptive Agents** | Execute the analysis intelligently |
 
 ---
 
@@ -250,36 +373,50 @@ python edge_runtime/run_agentic_follower.py
 
 ```
 llmunix/
-├── llmos/                  # Python kernel
-│   ├── kernel/             # Core components
-│   │   ├── sentience.py    # Sentience Layer (valence, triggers)
-│   │   ├── cognitive_kernel.py  # Cognitive coordination
-│   │   ├── sentience_cron.py    # Background crons (User/Team/System)
-│   │   ├── volumes.py      # Volume architecture
-│   │   ├── observability.py # Event tracking & notifications
-│   │   ├── evolution.py    # Artifact evolution analyzers
-│   │   └── dynamic_agents.py    # Adaptive agent management
-│   ├── memory/             # Traces, storage
-│   ├── interfaces/         # Dispatcher, SDK client
-│   └── execution/          # PTC, tool search
-├── workspace/              # Markdown mind
-│   ├── agents/             # Agent definitions
-│   ├── memories/           # Traces, sessions
-│   └── volumes/            # Artifact storage (User/Team/System)
-├── edge_runtime/           # Offline execution
-└── examples/               # Production examples
+├── llmos/kernel/
+│   ├── sentience_cron.py    # 🤖 UserCron, TeamCron, SystemCron
+│   ├── volumes.py           # 📦 Volume architecture
+│   ├── observability.py     # 📊 Event tracking & notifications
+│   ├── evolution.py         # ✨ Artifact evolution engine
+│   ├── sentience.py         # 🧠 Internal state management
+│   └── cognitive_kernel.py  # 🎛️ Coordination layer
+├── workspace/
+│   └── volumes/             # 📁 Artifact storage
+│       ├── users/           #    └── Per-user volumes
+│       ├── teams/           #    └── Per-team volumes
+│       └── system/          #    └── Global volume
+└── examples/
 ```
 
 ---
 
-## License
+## Why This Matters
 
-Apache 2.0
+Traditional AI systems are **stateless** - they don't remember, don't learn, don't improve.
+
+LLM OS is **living** - it:
+
+- **Remembers** every successful pattern
+- **Learns** from repetition and failure
+- **Improves** artifacts continuously
+- **Shares** knowledge across boundaries
+- **Reports** everything it does
+
+The result: an AI that gets better at helping you, automatically, while you sleep.
+
+---
+
+## Learn More
+
+- **[Architecture Guide](ARCHITECTURE.md)** - Deep dive into all components
+- **[Examples](examples/)** - Production-ready implementations
 
 ---
 
 <div align="center">
 
 **[Evolving Agents Labs](https://github.com/EvolvingAgentsLabs)**
+
+*Building AI that evolves*
 
 </div>
