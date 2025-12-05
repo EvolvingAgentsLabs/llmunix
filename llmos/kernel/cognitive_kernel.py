@@ -52,13 +52,20 @@ from kernel.sentience import (
     SentienceState,
     LatentMode,
     TriggerType,
-    ValenceVector
+    ValenceVector,
+    EmotionalMemoryTag,
+    SelfModificationRecord
 )
 from kernel.mode_strategies import (
     ModeSelectionStrategy,
     ModeContext,
     ModeDecision
 )
+from kernel.inner_monologue import InnerMonologue, InnerMonologueConfig, create_inner_monologue
+from kernel.volumes import VolumeManager, ArtifactType
+from kernel.sentience_cron import SystemCron, UserCron, TeamCron, CronLevel
+from kernel.observability import ObservabilityHub
+from kernel.evolution import EvolutionEngine
 
 
 # =============================================================================
@@ -105,6 +112,22 @@ class CognitivePolicy:
     inject_behavioral_guidance: bool = True
     inject_similar_experiences: bool = True
 
+    # Deep Sentience v2: Theory of Mind
+    enable_empathy_gap_detection: bool = True
+    adapt_communication_style: bool = True
+    proactive_user_checkin: bool = True
+
+    # Deep Sentience v2: Emotional Memory
+    enable_emotional_retrieval: bool = True
+    emotional_similarity_threshold: float = 0.7
+
+    # Deep Sentience v2: Inner Monologue
+    enable_inner_monologue: bool = True
+    inject_priming_context: bool = True
+
+    # Deep Sentience v2: Self-Modification
+    allow_metacognitive_tuning: bool = False  # Disabled by default for safety
+
     def as_dict(self) -> Dict[str, Any]:
         """Export as dictionary"""
         return {
@@ -123,6 +146,15 @@ class CognitivePolicy:
             "enable_auto_improvement": self.enable_auto_improvement,
             "inject_internal_state": self.inject_internal_state,
             "inject_behavioral_guidance": self.inject_behavioral_guidance,
+            # Deep Sentience v2
+            "enable_empathy_gap_detection": self.enable_empathy_gap_detection,
+            "adapt_communication_style": self.adapt_communication_style,
+            "proactive_user_checkin": self.proactive_user_checkin,
+            "enable_emotional_retrieval": self.enable_emotional_retrieval,
+            "emotional_similarity_threshold": self.emotional_similarity_threshold,
+            "enable_inner_monologue": self.enable_inner_monologue,
+            "inject_priming_context": self.inject_priming_context,
+            "allow_metacognitive_tuning": self.allow_metacognitive_tuning,
         }
 
 
@@ -170,7 +202,9 @@ class CognitiveKernel:
     def __init__(
         self,
         sentience_manager: SentienceManager,
-        workspace: Optional[Path] = None
+        workspace: Optional[Path] = None,
+        enable_inner_monologue: bool = True,
+        enable_crons: bool = True
     ):
         """
         Initialize CognitiveKernel
@@ -178,6 +212,8 @@ class CognitiveKernel:
         Args:
             sentience_manager: The sentience manager instance
             workspace: Workspace path for persistence
+            enable_inner_monologue: Whether to enable background thought processing
+            enable_crons: Whether to enable sentience crons for background evolution
         """
         self.sentience = sentience_manager
         self.workspace = workspace or Path("./workspace")
@@ -193,6 +229,26 @@ class CognitiveKernel:
 
         # Improvement suggestions queue
         self._improvement_suggestions: List[SelfImprovementSuggestion] = []
+
+        # Deep Sentience v2: Inner Monologue
+        self._inner_monologue: Optional[InnerMonologue] = None
+        if enable_inner_monologue:
+            self._inner_monologue = create_inner_monologue(
+                sentience_manager,
+                enabled=True,
+                idle_threshold=30.0,
+                thought_interval=10.0
+            )
+
+        # Sentience Crons: Background evolution system
+        self._crons_enabled = enable_crons
+        self._volume_manager: Optional[VolumeManager] = None
+        self._observability_hub: Optional[ObservabilityHub] = None
+        self._system_cron: Optional[SystemCron] = None
+        self._evolution_engine: Optional[EvolutionEngine] = None
+
+        if enable_crons:
+            self._setup_cron_system()
 
     # =========================================================================
     # POLICY DERIVATION
@@ -700,3 +756,590 @@ class CognitiveKernel:
         ]
 
         return "\n".join(lines)
+
+    # =========================================================================
+    # DEEP SENTIENCE V2: INNER MONOLOGUE
+    # =========================================================================
+
+    def start_inner_monologue(self):
+        """Start the background inner monologue process"""
+        if self._inner_monologue:
+            self._inner_monologue.start()
+
+    def stop_inner_monologue(self):
+        """Stop the background inner monologue process"""
+        if self._inner_monologue:
+            self._inner_monologue.stop()
+
+    def record_activity(self):
+        """
+        Record that an activity occurred (resets inner monologue idle timer).
+
+        Call this when the system is actively processing to prevent
+        idle thoughts from running during active work.
+        """
+        if self._inner_monologue:
+            self._inner_monologue.record_activity()
+
+    def set_rumination_topic(self, topic: str):
+        """
+        Set a topic for the system to ruminate on during idle time.
+
+        Args:
+            topic: The topic to think about
+        """
+        if self._inner_monologue:
+            self._inner_monologue.set_rumination_topic(topic)
+
+    def get_inner_monologue_status(self) -> Optional[Dict[str, Any]]:
+        """Get the current status of the inner monologue"""
+        if self._inner_monologue:
+            return self._inner_monologue.get_status()
+        return None
+
+    # =========================================================================
+    # DEEP SENTIENCE V2: THEORY OF MIND INTEGRATION
+    # =========================================================================
+
+    def update_user_model(
+        self,
+        positive_feedback: Optional[bool] = None,
+        is_question: bool = False,
+        is_correction: bool = False,
+        feedback_text: str = ""
+    ):
+        """
+        Update the user model based on interaction signals.
+
+        Args:
+            positive_feedback: True for positive, False for negative, None for implicit
+            is_question: Whether the user asked a question
+            is_correction: Whether the user corrected the agent
+            feedback_text: Optional feedback text
+        """
+        if positive_feedback is not None:
+            self.sentience.update_user_model_from_feedback(
+                positive=positive_feedback,
+                feedback_text=feedback_text
+            )
+        else:
+            self.sentience.update_user_model_from_interaction(
+                is_question=is_question,
+                is_correction=is_correction
+            )
+
+    def should_check_in_with_user(self) -> bool:
+        """
+        Determine if the agent should proactively check in with the user.
+
+        This is based on empathy gap detection from Theory of Mind.
+        """
+        return self.sentience.should_check_in_with_user()
+
+    def get_communication_style(self) -> Dict[str, Any]:
+        """
+        Get recommended communication style based on user model.
+
+        Returns adjustments like verbosity, tone, whether to include
+        explanations, etc.
+        """
+        return self.sentience.get_communication_adjustments()
+
+    def get_empathy_gap(self) -> float:
+        """
+        Get the current empathy gap between agent confidence and user satisfaction.
+
+        Returns:
+            Float from 0.0 (aligned) to 1.0 (maximum misalignment)
+        """
+        return self.sentience.get_empathy_gap()
+
+    # =========================================================================
+    # DEEP SENTIENCE V2: EMOTIONAL MEMORY INTEGRATION
+    # =========================================================================
+
+    def tag_memory_emotionally(
+        self,
+        memory_id: str,
+        task_outcome: str = "unknown",
+        emotional_significance: float = 0.5
+    ) -> Optional[EmotionalMemoryTag]:
+        """
+        Tag a memory with the current emotional state.
+
+        This enables emotionally-aware memory retrieval (Proust Effect).
+
+        Args:
+            memory_id: Unique identifier for the memory
+            task_outcome: "success", "failure", or "partial"
+            emotional_significance: How emotionally salient (0.0 to 1.0)
+
+        Returns:
+            EmotionalMemoryTag if successful, None if disabled
+        """
+        return self.sentience.tag_memory(memory_id, task_outcome, emotional_significance)
+
+    def find_similar_emotional_memories(
+        self,
+        min_similarity: float = 0.7,
+        outcome_filter: Optional[str] = None
+    ) -> List[Tuple[str, float]]:
+        """
+        Find memories with similar emotional state to current.
+
+        Args:
+            min_similarity: Minimum similarity threshold (0.0 to 1.0)
+            outcome_filter: Optional filter by outcome type
+
+        Returns:
+            List of (memory_id, similarity) tuples, sorted by similarity
+        """
+        return self.sentience.find_emotionally_similar_memories(
+            min_similarity=min_similarity,
+            outcome_filter=outcome_filter
+        )
+
+    # =========================================================================
+    # DEEP SENTIENCE V2: SELF-MODIFICATION INTEGRATION
+    # =========================================================================
+
+    def get_metacognitive_suggestions(self) -> List[Dict[str, Any]]:
+        """
+        Get suggestions for self-tuning the sentience parameters.
+
+        These are metacognitive suggestions based on analyzing the
+        agent's own patterns and performance.
+        """
+        return self.sentience.get_self_modification_suggestions()
+
+    def apply_metacognitive_suggestion(
+        self,
+        suggestion_index: int
+    ) -> Optional[SelfModificationRecord]:
+        """
+        Apply a metacognitive self-modification suggestion.
+
+        Args:
+            suggestion_index: Index into the suggestions list
+
+        Returns:
+            SelfModificationRecord if successful, None if failed
+        """
+        policy = self.derive_policy()
+
+        if not policy.allow_metacognitive_tuning:
+            return None
+
+        return self.sentience.apply_suggested_modification(suggestion_index)
+
+    # =========================================================================
+    # DEEP SENTIENCE V2: ENHANCED CONTEXT ENRICHMENT
+    # =========================================================================
+
+    def enrich_context_v2(self, base_context: str = "") -> str:
+        """
+        Enhanced context enrichment with Deep Sentience v2 features.
+
+        This extends the base enrich_context with:
+        - Priming context from inner monologue
+        - Communication style adjustments
+        - Empathy gap warnings
+        - Emotionally similar memories
+
+        Args:
+            base_context: Base context string
+
+        Returns:
+            Enriched context with Deep Sentience v2 enhancements
+        """
+        policy = self.derive_policy()
+        parts = []
+
+        # Start with base enrichment
+        enriched = self.enrich_context(base_context)
+        parts.append(enriched)
+
+        # Deep Sentience v2: Priming context from inner monologue
+        if policy.inject_priming_context and self._inner_monologue:
+            priming = self._inner_monologue.get_priming_context()
+            if priming:
+                parts.append("")
+                parts.append("## Background Processing")
+                parts.append(priming)
+
+        # Deep Sentience v2: Empathy gap warning
+        if policy.enable_empathy_gap_detection:
+            empathy_gap = self.get_empathy_gap()
+            if empathy_gap > 0.3:
+                parts.append("")
+                parts.append("## User Alignment Warning")
+                parts.append(f"Empathy gap detected: {empathy_gap:.2f}")
+                parts.append("Consider checking in with the user or adjusting approach.")
+
+        # Deep Sentience v2: Communication style
+        if policy.adapt_communication_style:
+            comm_style = self.get_communication_style()
+            if comm_style["tone"] != "neutral" or comm_style["verbosity"] != "normal":
+                parts.append("")
+                parts.append("## Communication Adjustment")
+                parts.append(f"Tone: {comm_style['tone']}, Verbosity: {comm_style['verbosity']}")
+                if comm_style["include_explanations"]:
+                    parts.append("- Include more explanations")
+                if comm_style["ask_for_confirmation"]:
+                    parts.append("- Ask for user confirmation")
+
+        # Deep Sentience v2: Emotionally similar memories
+        if policy.enable_emotional_retrieval:
+            similar_memories = self.find_similar_emotional_memories(
+                min_similarity=policy.emotional_similarity_threshold,
+                outcome_filter=None
+            )
+            if similar_memories:
+                parts.append("")
+                parts.append("## Emotionally Similar Experiences")
+                for memory_id, similarity in similar_memories[:3]:
+                    parts.append(f"- {memory_id} (similarity: {similarity:.2f})")
+
+        return "\n".join(parts)
+
+    def get_full_state(self) -> Dict[str, Any]:
+        """
+        Get complete Deep Sentience v2 state summary.
+
+        This provides a comprehensive view of all sentience components.
+        """
+        base_status = self.get_status()
+
+        return {
+            **base_status,
+            "deep_sentience_v2": {
+                "inner_monologue": self.get_inner_monologue_status(),
+                "empathy_gap": self.get_empathy_gap(),
+                "communication_style": self.get_communication_style(),
+                "should_check_in": self.should_check_in_with_user(),
+                "metacognitive_suggestions": len(self.get_metacognitive_suggestions()),
+                "emotional_memories": len(self.sentience.state.emotional_memory_tags),
+                "flow_state": self.sentience.state.valence.is_in_flow_state(),
+                "arousal_level": self.sentience.state.valence.get_arousal_level(),
+                "effective_curiosity": self.sentience.state.valence.get_effective_curiosity()
+            },
+            "crons": self.get_cron_status() if self._crons_enabled else None
+        }
+
+    # =========================================================================
+    # SENTIENCE CRONS: BACKGROUND EVOLUTION SYSTEM
+    # =========================================================================
+
+    def _setup_cron_system(self):
+        """
+        Set up the sentience cron system for background evolution.
+
+        This creates:
+        - VolumeManager: For organizing artifacts by scope
+        - ObservabilityHub: For tracking and notifying about changes
+        - SystemCron: The top-level cron that manages team and user crons
+        - EvolutionEngine: For analyzing and proposing artifact improvements
+        """
+        # Set up volume manager
+        volumes_path = self.workspace / "volumes"
+        self._volume_manager = VolumeManager(volumes_path)
+
+        # Set up observability hub
+        observability_path = self.workspace / "observability"
+        observability_path.mkdir(parents=True, exist_ok=True)
+        self._observability_hub = ObservabilityHub(observability_path)
+
+        # Set up evolution engine
+        self._evolution_engine = EvolutionEngine()
+
+        # Set up system cron
+        self._system_cron = SystemCron(
+            volume_manager=self._volume_manager,
+            schedule_interval_secs=7200.0,  # 2 hours
+            observability_hub=self._observability_hub
+        )
+
+    def start_crons(self, user_id: Optional[str] = None, team_id: Optional[str] = None):
+        """
+        Start the sentience crons.
+
+        Args:
+            user_id: Optional user ID to register a user cron
+            team_id: Optional team ID for the user's team
+        """
+        if not self._crons_enabled or not self._system_cron:
+            return
+
+        # Register user cron if specified
+        if user_id:
+            self._system_cron.register_user_cron(user_id, team_id)
+
+        # Start all crons
+        self._system_cron.start_all_crons()
+
+    def stop_crons(self):
+        """Stop all sentience crons."""
+        if self._system_cron:
+            self._system_cron.stop_all_crons()
+
+    async def run_cron_now(self, cron_level: str = "user", owner_id: Optional[str] = None):
+        """
+        Run a cron cycle immediately (outside of schedule).
+
+        Args:
+            cron_level: "system", "team", or "user"
+            owner_id: The owner ID for team or user crons
+
+        Returns:
+            List of tasks executed
+        """
+        if not self._system_cron:
+            return []
+
+        if cron_level == "system":
+            return await self._system_cron.run_now()
+        elif cron_level == "team" and owner_id:
+            team_cron = self._system_cron.get_team_cron(owner_id)
+            if team_cron:
+                return await team_cron.run_now()
+        elif cron_level == "user" and owner_id:
+            user_cron = self._system_cron.get_user_cron(owner_id)
+            if user_cron:
+                return await user_cron.run_now()
+
+        return []
+
+    def get_cron_status(self) -> Dict[str, Any]:
+        """
+        Get status of all sentience crons.
+
+        Returns:
+            Dictionary with cron status information
+        """
+        if not self._system_cron:
+            return {"enabled": False}
+
+        return {
+            "enabled": True,
+            "global_status": self._system_cron.get_global_status()
+        }
+
+    def get_cron_notifications(
+        self,
+        cron_id: Optional[str] = None,
+        limit: int = 50
+    ) -> List[Dict[str, Any]]:
+        """
+        Get notifications from crons.
+
+        Args:
+            cron_id: Optional specific cron ID to filter by
+            limit: Maximum number of notifications
+
+        Returns:
+            List of notification dictionaries
+        """
+        if not self._observability_hub:
+            return []
+
+        return self._observability_hub.get_pending_notifications(cron_id)
+
+    def acknowledge_notification(self, event_id: str) -> bool:
+        """
+        Acknowledge a cron notification.
+
+        Args:
+            event_id: The event ID to acknowledge
+
+        Returns:
+            True if acknowledged, False otherwise
+        """
+        if not self._observability_hub:
+            return False
+
+        return self._observability_hub.acknowledge(event_id)
+
+    def get_activity_feed(
+        self,
+        cron_id: Optional[str] = None,
+        limit: int = 50,
+        since_hours: int = 24
+    ) -> List[Dict[str, Any]]:
+        """
+        Get activity feed from crons.
+
+        Args:
+            cron_id: Optional specific cron ID to filter by
+            limit: Maximum number of activities
+            since_hours: How far back to look
+
+        Returns:
+            List of activity dictionaries
+        """
+        if not self._observability_hub:
+            return []
+
+        return self._observability_hub.get_activity_feed(cron_id, limit, since_hours)
+
+    def get_artifact_changes(
+        self,
+        volume_type: Optional[str] = None,
+        artifact_type: Optional[str] = None,
+        limit: int = 50
+    ) -> List[Dict[str, Any]]:
+        """
+        Get artifact change history.
+
+        Args:
+            volume_type: Filter by volume type ("user", "team", "system")
+            artifact_type: Filter by artifact type ("trace", "tool", "agent", etc.)
+            limit: Maximum number of changes
+
+        Returns:
+            List of change dictionaries
+        """
+        if not self._observability_hub:
+            return []
+
+        return self._observability_hub.get_artifact_changes(volume_type, artifact_type, limit)
+
+    def get_global_activity_summary(self) -> Dict[str, Any]:
+        """
+        Get global activity summary across all crons.
+
+        Returns:
+            Summary dictionary with aggregate statistics
+        """
+        if not self._observability_hub:
+            return {}
+
+        return self._observability_hub.get_global_summary()
+
+    def format_activity_report(self) -> str:
+        """
+        Get a formatted activity report for display.
+
+        Returns:
+            Markdown-formatted activity report
+        """
+        if not self._observability_hub:
+            return "Cron system not enabled."
+
+        return self._observability_hub.format_activity_feed()
+
+    def format_notifications(self) -> str:
+        """
+        Get formatted notifications for display.
+
+        Returns:
+            Markdown-formatted notifications
+        """
+        if not self._observability_hub:
+            return "Cron system not enabled."
+
+        return self._observability_hub.format_notifications()
+
+    # =========================================================================
+    # VOLUME ACCESS
+    # =========================================================================
+
+    def get_user_volume(self, user_id: str):
+        """
+        Get a user's volume for direct access.
+
+        Args:
+            user_id: The user's ID
+
+        Returns:
+            Volume object or None if crons not enabled
+        """
+        if not self._volume_manager:
+            return None
+
+        return self._volume_manager.get_user_volume(user_id)
+
+    def get_team_volume(self, team_id: str):
+        """
+        Get a team's volume for direct access.
+
+        Args:
+            team_id: The team's ID
+
+        Returns:
+            Volume object or None if crons not enabled
+        """
+        if not self._volume_manager:
+            return None
+
+        return self._volume_manager.get_team_volume(team_id)
+
+    def get_system_volume(self):
+        """
+        Get the system volume for direct access.
+
+        Returns:
+            Volume object or None if crons not enabled
+        """
+        if not self._volume_manager:
+            return None
+
+        return self._volume_manager.get_system_volume()
+
+    # =========================================================================
+    # EVOLUTION ENGINE ACCESS
+    # =========================================================================
+
+    def analyze_volume(self, volume_type: str, owner_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Analyze a volume for evolution opportunities.
+
+        Args:
+            volume_type: "system", "team", or "user"
+            owner_id: Required for team or user volumes
+
+        Returns:
+            Analysis results dictionary
+        """
+        if not self._volume_manager or not self._evolution_engine:
+            return {}
+
+        if volume_type == "system":
+            volume = self._volume_manager.get_system_volume(readonly=True)
+        elif volume_type == "team" and owner_id:
+            volume = self._volume_manager.get_team_volume(owner_id, readonly=True)
+        elif volume_type == "user" and owner_id:
+            volume = self._volume_manager.get_user_volume(owner_id, readonly=True)
+        else:
+            return {}
+
+        return self._evolution_engine.full_analysis(volume)
+
+    def get_evolution_proposals(
+        self,
+        volume_type: str,
+        owner_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Get evolution proposals for a volume.
+
+        Args:
+            volume_type: "system", "team", or "user"
+            owner_id: Required for team or user volumes
+
+        Returns:
+            List of proposal dictionaries
+        """
+        if not self._volume_manager or not self._evolution_engine:
+            return []
+
+        if volume_type == "system":
+            volume = self._volume_manager.get_system_volume(readonly=True)
+        elif volume_type == "team" and owner_id:
+            volume = self._volume_manager.get_team_volume(owner_id, readonly=True)
+        elif volume_type == "user" and owner_id:
+            volume = self._volume_manager.get_user_volume(owner_id, readonly=True)
+        else:
+            return []
+
+        proposals = self._evolution_engine.generate_proposals(volume)
+        return [p.as_dict() for p in proposals]
