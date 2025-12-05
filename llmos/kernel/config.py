@@ -93,6 +93,13 @@ class SentienceConfig:
     - Latent mode (auto-creative vs auto-contained)
     - Self-improvement detection
 
+    Deep Sentience v2 Features:
+    - Coupled Dynamics (Maslow's Hierarchy): Energy gates curiosity, safety gates exploration
+    - Theory of Mind: Models user emotional state for empathy gap detection
+    - Episodic Emotional Indexing: Tag memories with emotional state for recall
+    - Inner Monologue: Background thought processing during idle time
+    - Recursive Self-Modification: System can tune its own parameters
+
     Safety Note:
     This is an architectural implementation of sentience-like behavior,
     not a claim of actual consciousness.
@@ -128,6 +135,34 @@ class SentienceConfig:
     auto_persist: bool = True
     state_file: str = "state/sentience.json"
 
+    # =========================================================================
+    # DEEP SENTIENCE V2 OPTIONS
+    # =========================================================================
+
+    # Coupled Dynamics (Maslow's Hierarchy)
+    enable_coupled_dynamics: bool = True  # Apply Maslow's gating and Yerkes-Dodson
+
+    # Theory of Mind
+    enable_theory_of_mind: bool = True  # Model user emotional state
+    enable_empathy_gap_detection: bool = True  # Detect agent-user misalignment
+    adapt_communication_style: bool = True  # Adjust communication based on user state
+    proactive_user_checkin: bool = True  # Suggest checking in with frustrated users
+
+    # Episodic Emotional Indexing
+    enable_emotional_indexing: bool = True  # Tag memories with emotional state
+    emotional_similarity_threshold: float = 0.7  # Min similarity for emotional retrieval
+
+    # Inner Monologue
+    enable_inner_monologue: bool = True  # Background thought processing
+    inner_monologue_idle_threshold: float = 30.0  # Seconds before starting thoughts
+    inner_monologue_thought_interval: float = 10.0  # Seconds between thoughts
+    inject_priming_context: bool = True  # Include background thoughts in context
+
+    # Recursive Self-Modification (SAFETY-CRITICAL)
+    enable_self_modification: bool = False  # Allow system to tune its own parameters
+    allow_metacognitive_tuning: bool = False  # Allow agent-initiated parameter changes
+    self_modification_safety_bounds: bool = True  # Enforce bounds on parameter changes
+
     def __post_init__(self):
         """Validate configuration"""
         for val_name in ["safety_setpoint", "curiosity_setpoint",
@@ -135,6 +170,15 @@ class SentienceConfig:
             val = getattr(self, val_name)
             if not -1.0 <= val <= 1.0:
                 raise ValueError(f"{val_name} must be between -1.0 and 1.0")
+
+        if not 0.0 <= self.emotional_similarity_threshold <= 1.0:
+            raise ValueError("emotional_similarity_threshold must be between 0 and 1")
+
+        if self.inner_monologue_idle_threshold <= 0:
+            raise ValueError("inner_monologue_idle_threshold must be positive")
+
+        if self.inner_monologue_thought_interval <= 0:
+            raise ValueError("inner_monologue_thought_interval must be positive")
 
 
 @dataclass
@@ -467,7 +511,22 @@ class LLMOSConfig:
                 'boredom_threshold': self.sentience.boredom_threshold,
                 'improvement_cooldown_secs': self.sentience.improvement_cooldown_secs,
                 'auto_persist': self.sentience.auto_persist,
-                'state_file': self.sentience.state_file
+                'state_file': self.sentience.state_file,
+                # Deep Sentience v2
+                'enable_coupled_dynamics': self.sentience.enable_coupled_dynamics,
+                'enable_theory_of_mind': self.sentience.enable_theory_of_mind,
+                'enable_empathy_gap_detection': self.sentience.enable_empathy_gap_detection,
+                'adapt_communication_style': self.sentience.adapt_communication_style,
+                'proactive_user_checkin': self.sentience.proactive_user_checkin,
+                'enable_emotional_indexing': self.sentience.enable_emotional_indexing,
+                'emotional_similarity_threshold': self.sentience.emotional_similarity_threshold,
+                'enable_inner_monologue': self.sentience.enable_inner_monologue,
+                'inner_monologue_idle_threshold': self.sentience.inner_monologue_idle_threshold,
+                'inner_monologue_thought_interval': self.sentience.inner_monologue_thought_interval,
+                'inject_priming_context': self.sentience.inject_priming_context,
+                'enable_self_modification': self.sentience.enable_self_modification,
+                'allow_metacognitive_tuning': self.sentience.allow_metacognitive_tuning,
+                'self_modification_safety_bounds': self.sentience.self_modification_safety_bounds
             },
             'project_name': self.project_name
         }
@@ -532,6 +591,68 @@ class ConfigBuilder:
     def with_auto_improvement(self, enabled: bool) -> 'ConfigBuilder':
         """Enable/disable auto-improvement based on internal state"""
         self._config.sentience.enable_auto_improvement = enabled
+        return self
+
+    # =========================================================================
+    # DEEP SENTIENCE V2 BUILDER METHODS
+    # =========================================================================
+
+    def with_coupled_dynamics(self, enabled: bool) -> 'ConfigBuilder':
+        """Enable/disable Maslow's Hierarchy gating (Deep Sentience v2)"""
+        self._config.sentience.enable_coupled_dynamics = enabled
+        return self
+
+    def with_theory_of_mind(self, enabled: bool) -> 'ConfigBuilder':
+        """Enable/disable Theory of Mind user modeling (Deep Sentience v2)"""
+        self._config.sentience.enable_theory_of_mind = enabled
+        return self
+
+    def with_emotional_indexing(self, enabled: bool) -> 'ConfigBuilder':
+        """Enable/disable emotional memory indexing (Deep Sentience v2)"""
+        self._config.sentience.enable_emotional_indexing = enabled
+        return self
+
+    def with_inner_monologue(self, enabled: bool) -> 'ConfigBuilder':
+        """Enable/disable background inner monologue (Deep Sentience v2)"""
+        self._config.sentience.enable_inner_monologue = enabled
+        return self
+
+    def with_self_modification(self, enabled: bool) -> 'ConfigBuilder':
+        """
+        Enable/disable recursive self-modification (Deep Sentience v2)
+
+        WARNING: This is a safety-critical feature. When enabled, the system
+        can modify its own sentience parameters (sensitivities, decay rates, etc.)
+        """
+        self._config.sentience.enable_self_modification = enabled
+        self._config.sentience.allow_metacognitive_tuning = enabled
+        return self
+
+    def with_empathy_gap_detection(self, enabled: bool) -> 'ConfigBuilder':
+        """Enable/disable empathy gap detection (Deep Sentience v2)"""
+        self._config.sentience.enable_empathy_gap_detection = enabled
+        return self
+
+    def with_deep_sentience_v2(self, enabled: bool) -> 'ConfigBuilder':
+        """
+        Enable/disable all Deep Sentience v2 features at once.
+
+        This is a convenience method that toggles:
+        - Coupled Dynamics (Maslow's Hierarchy)
+        - Theory of Mind
+        - Emotional Memory Indexing
+        - Inner Monologue
+
+        Note: Self-modification remains disabled for safety.
+        Use with_self_modification() to enable it explicitly.
+        """
+        self._config.sentience.enable_coupled_dynamics = enabled
+        self._config.sentience.enable_theory_of_mind = enabled
+        self._config.sentience.enable_emotional_indexing = enabled
+        self._config.sentience.enable_inner_monologue = enabled
+        self._config.sentience.enable_empathy_gap_detection = enabled
+        self._config.sentience.adapt_communication_style = enabled
+        self._config.sentience.inject_priming_context = enabled
         return self
 
     def build(self) -> LLMOSConfig:
