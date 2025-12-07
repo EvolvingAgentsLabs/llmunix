@@ -401,8 +401,163 @@ class LLMOS:
         print("✅ Shutdown complete")
 
 
+async def run_terminal(
+    user_id: str,
+    team_id: Optional[str] = None,
+    use_real_data: bool = True,
+    ui_mode: str = "textual"
+):
+    """
+    Run the Cron Terminal UI with real LLMOS data.
+
+    Args:
+        user_id: User identifier
+        team_id: Team identifier
+        use_real_data: Connect to real LLMOS components (vs mock data)
+        ui_mode: "textual" (MC-style TUI) or "legacy" (basic ANSI)
+    """
+    print("🖥️  Starting Cron Terminal...")
+    print(f"👤 User: {user_id}")
+    if team_id:
+        print(f"👥 Team: {team_id}")
+    print(f"🎨 UI Mode: {ui_mode}")
+
+    # Initialize LLMOS components for real data
+    data_provider = None
+    status_callback = None
+    events_callback = None
+    suggestions_callback = None
+    cron_callback = None
+
+    if use_real_data:
+        print("📊 Connecting to LLMOS data...")
+
+        from kernel.terminal.llmos_data_provider import LLMOSDataProvider
+        from memory.traces_sdk import TraceManager
+        from memory.store_sdk import MemoryStore
+        from kernel.token_economy import TokenEconomy
+
+        workspace = Path("./workspace")
+        workspace.mkdir(exist_ok=True)
+
+        # Initialize components
+        trace_manager = TraceManager(
+            memories_dir=workspace / "memories",
+            workspace=workspace,
+            enable_llm_matching=False  # Disable for terminal (faster)
+        )
+        memory_store = MemoryStore(workspace)
+        token_economy = TokenEconomy(budget_usd=10.0)
+
+        # Create data provider
+        data_provider = LLMOSDataProvider(
+            trace_manager=trace_manager,
+            memory_store=memory_store,
+            token_economy=token_economy,
+            workspace=workspace
+        )
+
+        # Set callbacks
+        status_callback = data_provider.get_system_status
+        events_callback = data_provider.get_events
+        suggestions_callback = data_provider.get_suggestions
+        cron_callback = data_provider.handle_user_message
+
+        # Show initial stats
+        trace_stats = trace_manager.get_statistics()
+        memory_stats = memory_store.get_statistics()
+        print(f"🧠 Traces: {trace_stats.get('total_traces', 0)} | Facts: {memory_stats.get('facts_count', 0)} | Insights: {memory_stats.get('insights_count', 0)}")
+
+    print()
+
+    # Run the appropriate UI
+    if ui_mode == "textual":
+        # Textual UI (Midnight Commander style)
+        try:
+            from kernel.terminal.app import CronTerminalApp
+        except ImportError:
+            print("❌ Textual UI requires the 'textual' package.")
+            print("   Install with: pip install textual")
+            print("   Or use --ui legacy for the basic terminal.")
+            return
+
+        print("🎨 Starting Midnight Commander-style UI...")
+        print()
+        print("FUNCTION KEYS:")
+        print("  F1=Help  F5=Refresh  F10=Quit")
+        print()
+        print("NAVIGATION:")
+        print("  Tab=Switch panels  j/k=Up/Down  Space=Expand")
+        print()
+
+        app = CronTerminalApp(
+            user_id=user_id,
+            team_id=team_id or "default",
+            status_callback=status_callback,
+            events_callback=events_callback,
+            suggestions_callback=suggestions_callback,
+            cron_callback=cron_callback,
+        )
+        await app.run_async()
+
+    else:
+        # Legacy UI (basic ANSI)
+        from kernel.terminal import CronTerminal
+
+        print("CONTROLS:")
+        print("  ↑/↓     Navigate tree or scroll")
+        print("  ←/→     Collapse/expand nodes")
+        print("  Tab     Switch panels")
+        print("  Enter   Select / send message")
+        print("  r       Refresh data")
+        print("  q       Quit")
+        print()
+
+        # Small delay to let user read the instructions
+        import time
+        time.sleep(2)
+
+        # Create terminal with callbacks
+        terminal = CronTerminal(
+            user_id=user_id,
+            team_id=team_id or "default",
+            status_callback=status_callback,
+            events_callback=events_callback,
+            suggestions_callback=suggestions_callback,
+            cron_callback=cron_callback
+        )
+
+        await terminal.run()
+
+
 async def main():
     """Main entry point"""
+    # Handle terminal mode separately (doesn't need full OS boot)
+    if len(sys.argv) > 1 and sys.argv[1] == "terminal":
+        # Parse terminal arguments
+        user_id = "user"
+        team_id = None
+        ui_mode = "textual"  # Default to Textual (MC-style)
+
+        # Simple argument parsing
+        args = sys.argv[2:]
+        i = 0
+        while i < len(args):
+            if args[i] == "--user" and i + 1 < len(args):
+                user_id = args[i + 1]
+                i += 2
+            elif args[i] == "--team" and i + 1 < len(args):
+                team_id = args[i + 1]
+                i += 2
+            elif args[i] == "--ui" and i + 1 < len(args):
+                ui_mode = args[i + 1]
+                i += 2
+            else:
+                i += 1
+
+        await run_terminal(user_id, team_id, ui_mode=ui_mode)
+        return
+
     # Create and boot the OS
     os = LLMOS(budget_usd=10.0)
     await os.boot()
@@ -430,8 +585,11 @@ async def main():
 
         else:
             print("Usage:")
-            print("  python boot.py interactive        # Interactive mode")
-            print("  python boot.py <goal>            # Execute single goal")
+            print("  python boot.py interactive                              # Interactive mode")
+            print("  python boot.py terminal --user NAME [--team TEAM]       # Cron Terminal (Textual)")
+            print("  python boot.py terminal --user NAME --ui legacy         # Cron Terminal (Legacy)")
+            print("  python boot.py terminal --user NAME --ui textual        # Cron Terminal (MC-style)")
+            print("  python boot.py <goal>                                   # Execute single goal")
 
     finally:
         await os.shutdown()
