@@ -201,7 +201,7 @@ class ConfigTab(ScrollableContainer):
         )
 
 
-class DetailTabs(TabbedContent):
+class DetailTabs(Vertical):
     """
     Main tabbed container for the detail panel.
 
@@ -249,24 +249,25 @@ class DetailTabs(TabbedContent):
         return "System"
 
     def compose(self):
-        """Compose all tabs."""
-        with TabPane("Info", id="tab-info"):
-            yield InfoTab(self.cron_id, id="info-content")
+        """Compose all tabs using TabbedContent properly."""
+        with TabbedContent(id="detail-tabbed-content"):
+            with TabPane("Info", id="tab-info"):
+                yield InfoTab(self.cron_id, id="info-content")
 
-        with TabPane("Activity", id="tab-activity"):
-            yield ActivityTab(self.cron_id, id="activity-content")
+            with TabPane("Activity", id="tab-activity"):
+                yield ActivityTab(self.cron_id, id="activity-content")
 
-        with TabPane("Chat", id="tab-chat"):
-            yield ChatTab(
-                cron_id=self.cron_id,
-                is_interactive=self.is_interactive,
-                owner_name=self.owner_name,
-                send_callback=self.send_callback,
-                id="chat-content"
-            )
+            with TabPane("Chat", id="tab-chat"):
+                yield ChatTab(
+                    cron_id=self.cron_id,
+                    is_interactive=self.is_interactive,
+                    owner_name=self.owner_name,
+                    send_callback=self.send_callback,
+                    id="chat-content"
+                )
 
-        with TabPane("Config", id="tab-config"):
-            yield ConfigTab(self.cron_id, id="config-content")
+            with TabPane("Config", id="tab-config"):
+                yield ConfigTab(self.cron_id, id="config-content")
 
     def update_for_cron(
         self,

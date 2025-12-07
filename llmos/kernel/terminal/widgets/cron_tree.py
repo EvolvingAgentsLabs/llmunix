@@ -145,7 +145,7 @@ class CronTreeWidget(Tree[CronNodeData]):
             owner_id="system",
             state=system_state,
             pending_notifications=0,
-            current_task=system_data.get("current_thinking", {}).get("action"),
+            current_task=(system_data.get("current_thinking") or {}).get("action"),
         )
         self.root.data = root_data
         self.root.label = self._format_node_label(root_data)
