@@ -412,38 +412,80 @@ class CronTerminal:
 
     async def run(self):
         """
-        Run the terminal main loop.
+        Run the terminal main loop with interactive keyboard input.
 
         This is the entry point for running the interactive terminal.
         """
+        from .input_handler import InputHandler, Key
+
         self.running = True
-
-        # Initial refresh
-        await self.refresh()
-
-        # Select user's cron by default
-        user_cron_id = f"user:{self.user_id}"
-        self.tree_view.select(user_cron_id)
-        self.tree_view.expanded_nodes.append(f"team:{self.team_id}" if self.team_id else "system")
-
-        print("\033[2J\033[H")  # Clear screen
-        print(self.render())
+        handler = InputHandler()
+        handler.setup()
 
         try:
+            # Initial refresh
+            await self.refresh()
+
+            # Select user's cron by default
+            user_cron_id = f"user:{self.user_id}"
+            self.tree_view.select(user_cron_id)
+            if self.team_id:
+                if f"team:{self.team_id}" not in self.tree_view.expanded_nodes:
+                    self.tree_view.expanded_nodes.append(f"team:{self.team_id}")
+
+            # Initial render
+            print("\033[2J\033[H", end="")  # Clear screen
+            print(self.render())
+
+            last_refresh = asyncio.get_event_loop().time()
+
             while self.running:
+                # Check for input (non-blocking)
+                key = handler.read_key()
+
+                if key:
+                    # Map special keys
+                    key_map = {
+                        Key.UP.value: "UP",
+                        Key.DOWN.value: "DOWN",
+                        Key.LEFT.value: "LEFT",
+                        Key.RIGHT.value: "RIGHT",
+                        Key.ENTER.value: "\n",
+                        Key.TAB.value: "\t",
+                        Key.BACKSPACE.value: "\x7f",
+                        Key.QUIT.value: "q",
+                        Key.ESCAPE.value: "\x1b",
+                    }
+                    mapped_key = key_map.get(key, key)
+
+                    # Handle input
+                    should_continue = await self.handle_input(mapped_key)
+
+                    if not should_continue:
+                        break
+
+                    # Re-render after input
+                    print("\033[2J\033[H", end="")  # Clear screen
+                    print(self.render())
+
                 # Auto-refresh
                 if self.state.auto_refresh:
-                    await asyncio.sleep(self.config.refresh_interval)
-                    await self.refresh()
-                    print("\033[2J\033[H")  # Clear screen
-                    print(self.render())
-                else:
-                    await asyncio.sleep(0.1)
+                    current_time = asyncio.get_event_loop().time()
+                    if current_time - last_refresh >= self.config.refresh_interval:
+                        await self.refresh()
+                        last_refresh = current_time
+                        print("\033[2J\033[H", end="")  # Clear screen
+                        print(self.render())
+
+                # Small sleep to prevent CPU spinning
+                await asyncio.sleep(0.05)
 
         except KeyboardInterrupt:
             self.running = False
 
-        print("\n👋 Terminal closed.")
+        finally:
+            handler.cleanup()
+            print("\n👋 Terminal closed.")
 
     def stop(self):
         """Stop the terminal"""
