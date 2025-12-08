@@ -35,6 +35,9 @@ from kernel.config import LLMOSConfig, SentienceConfig
 from kernel.sentience import SentienceManager, LatentMode
 from kernel.cognitive_kernel import CognitiveKernel
 from kernel.dynamic_agents import DynamicAgentManager
+from kernel.volumes import VolumeManager, Volume, VolumeType, ArtifactType, ArtifactAction
+from kernel.sentience_cron import SystemCron, TeamCron, UserCron, CronLevel
+from kernel.observability import ObservabilityHub, EventType, Severity
 from scenarios.nested_learning_demo import run_nested_learning_demo
 
 
@@ -71,6 +74,11 @@ class DemoApp:
         self.sentience_manager = None
         self.cognitive_kernel = None
 
+        # Volume and Cron components (v3.6.0)
+        self.volume_manager = None
+        self.observability_hub = None
+        self.system_cron = None
+
         # Track costs across scenarios
         self.cost_tracker = {
             "total_spent": 0.0,
@@ -98,7 +106,7 @@ class DemoApp:
 
         scenarios = [
             ("1", "🧠 Sentience Layer Demo", "Valence variables & latent modes ✅"),
-            ("2", "🤖 Adaptive Agents Demo", "NEW! Dynamic agent adaptation 🌟"),
+            ("2", "🤖 Adaptive Agents Demo", "Dynamic agent adaptation ✅"),
             ("3", "🧬 Nested Learning Demo", "Semantic matching & MIXED mode ✅"),
             ("4", "Code Generation Workflow", "Learn-once, execute-free ✅"),
             ("5", "Cost Optimization Demo", "Dramatic cost savings ✅"),
@@ -106,8 +114,12 @@ class DemoApp:
             ("7", "DevOps Automation", "Automated deployment ✅"),
             ("8", "Cross-Project Learning", "Learning insights ✅"),
             ("9", "SDK Hooks Demo", "Budget control & security ✅"),
+            ("V", "📦 Volume Operations", "NEW! User/Team/System volumes 🌟"),
+            ("C", "⏰ Sentience Crons", "NEW! Background cron analysis 🌟"),
+            ("O", "👁️  Observability Hub", "NEW! Event & activity monitoring 🌟"),
+            ("T", "🖥️  Terminal UI", "NEW! MC-style cron dashboard 🌟"),
             ("A", "Run All Scenarios", "Execute all demos (recommended) ✅"),
-            ("S", "View System Stats", "Show traces, agents, adaptation ✅"),
+            ("S", "View System Stats", "Show traces, agents, volumes ✅"),
             ("0", "Exit", "Exit demo application")
         ]
 
@@ -153,6 +165,15 @@ class DemoApp:
             self.sentience_manager.state.valence.self_confidence_setpoint = sentience_config.self_confidence_setpoint
             self.cognitive_kernel = CognitiveKernel(self.sentience_manager)
 
+            # Initialize Volume Manager (v3.6.0)
+            volumes_path = Path(self.demo_output_dir) / "volumes"
+            self.volume_manager = VolumeManager(volumes_path)
+
+            # Initialize Observability Hub (v3.6.0)
+            observability_path = Path(self.demo_output_dir) / "observability"
+            observability_path.mkdir(parents=True, exist_ok=True)
+            self.observability_hub = ObservabilityHub(observability_path)
+
             self.os = LLMOS(
                 budget_usd=self.budget_usd,
                 project_name=project_name
@@ -162,7 +183,9 @@ class DemoApp:
             progress.update(task, completed=True)
 
         console.print("[green]✅ LLM OS ready![/green]")
-        console.print("[green]✅ Sentience Layer initialized[/green]\n")
+        console.print("[green]✅ Sentience Layer initialized[/green]")
+        console.print("[green]✅ Volume Manager initialized[/green]")
+        console.print("[green]✅ Observability Hub initialized[/green]\n")
 
     async def scenario_sentience_demo(self):
         """Scenario: Sentience Layer Demo (v3.4.0)"""
@@ -864,6 +887,577 @@ IMPORTANT CONSTRAINTS:
 
         self._track_cost("sdk_hooks", result.get("cost", 0.0))
 
+    async def scenario_volumes_demo(self):
+        """Scenario: Volume Operations Demo (v3.6.0)"""
+        console.print(Panel(
+            "[bold yellow]Volume Operations Demo (v3.6.0)[/bold yellow]\n\n"
+            "Demonstrates the three-tier volume architecture:\n"
+            "1. UserVolume: Personal artifacts for a single user\n"
+            "2. TeamVolume: Shared artifacts for a team\n"
+            "3. SystemVolume: Global artifacts available to all\n\n"
+            "[bold]Features:[/bold] Artifact management, promotion, changelog tracking",
+            border_style="yellow"
+        ))
+
+        if not self.os:
+            await self.boot_os("volumes_demo")
+
+        console.print("\n[cyan]Volume Manager initialized at:[/cyan]")
+        console.print(f"  {self.volume_manager.base_path}\n")
+
+        # Demo 1: Create user volume and write artifacts
+        console.print("[bold cyan]1. User Volume Operations[/bold cyan]\n")
+
+        user_volume = self.volume_manager.get_user_volume("demo_user")
+        console.print(f"[green]✓ Created user volume: {user_volume.owner_id}[/green]")
+
+        # Write a sample trace
+        sample_trace = """---
+goal_signature: demo_trace_001
+goal_text: Demo trace for volume testing
+success_rating: 0.95
+usage_count: 3
+---
+
+## Execution Steps
+
+### Step 1: Initialize demo
+Tool: Write
+Status: Success
+
+## Tool Calls (PTC)
+```json
+[{"name": "Write", "arguments": {"path": "demo.py", "content": "print('hello')"}}]
+```
+"""
+        user_volume.write_artifact(
+            artifact_type=ArtifactType.TRACE,
+            artifact_id="demo_trace_001",
+            content=sample_trace,
+            reason="Demo: Creating sample trace",
+            cron_level="user",
+            is_new=True
+        )
+        console.print("[green]✓ Written trace: demo_trace_001[/green]")
+
+        # Write a sample insight
+        sample_insight = """---
+insight_id: demo_insight_001
+insight_type: pattern
+confidence: 0.85
+---
+
+# Repeated File Operations Pattern
+
+Found that 80% of tasks involve reading, modifying, and writing files.
+Consider creating a dedicated file-ops agent.
+
+## Evidence
+- trace_001, trace_002, trace_003
+"""
+        user_volume.write_artifact(
+            artifact_type=ArtifactType.INSIGHT,
+            artifact_id="demo_insight_001",
+            content=sample_insight,
+            reason="Demo: Creating sample insight",
+            cron_level="user",
+            is_new=True
+        )
+        console.print("[green]✓ Written insight: demo_insight_001[/green]")
+
+        # Show user volume stats
+        stats = user_volume.get_stats()
+        stats_table = Table(title="User Volume Stats", box=box.ROUNDED)
+        stats_table.add_column("Metric", style="cyan")
+        stats_table.add_column("Value", style="yellow")
+        stats_table.add_row("Traces", str(stats.trace_count))
+        stats_table.add_row("Tools", str(stats.tool_count))
+        stats_table.add_row("Agents", str(stats.agent_count))
+        stats_table.add_row("Insights", str(stats.insight_count))
+        stats_table.add_row("Suggestions", str(stats.suggestion_count))
+        stats_table.add_row("Total Size", f"{stats.total_size_bytes} bytes")
+        console.print(stats_table)
+
+        # Demo 2: Team volume
+        console.print("\n[bold cyan]2. Team Volume Operations[/bold cyan]\n")
+
+        team_volume = self.volume_manager.get_team_volume("engineering")
+        console.print(f"[green]✓ Created team volume: {team_volume.owner_id}[/green]")
+
+        # Promote insight from user to team
+        console.print("\n[yellow]Promoting insight from User → Team...[/yellow]")
+        self.volume_manager.promote_artifact(
+            artifact_type=ArtifactType.INSIGHT,
+            artifact_id="demo_insight_001",
+            from_volume=user_volume,
+            to_volume=team_volume,
+            reason="High-value pattern identified",
+            cron_level="team"
+        )
+        console.print("[green]✓ Insight promoted to team volume[/green]")
+
+        # Demo 3: System volume
+        console.print("\n[bold cyan]3. System Volume Operations[/bold cyan]\n")
+
+        system_volume = self.volume_manager.get_system_volume()
+        console.print(f"[green]✓ Accessed system volume[/green]")
+
+        # Write a system-wide tool template
+        sample_tool = '''"""
+System Tool: File Operations Helper
+Auto-crystallized from repeated patterns.
+"""
+
+def read_and_transform(path: str, transform_fn) -> str:
+    """Read file, apply transformation, return result."""
+    with open(path) as f:
+        content = f.read()
+    return transform_fn(content)
+'''
+        system_volume.write_artifact(
+            artifact_type=ArtifactType.TOOL,
+            artifact_id="file_ops_helper",
+            content=sample_tool,
+            reason="Demo: System-wide crystallized tool",
+            cron_level="system",
+            is_new=True
+        )
+        console.print("[green]✓ Written system tool: file_ops_helper[/green]")
+
+        # Demo 4: Changelog tracking
+        console.print("\n[bold cyan]4. Changelog Tracking[/bold cyan]\n")
+
+        changes = user_volume.get_recent_changes(limit=10)
+        if changes:
+            changelog_table = Table(title="Recent Changes (User Volume)", box=box.ROUNDED)
+            changelog_table.add_column("Action", style="cyan")
+            changelog_table.add_column("Artifact", style="yellow")
+            changelog_table.add_column("Type", style="green")
+            changelog_table.add_column("Reason", style="white", width=30)
+
+            for change in changes[:5]:
+                changelog_table.add_row(
+                    change.action.value,
+                    change.artifact_id[:20],
+                    change.artifact_type.value,
+                    change.reason[:28] + "..." if len(change.reason) > 28 else change.reason
+                )
+            console.print(changelog_table)
+
+        # Demo 5: Access control demonstration
+        console.print("\n[bold cyan]5. Access Control Demonstration[/bold cyan]\n")
+
+        access_table = Table(title="Volume Access Control", box=box.ROUNDED)
+        access_table.add_column("Cron Level", style="cyan")
+        access_table.add_column("User Volume", style="yellow")
+        access_table.add_column("Team Volume", style="yellow")
+        access_table.add_column("System Volume", style="yellow")
+
+        access_table.add_row("User Cron", "Read/Write", "Read Only", "-")
+        access_table.add_row("Team Cron", "Read (aggregated)", "Read/Write", "Read Only")
+        access_table.add_row("System Cron", "Read/Write", "Read/Write", "Read/Write")
+
+        console.print(access_table)
+
+        console.print(Panel(
+            "[bold green]Volume Operations Demo Complete![/bold green]\n\n"
+            "The Volume Manager provides:\n"
+            "• Three-tier artifact storage (User/Team/System)\n"
+            "• Artifact promotion between volumes\n"
+            "• Changelog tracking for all changes\n"
+            "• Access control based on cron level\n"
+            "• Support for traces, tools, agents, insights, suggestions",
+            border_style="green"
+        ))
+
+    async def scenario_crons_demo(self):
+        """Scenario: Sentience Crons Demo (v3.6.0)"""
+        console.print(Panel(
+            "[bold yellow]Sentience Crons Demo (v3.6.0)[/bold yellow]\n\n"
+            "Demonstrates the three-tier cron hierarchy:\n"
+            "1. UserCron: Personal evolution for a single user\n"
+            "2. TeamCron: Shared evolution for team artifacts\n"
+            "3. SystemCron: Global evolution, controls other crons\n\n"
+            "[bold]Features:[/bold] Background analysis, insights, suggestions, notifications",
+            border_style="yellow"
+        ))
+
+        if not self.os:
+            await self.boot_os("crons_demo")
+
+        # Initialize the System Cron with observability
+        console.print("\n[cyan]Initializing Sentience Cron System...[/cyan]\n")
+
+        self.system_cron = SystemCron(
+            volume_manager=self.volume_manager,
+            schedule_interval_secs=60.0,  # 1 minute for demo
+            observability_hub=self.observability_hub
+        )
+        console.print("[green]✓ SystemCron initialized[/green]")
+
+        # Register a user cron
+        user_cron = self.system_cron.register_user_cron(
+            user_id="demo_user",
+            team_id="engineering"
+        )
+        console.print("[green]✓ UserCron registered for demo_user[/green]")
+
+        # Demo 1: Show cron hierarchy
+        console.print("\n[bold cyan]1. Cron Hierarchy[/bold cyan]\n")
+
+        hierarchy = """
+                    ┌─────────────────┐
+                    │   SystemCron    │
+                    │  (full access)  │
+                    └────────┬────────┘
+                             │ controls
+              ┌──────────────┼──────────────┐
+              │              │              │
+       ┌──────▼─────┐ ┌──────▼─────┐ ┌──────▼─────┐
+       │  TeamCron  │ │  TeamCron  │ │  TeamCron  │
+       │  (eng)     │ │  (design)  │ │  (ops)     │
+       └──────┬─────┘ └────────────┘ └────────────┘
+              │
+        ┌─────┼─────┐
+        │     │     │
+       User  User  User
+       Cron  Cron  Cron
+       (you) (bob) (alice)
+"""
+        console.print(hierarchy)
+
+        # Demo 2: Run user cron analysis
+        console.print("\n[bold cyan]2. Running User Cron Analysis[/bold cyan]\n")
+
+        console.print("[yellow]Running analysis cycle (this may take a moment)...[/yellow]\n")
+        tasks = await user_cron.run_now()
+
+        task_table = Table(title="Analysis Tasks Completed", box=box.ROUNDED)
+        task_table.add_column("Task Type", style="cyan")
+        task_table.add_column("Status", style="yellow")
+        task_table.add_column("Artifacts Processed", style="green")
+        task_table.add_column("Summary", style="white", width=35)
+
+        for task in tasks:
+            status_icon = "✓" if task.status == "completed" else "✗"
+            task_table.add_row(
+                task.task_type.value,
+                f"{status_icon} {task.status}",
+                str(task.artifacts_processed),
+                task.summary[:33] + "..." if len(task.summary) > 33 else task.summary
+            )
+        console.print(task_table)
+
+        # Demo 3: Check for notifications
+        console.print("\n[bold cyan]3. Notifications[/bold cyan]\n")
+
+        notifications = user_cron.get_notifications(limit=5)
+        if notifications:
+            notif_table = Table(title="Cron Notifications", box=box.ROUNDED)
+            notif_table.add_column("Title", style="cyan")
+            notif_table.add_column("Importance", style="yellow")
+            notif_table.add_column("Message", style="white", width=40)
+
+            for notif in notifications:
+                notif_table.add_row(
+                    notif["title"][:25],
+                    notif["importance"],
+                    notif["message"][:38] + "..." if len(notif["message"]) > 38 else notif["message"]
+                )
+            console.print(notif_table)
+        else:
+            console.print("[dim]No notifications yet. Run more tasks to generate insights![/dim]")
+
+        # Demo 4: Cron status
+        console.print("\n[bold cyan]4. Cron Status[/bold cyan]\n")
+
+        system_status = self.system_cron.get_status()
+        user_status = user_cron.get_status()
+
+        status_table = Table(title="Cron Status", box=box.ROUNDED)
+        status_table.add_column("Cron", style="cyan")
+        status_table.add_column("Running", style="yellow")
+        status_table.add_column("Last Run", style="green")
+        status_table.add_column("Tasks", style="white")
+
+        status_table.add_row(
+            "SystemCron",
+            str(system_status["running"]),
+            system_status["last_run"][:19] if system_status["last_run"] else "Never",
+            str(system_status["task_history_count"])
+        )
+        status_table.add_row(
+            f"UserCron ({user_status['owner_id']})",
+            str(user_status["running"]),
+            user_status["last_run"][:19] if user_status["last_run"] else "Never",
+            str(user_status["task_history_count"])
+        )
+        console.print(status_table)
+
+        # Demo 5: Activity summary
+        console.print("\n[bold cyan]5. Activity Summary[/bold cyan]\n")
+
+        activity = user_cron.get_activity_summary()
+        console.print(activity)
+
+        console.print(Panel(
+            "[bold green]Sentience Crons Demo Complete![/bold green]\n\n"
+            "The Sentience Cron System provides:\n"
+            "• Background analysis of artifacts\n"
+            "• Automatic insight and suggestion generation\n"
+            "• Hierarchical cron management (User/Team/System)\n"
+            "• Notification system for important events\n"
+            "• Integration with Volume Manager",
+            border_style="green"
+        ))
+
+    async def scenario_observability_demo(self):
+        """Scenario: Observability Demo (v3.6.0)"""
+        console.print(Panel(
+            "[bold yellow]Observability Demo (v3.6.0)[/bold yellow]\n\n"
+            "Demonstrates the Observability Hub for system monitoring:\n"
+            "1. Event recording from all crons\n"
+            "2. Activity feed queries\n"
+            "3. Artifact change tracking\n"
+            "4. Notification management\n\n"
+            "[bold]Features:[/bold] Real-time visibility into cron activity",
+            border_style="yellow"
+        ))
+
+        if not self.os:
+            await self.boot_os("observability_demo")
+
+        console.print("\n[cyan]Observability Hub initialized at:[/cyan]")
+        console.print(f"  {self.observability_hub.base_path}\n")
+
+        # Demo 1: Record some events
+        console.print("[bold cyan]1. Recording Events[/bold cyan]\n")
+
+        # Simulate various events
+        self.observability_hub.record_cron_started("user:demo_user", "user")
+        console.print("[green]✓ Recorded: Cron Started[/green]")
+
+        self.observability_hub.record_artifact_created(
+            cron_id="user:demo_user",
+            artifact_type="trace",
+            artifact_id="trace_demo_001",
+            volume_type="user",
+            reason="Created from demo execution"
+        )
+        console.print("[green]✓ Recorded: Artifact Created[/green]")
+
+        self.observability_hub.record_insight(
+            cron_id="user:demo_user",
+            insight_title="High Success Rate Pattern",
+            insight_content="Tasks involving file operations have 95% success rate.",
+            volume_type="user"
+        )
+        console.print("[green]✓ Recorded: Insight Generated[/green]")
+
+        self.observability_hub.record_suggestion(
+            cron_id="user:demo_user",
+            suggestion_title="Create File Ops Agent",
+            suggestion_content="Consider creating a specialized agent for file operations.",
+            volume_type="user"
+        )
+        console.print("[green]✓ Recorded: Suggestion Created[/green]")
+
+        self.observability_hub.record_cycle(
+            cron_id="user:demo_user",
+            tasks_completed=3,
+            duration_seconds=2.5
+        )
+        console.print("[green]✓ Recorded: Cron Cycle End[/green]")
+
+        # Demo 2: Query activity feed
+        console.print("\n[bold cyan]2. Activity Feed[/bold cyan]\n")
+
+        feed = self.observability_hub.get_activity_feed(limit=10)
+        if feed:
+            feed_table = Table(title="Recent Activity", box=box.ROUNDED)
+            feed_table.add_column("Time", style="dim")
+            feed_table.add_column("Type", style="cyan")
+            feed_table.add_column("Title", style="yellow")
+            feed_table.add_column("Source", style="green")
+
+            for event in feed[:7]:
+                time_str = event["timestamp"].split("T")[1][:8]
+                feed_table.add_row(
+                    time_str,
+                    event["event_type"],
+                    event["title"][:30],
+                    event["source_cron"]
+                )
+            console.print(feed_table)
+
+        # Demo 3: Artifact changes
+        console.print("\n[bold cyan]3. Artifact Changes[/bold cyan]\n")
+
+        changes = self.observability_hub.get_artifact_changes(limit=5)
+        if changes:
+            changes_table = Table(title="Artifact Change Log", box=box.ROUNDED)
+            changes_table.add_column("Type", style="cyan")
+            changes_table.add_column("Artifact", style="yellow")
+            changes_table.add_column("Volume", style="green")
+            changes_table.add_column("Description", style="white", width=30)
+
+            for change in changes:
+                changes_table.add_row(
+                    change.get("artifact_type", "?"),
+                    change.get("artifact_id", "?")[:20],
+                    change.get("volume_type", "?"),
+                    change["description"][:28] + "..." if len(change.get("description", "")) > 28 else change.get("description", "")
+                )
+            console.print(changes_table)
+        else:
+            console.print("[dim]No artifact changes recorded yet.[/dim]")
+
+        # Demo 4: Pending notifications
+        console.print("\n[bold cyan]4. Pending Notifications[/bold cyan]\n")
+
+        notifications = self.observability_hub.get_pending_notifications()
+        console.print(f"[yellow]Found {len(notifications)} pending notification(s)[/yellow]")
+
+        if notifications:
+            for notif in notifications[:3]:
+                severity = notif.get("severity", "info")
+                color = {"info": "blue", "warning": "yellow", "error": "red"}.get(severity, "white")
+                console.print(f"  [{color}]● {notif['title']}[/{color}]")
+
+        # Demo 5: Global summary
+        console.print("\n[bold cyan]5. Global Summary[/bold cyan]\n")
+
+        summary = self.observability_hub.get_global_summary()
+        summary_table = Table(title="System Summary (Today)", box=box.ROUNDED)
+        summary_table.add_column("Metric", style="cyan")
+        summary_table.add_column("Value", style="yellow")
+
+        summary_table.add_row("Total Events", str(summary.get("total_events", 0)))
+        summary_table.add_row("Artifacts Created", str(summary.get("artifacts_created", 0)))
+        summary_table.add_row("Artifacts Evolved", str(summary.get("artifacts_evolved", 0)))
+        summary_table.add_row("Insights Generated", str(summary.get("insights_generated", 0)))
+        summary_table.add_row("Suggestions Created", str(summary.get("suggestions_created", 0)))
+        summary_table.add_row("Pending Notifications", str(summary.get("pending_notifications", 0)))
+
+        console.print(summary_table)
+
+        # Demo 6: Formatted output
+        console.print("\n[bold cyan]6. Formatted Activity Feed[/bold cyan]\n")
+
+        formatted = self.observability_hub.format_activity_feed(limit=5)
+        console.print(formatted)
+
+        console.print(Panel(
+            "[bold green]Observability Demo Complete![/bold green]\n\n"
+            "The Observability Hub provides:\n"
+            "• Event recording from all crons\n"
+            "• Activity feed with time-based queries\n"
+            "• Artifact change tracking\n"
+            "• Notification management with acknowledgment\n"
+            "• Global and per-cron summaries",
+            border_style="green"
+        ))
+
+    async def scenario_terminal_demo(self):
+        """Scenario: Terminal UI Demo (v3.6.0)"""
+        console.print(Panel(
+            "[bold yellow]Terminal UI Demo (v3.6.0)[/bold yellow]\n\n"
+            "Launches the Midnight Commander-style Terminal UI:\n"
+            "1. Left Panel: Tree view of all cron processes\n"
+            "2. Right Panel: Detailed view of selected cron\n"
+            "3. Interactive chat with YOUR UserCron\n"
+            "4. Real-time status updates\n\n"
+            "[bold]Requirements:[/bold] textual package (pip install textual)",
+            border_style="yellow"
+        ))
+
+        if not self.os:
+            await self.boot_os("terminal_demo")
+
+        console.print("\n[cyan]Preparing Terminal UI...[/cyan]\n")
+
+        # Check if textual is installed
+        try:
+            from kernel.terminal import get_textual_app, LLMOSDataProvider
+            console.print("[green]✓ Textual package found[/green]")
+        except ImportError as e:
+            console.print("[red]✗ Textual package not installed[/red]")
+            console.print("[yellow]Install with: pip install textual[/yellow]")
+            console.print(f"[dim]Error: {e}[/dim]")
+            return
+
+        # Create data provider connected to real LLMOS
+        console.print("[green]✓ Creating LLMOSDataProvider...[/green]")
+
+        data_provider = LLMOSDataProvider(
+            trace_manager=getattr(self.os, 'trace_manager', None),
+            memory_store=getattr(self.os, 'memory_store', None),
+            token_economy=getattr(self.os, 'token_economy', None),
+            dispatcher=getattr(self.os, 'dispatcher', None),
+            workspace=Path(self.demo_output_dir) / "workspace"
+        )
+
+        # Show what the terminal will display
+        console.print("\n[bold cyan]Terminal UI Features:[/bold cyan]\n")
+
+        features_table = Table(box=box.ROUNDED)
+        features_table.add_column("Key", style="cyan")
+        features_table.add_column("Action", style="yellow")
+
+        features_table.add_row("Tab", "Switch between tree and detail panels")
+        features_table.add_row("↑/↓ or j/k", "Navigate in tree")
+        features_table.add_row("Enter", "Select cron / send message")
+        features_table.add_row("F5 or Ctrl+R", "Refresh data")
+        features_table.add_row("F1 or ?", "Show help")
+        features_table.add_row("F10 or q", "Quit")
+
+        console.print(features_table)
+
+        console.print("\n[yellow]Would you like to launch the Terminal UI?[/yellow]")
+        console.print("[dim]This will take over your terminal. Press Ctrl+C to cancel.[/dim]\n")
+
+        try:
+            choice = console.input("[bold cyan]Launch Terminal UI? (y/n):[/bold cyan] ").strip().lower()
+
+            if choice == 'y':
+                console.print("\n[green]Launching Terminal UI...[/green]")
+                console.print("[dim]Press q or F10 to exit and return to demo menu.[/dim]\n")
+
+                await asyncio.sleep(1)
+
+                # Get the Textual app
+                CronTerminalApp, run_terminal = get_textual_app()
+
+                # Run the terminal
+                await run_terminal(
+                    user_id="demo_user",
+                    team_id="engineering",
+                    status_callback=data_provider.get_system_status,
+                    events_callback=data_provider.get_events,
+                    suggestions_callback=data_provider.get_suggestions,
+                    cron_callback=data_provider.handle_user_message,
+                    refresh_interval=5.0,
+                    auto_refresh=True
+                )
+
+                console.print("\n[green]✓ Terminal UI session ended[/green]")
+            else:
+                console.print("\n[dim]Terminal UI launch cancelled.[/dim]")
+
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Cancelled.[/yellow]")
+
+        console.print(Panel(
+            "[bold green]Terminal UI Demo Complete![/bold green]\n\n"
+            "The Cron Terminal provides:\n"
+            "• Real-time cron status monitoring\n"
+            "• Interactive chat with your UserCron\n"
+            "• Activity log and suggestions\n"
+            "• Midnight Commander-style navigation\n"
+            "• Integration with LLMOSDataProvider",
+            border_style="green"
+        ))
+
     async def scenario_9_run_all(self):
         """Run all scenarios sequentially"""
         console.print(Panel(
@@ -886,6 +1480,10 @@ IMPORTANT CONSTRAINTS:
             ("DevOps Automation", self.scenario_4_devops_automation),
             ("Cross-Project Learning", self.scenario_5_cross_project),
             ("SDK Hooks", self.scenario_7_sdk_hooks),
+            ("Volume Operations", self.scenario_volumes_demo),
+            ("Sentience Crons", self.scenario_crons_demo),
+            ("Observability Hub", self.scenario_observability_demo),
+            # Terminal UI is interactive, skip in run_all
         ]
 
         for name, scenario_func in scenarios:
@@ -1024,7 +1622,7 @@ IMPORTANT CONSTRAINTS:
         while True:
             self.show_menu()
 
-            choice = console.input("[bold cyan]Choice (0-9, A, S):[/bold cyan] ").strip().upper()
+            choice = console.input("[bold cyan]Choice (0-9, V, C, O, T, A, S):[/bold cyan] ").strip().upper()
 
             try:
                 if choice == "0":
@@ -1048,6 +1646,14 @@ IMPORTANT CONSTRAINTS:
                     await self.scenario_5_cross_project()
                 elif choice == "9":
                     await self.scenario_7_sdk_hooks()
+                elif choice == "V":
+                    await self.scenario_volumes_demo()
+                elif choice == "C":
+                    await self.scenario_crons_demo()
+                elif choice == "O":
+                    await self.scenario_observability_demo()
+                elif choice == "T":
+                    await self.scenario_terminal_demo()
                 elif choice == "A":
                     await self.scenario_9_run_all()
                 elif choice == "S":
@@ -1107,6 +1713,10 @@ async def main():
             "cross-project": demo.scenario_5_cross_project,
             "cost-optimization": demo.scenario_6_cost_optimization,
             "hooks": demo.scenario_7_sdk_hooks,
+            "volumes": demo.scenario_volumes_demo,
+            "crons": demo.scenario_crons_demo,
+            "observability": demo.scenario_observability_demo,
+            "terminal": demo.scenario_terminal_demo,
         }
 
         scenario_func = scenario_map.get(args.scenario)
