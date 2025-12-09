@@ -247,6 +247,33 @@ class SystemAgent:
             plan = await self._decompose_goal(goal, project, memory_insights)
             state.set_plan(plan)
 
+            # Step 4.5: Ensure all agents in plan exist (create on-demand if needed)
+            plan, new_agents = await self._ensure_agents_for_plan(plan, project, state)
+
+            # If new agents were created, re-register them with SDK
+            if new_agents:
+                for new_agent in new_agents:
+                    try:
+                        agents_dict[new_agent.name] = AgentDefinition(
+                            description=new_agent.description,
+                            prompt=new_agent.system_prompt,
+                            tools=new_agent.tools,
+                            model="claude-sonnet-4-5-20250929"
+                        )
+                        state.log_event("AGENT_CREATED_ON_DEMAND", {
+                            "agent": new_agent.name,
+                            "tools": new_agent.tools
+                        })
+                    except Exception as e:
+                        print(f"[WARNING] Failed to register new agent {new_agent.name}: {e}")
+
+                # Update options with new agents
+                options = ClaudeAgentOptions(
+                    agents=agents_dict,
+                    cwd=str(project.root_path),
+                    permission_mode="acceptEdits"
+                )
+
             # Step 5: Execute plan with shared client
             total_cost = 0.0
             async with ClaudeSDKClient(options=options) as client:
@@ -387,9 +414,23 @@ Memory Insights:
 Available Agents:
 {self._get_available_agents_summary()}
 
+IMPORTANT - Agent Assignment:
+You may (and SHOULD) suggest specialized agents even if they don't exist yet.
+The system will automatically create them on-demand before execution.
+
+Use descriptive kebab-case names that reflect the agent's purpose, such as:
+- ansatz-designer (for quantum circuit design)
+- vqe-executor (for running VQE simulations)
+- optimizer-agent (for classical optimization)
+- data-processor (for data transformation)
+- code-generator (for writing code)
+- test-runner (for running tests)
+
+Only use "system-agent" for generic coordination tasks that don't need specialization.
+
 Create a detailed execution plan with:
 1. Clear, actionable steps
-2. Agent assignment for each step (or "system-agent" if no specialized agent needed)
+2. Agent assignment for each step (prefer specialized agents over system-agent)
 3. Expected output for each step
 
 Format your response as JSON:
@@ -398,7 +439,7 @@ Format your response as JSON:
     {{
       "number": 1,
       "description": "Step description",
-      "agent": "agent-name",
+      "agent": "specialized-agent-name",
       "expected_output": "What this step should produce"
     }}
   ]
@@ -804,6 +845,113 @@ Be specific and actionable.
                 "cost": cost_estimate
             }
 
+    async def _ensure_agents_for_plan(
+        self,
+        plan: List[ExecutionStep],
+        project: Project,
+        state: StateManager
+    ) -> Tuple[List[ExecutionStep], List[AgentSpec]]:
+        """
+        Ensure all agents in the plan exist, creating them on-demand if needed.
+
+        This solves the cold-start problem: when ORCHESTRATOR mode is selected
+        but no specialized agents exist, we create them before execution.
+
+        Args:
+            plan: List of execution steps with agent assignments
+            project: Project context for agent creation
+            state: State manager for logging
+
+        Returns:
+            Tuple of (updated_plan, list_of_newly_created_agents)
+        """
+        new_agents = []
+        agents_needed = set()
+
+        # Collect unique agent names from plan (excluding system-agent)
+        for step in plan:
+            if step.agent and step.agent != "system-agent":
+                agents_needed.add(step.agent)
+
+        if not agents_needed:
+            return plan, new_agents
+
+        state.log_event("AGENT_GAP_DETECTION", {
+            "agents_in_plan": list(agents_needed),
+            "phase": "started"
+        })
+
+        # Check which agents don't exist
+        missing_agents = []
+        for agent_name in agents_needed:
+            if not self.component_registry.get_agent(agent_name):
+                missing_agents.append(agent_name)
+
+        if not missing_agents:
+            state.log_event("AGENT_GAP_DETECTION", {
+                "result": "all_agents_exist",
+                "phase": "completed"
+            })
+            return plan, new_agents
+
+        print(f"\n[INFO] Detected {len(missing_agents)} missing agents: {missing_agents}")
+        print("[INFO] Creating agents on-demand...")
+
+        # Create missing agents
+        for agent_name in missing_agents:
+            # Find the step(s) that need this agent to understand the capability needed
+            capability_hints = []
+            for step in plan:
+                if step.agent == agent_name:
+                    capability_hints.append(step.description)
+
+            capability = f"{agent_name}: {'; '.join(capability_hints)}"
+
+            print(f"[INFO] Creating agent '{agent_name}'...")
+            state.log_event("AGENT_CREATION_STARTED", {
+                "agent": agent_name,
+                "capability": capability[:200]
+            })
+
+            try:
+                new_agent = await self.create_agent_on_demand(capability, project)
+
+                if new_agent:
+                    new_agents.append(new_agent)
+                    print(f"[INFO] Successfully created agent: {new_agent.name}")
+                    state.log_event("AGENT_CREATION_SUCCESS", {
+                        "agent": new_agent.name,
+                        "tools": new_agent.tools
+                    })
+                else:
+                    # Fallback: update plan to use system-agent
+                    print(f"[WARNING] Could not create '{agent_name}', falling back to system-agent")
+                    state.log_event("AGENT_CREATION_FAILED", {
+                        "agent": agent_name,
+                        "fallback": "system-agent"
+                    })
+                    for step in plan:
+                        if step.agent == agent_name:
+                            step.agent = "system-agent"
+
+            except Exception as e:
+                print(f"[ERROR] Failed to create agent '{agent_name}': {e}")
+                state.log_event("AGENT_CREATION_ERROR", {
+                    "agent": agent_name,
+                    "error": str(e)
+                })
+                # Fallback to system-agent
+                for step in plan:
+                    if step.agent == agent_name:
+                        step.agent = "system-agent"
+
+        state.log_event("AGENT_GAP_DETECTION", {
+            "agents_created": [a.name for a in new_agents],
+            "phase": "completed"
+        })
+
+        return plan, new_agents
+
     def _get_activity_text(self, msg) -> Optional[str]:
         """Extract activity text from a message (from chief_of_staff example)"""
         try:
@@ -895,8 +1043,21 @@ Create an agent specification in JSON format:
                                 continue
 
         if agent_json:
+            # Map JSON keys to factory parameter names
+            # JSON uses "type" but factory expects "agent_type"
+            factory_args = {
+                "name": agent_json.get("name", "specialized-agent"),
+                "agent_type": agent_json.get("type", "specialized"),
+                "category": agent_json.get("category", "general"),
+                "description": agent_json.get("description", "Auto-created specialized agent"),
+                "system_prompt": agent_json.get("system_prompt", "You are a specialized agent."),
+                "tools": agent_json.get("tools", ["Read", "Write", "Bash"]),
+                "capabilities": agent_json.get("capabilities", []),
+                "constraints": agent_json.get("constraints", [])
+            }
+
             # Create agent using factory
-            agent = self.agent_factory.create_agent(**agent_json)
+            agent = self.agent_factory.create_agent(**factory_args)
             self.component_registry.register_agent(agent)
             return agent
 

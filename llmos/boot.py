@@ -580,8 +580,22 @@ async def main():
 
         # Single command mode
         elif len(sys.argv) > 1:
-            goal = " ".join(sys.argv[1:])
-            await os.execute(goal)
+            # Parse --mode flag if present
+            args = sys.argv[1:]
+            mode = "AUTO"
+            goal_parts = []
+
+            i = 0
+            while i < len(args):
+                if args[i] == "--mode" and i + 1 < len(args):
+                    mode = args[i + 1].upper()
+                    i += 2
+                else:
+                    goal_parts.append(args[i])
+                    i += 1
+
+            goal = " ".join(goal_parts)
+            await os.execute(goal, mode=mode)
 
         else:
             print("Usage:")
@@ -590,6 +604,9 @@ async def main():
             print("  python boot.py terminal --user NAME --ui legacy         # Cron Terminal (Legacy)")
             print("  python boot.py terminal --user NAME --ui textual        # Cron Terminal (MC-style)")
             print("  python boot.py <goal>                                   # Execute single goal")
+            print("  python boot.py <goal> --mode ORCHESTRATOR               # Execute with specific mode")
+            print()
+            print("Modes: AUTO, LEARNER, FOLLOWER, MIXED, CRYSTALLIZED, ORCHESTRATOR")
 
     finally:
         await os.shutdown()

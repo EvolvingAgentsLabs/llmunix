@@ -934,7 +934,61 @@ Five modes optimize **how tasks run**:
 | **FOLLOWER** | 0 | Replay exact trace |
 | **MIXED** | ~1,000 | Partial match |
 | **LEARNER** | ~2,500 | Novel task |
-| **ORCHESTRATOR** | Variable | Multi-agent |
+| **ORCHESTRATOR** | Variable | Multi-agent coordination |
+
+### On-Demand Agent Creation (Cold-Start Solution)
+
+ORCHESTRATOR mode now includes **automatic agent creation** to solve the cold-start problem:
+
+```mermaid
+graph TB
+    subgraph Orchestration["🎭 ORCHESTRATOR Mode"]
+        direction TB
+        Goal["Complex Goal"]
+        Plan["1. Decompose into Steps"]
+        Detect["2. Detect Missing Agents"]
+        Create["3. Create Agents On-Demand"]
+        Execute["4. Execute with Team"]
+    end
+
+    Goal --> Plan --> Detect --> Create --> Execute
+
+    subgraph Created["📦 Auto-Created Agents"]
+        A1["ansatz-designer"]
+        A2["optimizer-agent"]
+        A3["vqe-executor"]
+    end
+
+    Create --> Created
+    Created --> Execute
+
+    style Orchestration fill:#6366f1,color:#fff
+    style Created fill:#10b981,color:#fff
+```
+
+**How it works:**
+
+1. **Planning Phase**: Planner suggests specialized agent names (e.g., `ansatz-designer`, `vqe-executor`)
+2. **Gap Detection**: System detects which agents don't exist yet
+3. **On-Demand Creation**: Missing agents are designed and created via LLM
+4. **Execution**: Newly created agents are registered and used immediately
+
+```python
+# Example: First-time VQE simulation
+await os.execute("Orchestrate VQE simulation with ansatz-designer and vqe-executor")
+
+# System automatically:
+# 1. Creates ansatz-designer agent with quantum circuit capabilities
+# 2. Creates vqe-executor agent with simulation tools
+# 3. Saves agents to workspace/agents/
+# 4. Executes the multi-agent workflow
+```
+
+**Benefits:**
+- No manual agent setup required
+- System learns domain-specific agent patterns
+- Agents are reusable for future tasks
+- Solves the "cold-start" problem for new domains
 
 ### Adaptive Agents
 

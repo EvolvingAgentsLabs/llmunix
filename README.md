@@ -375,6 +375,25 @@ Day 30: Multiple teams use the tool
 
 ---
 
+## On-Demand Agent Creation
+
+LLM OS can **automatically create specialized agents** when you need them:
+
+```bash
+# First time running a quantum simulation?
+python llmos/boot.py "Orchestrate VQE simulation with specialized agents"
+
+# LLM OS automatically:
+# 1. Plans the task and identifies needed agents
+# 2. Creates ansatz-designer, optimizer-agent, vqe-executor
+# 3. Saves them to workspace/agents/ for future use
+# 4. Executes the multi-agent workflow
+```
+
+**No manual setup required.** The system designs domain-appropriate agents on-the-fly, solves the "cold-start" problem, and agents are reusable for future tasks.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -450,6 +469,7 @@ graph TB
 | **Learning System** | Traces provide the data crons analyze |
 | **Evolution Engine** | Proposes how artifacts should change |
 | **Adaptive Agents** | Execute the analysis intelligently |
+| **On-Demand Agent Creation** | Auto-creates specialized agents when needed |
 
 ---
 
