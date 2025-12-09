@@ -83,6 +83,12 @@ class ModeSelectionStrategy(ABC):
             "multiple",  # Multiple items
             "coordinate",  # Coordination needed
             "delegate",  # Delegation needed
+            "orchestrate",  # Explicit orchestration request
+            "team",  # Team coordination
+            "agents",  # Multiple agents needed
+            "workflow",  # Multi-step workflow
+            "pipeline",  # Data/process pipeline
+            "collaborate",  # Collaboration needed
         ]
 
         goal_lower = goal.lower()
