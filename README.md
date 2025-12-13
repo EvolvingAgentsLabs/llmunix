@@ -1,475 +1,339 @@
-<div align="center">
+# LLMunix: WebAssembly-Powered Computational Workbench
 
-# LLM OS
+> **llmos-lite** - Transform from Terminal OS to Browser-Native Computational Platform
 
-### An AI That Learns While You Sleep
-
-[![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)](https://github.com/EvolvingAgentsLabs/llmunix/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0--lite-blue.svg)](https://github.com/EvolvingAgentsLabs/llmunix/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-yellow.svg)](https://python.org)
 
-**Your AI doesn't just execute tasks. It evolves.**
+---
 
-[The Vision](#the-vision) · [How It Works](#how-it-works) · [Quick Start](#quick-start) · [Architecture](ARCHITECTURE.md)
+## 🚀 Migration Notice
 
-</div>
+**We are migrating from the original llmos to llmos-lite + WebAssembly workflows.**
+
+### What Changed
+
+| Aspect | Original llmos | llmos-lite |
+|--------|----------------|------------|
+| **Interface** | Terminal UI | Web UI (React Flow + Chat) |
+| **Execution** | Server (Python/Docker) | Browser (WebAssembly) |
+| **Capabilities** | Python tools, 5 modes | Markdown skills, Workflows |
+| **Architecture** | Complex (sentience, modes, hooks) | Simple (Git + Skills + Evolution) |
+| **Latency** | 100-500ms (network) | <50ms (local) |
+| **Cost** | Server compute | Free (user devices) |
+| **Previews** | Text logs | Interactive (3D, plots, circuits) |
+| **Scalability** | Limited by servers | Unlimited (P2P) |
+
+### Why the Change
+
+The original llmos was **over-engineered for a simple web app**. llmos-lite simplifies to the essentials:
+
+- ⚡ **Zero-latency execution** - Skills run instantly in browser
+- 🎨 **Rich interactive previews** - 3D animations, quantum states, circuit diagrams
+- 🔒 **Sandboxed safety** - Generated code runs in browser, not on servers
+- 💰 **Zero server costs** - Execution happens on user devices
+- 🌍 **Infinite scalability** - P2P computational model
+- 📝 **Git-backed everything** - Version control for all artifacts
 
 ---
 
-## The Vision
+## What is llmos-lite?
 
-Imagine an AI system that:
+**llmos-lite** is a browser-native computational workbench where:
 
-- **Learns from every interaction** and never forgets
-- **Works in the background** analyzing and improving itself
-- **Shares knowledge** across users, teams, and the entire organization
-- **Tells you what it learned** with full transparency
+1. **Skills are Markdown files** - Two types:
+   - **Context Skills**: LLM guidance (e.g., "Python Best Practices")
+   - **Executable Skills**: Runnable nodes with inputs/outputs/code
 
-This is LLM OS - an operating system where AI is the CPU, and **living processes** continuously evolve the system's capabilities.
+2. **Workflows are visual DAGs** - Drag-and-drop computational graphs
 
-```mermaid
-graph TB
-    subgraph "What happens when you're NOT using LLM OS"
-        Sleep["😴 You sleep"]
-        Crons["🤖 Sentience Crons wake up"]
-        Analyze["📊 Analyze your traces"]
-        Evolve["✨ Evolve artifacts"]
-        Notify["📬 Prepare notifications"]
+3. **Execution is browser-native** - WebAssembly (Pyodide, Three.js, SPICE)
 
-        Sleep --> Crons --> Analyze --> Evolve --> Notify
-    end
+4. **Evolution is automatic** - System learns from workflow patterns
 
-    subgraph "What you see in the morning"
-        Report["📋 Activity Report"]
-        Insights["💡 New Insights"]
-        Tools["🔧 Improved Tools"]
-        Suggestions["🎯 Suggestions"]
-    end
-
-    Notify --> Report
-    Notify --> Insights
-    Notify --> Tools
-    Notify --> Suggestions
-
-    style Crons fill:#6366f1,color:#fff
-    style Evolve fill:#10b981,color:#fff
-    style Report fill:#f59e0b,color:#fff
-```
-
----
-
-## The Core Idea: Living Volumes
-
-At the heart of LLM OS are **Volumes** - organized spaces where your AI's knowledge lives and grows.
-
-```mermaid
-graph TB
-    subgraph System["🌐 System Volume"]
-        ST["Global Tools"]
-        SA["Shared Agents"]
-        SI["Cross-team Insights"]
-    end
-
-    subgraph Team["👥 Team Volume"]
-        TT["Team Tools"]
-        TA["Team Agents"]
-        TI["Team Insights"]
-    end
-
-    subgraph User["👤 User Volume"]
-        UT["My Tools"]
-        UA["My Agents"]
-        UI["My Insights"]
-        UTr["My Traces"]
-    end
-
-    User -->|"promote"| Team
-    Team -->|"promote"| System
-    System -.->|"inherit"| Team
-    Team -.->|"inherit"| User
-
-    style System fill:#6366f1,color:#fff
-    style Team fill:#8b5cf6,color:#fff
-    style User fill:#a78bfa,color:#fff
-```
-
-**Volumes contain five artifact types:**
-
-| Artifact | What it is | How it evolves |
-|----------|------------|----------------|
-| **Traces** | Recorded task executions | Summarized, consolidated, crystallized |
-| **Tools** | Python functions | Optimized, improved, promoted |
-| **Agents** | AI personalities | Refined, enhanced, specialized |
-| **Insights** | Discovered patterns | Generated from analysis |
-| **Suggestions** | Improvement ideas | Created by crons |
-
----
-
-## Sentience Crons: Your AI Companions
-
-**Sentience Crons** are not just background jobs - they're **creative thinking partners** that work alongside you. They analyze your work, learn from your team, and proactively suggest new approaches.
-
-```mermaid
-graph LR
-    subgraph What["What Crons Do"]
-        direction TB
-        A1["📊 Analyze traces"]
-        A2["✨ Evolve artifacts"]
-        A3["💡 Suggest new approaches"]
-        A4["🔮 Predict next steps"]
-        A5["🎨 Creative problem-solving"]
-    end
-
-    subgraph Learn["Learning From"]
-        direction TB
-        L1["👤 Your work"]
-        L2["👥 Team patterns"]
-        L3["🌐 System knowledge"]
-    end
-
-    Learn --> What
-
-    style What fill:#6366f1,color:#fff
-    style Learn fill:#10b981,color:#fff
-```
-
-```mermaid
-graph TB
-    subgraph SC["🧠 SystemCron"]
-        direction TB
-        SC1["Analyze all volumes"]
-        SC2["Coordinate team crons"]
-        SC3["Promote global patterns"]
-        SC4["System optimization"]
-    end
-
-    subgraph TC1["👥 TeamCron: Engineering"]
-        direction TB
-        TC1a["Aggregate user patterns"]
-        TC1b["Team insights"]
-        TC1c["Promote to system"]
-    end
-
-    subgraph TC2["👥 TeamCron: Design"]
-        direction TB
-        TC2a["Aggregate user patterns"]
-        TC2b["Team insights"]
-        TC2c["Promote to system"]
-    end
-
-    subgraph UC1["👤 UserCron: Alice"]
-        direction TB
-        UC1a["Analyze traces"]
-        UC1b["Generate insights"]
-        UC1c["Suggest improvements"]
-    end
-
-    subgraph UC2["👤 UserCron: Bob"]
-        direction TB
-        UC2a["Analyze traces"]
-        UC2b["Generate insights"]
-        UC2c["Suggest improvements"]
-    end
-
-    SC --> TC1
-    SC --> TC2
-    TC1 --> UC1
-    TC1 --> UC2
-
-    style SC fill:#dc2626,color:#fff
-    style TC1 fill:#ea580c,color:#fff
-    style TC2 fill:#ea580c,color:#fff
-    style UC1 fill:#16a34a,color:#fff
-    style UC2 fill:#16a34a,color:#fff
-```
-
-### What Each Cron Does
-
-| Cron | Runs Every | Responsibilities |
-|------|------------|------------------|
-| **UserCron** | 30 min | Analyze your traces, suggest next steps, creative problem-solving, personal insights |
-| **TeamCron** | 1 hour | Cross-pollinate ideas, find team patterns, suggest collaborative opportunities |
-| **SystemCron** | 2 hours | Global optimization, coordinate all crons, surface organization-wide insights |
-
-### Creative Capabilities
-
-Crons don't just organize - they **think creatively**:
-
-```
-🔮 "Based on your recent database tasks and the team's API patterns,
-    consider using the cached-query approach that worked well for Bob"
-
-💡 "I noticed you've been debugging auth issues. The system volume has
-    a battle-tested auth-validator tool that might help"
-
-🎯 "Your next logical step might be: write integration tests.
-    Similar traces in the team show 40% fewer bugs when tested early"
-```
-
----
-
-## Full Observability: See Everything
-
-Every action taken by crons is tracked and visible. You're never in the dark about what your AI is doing.
-
-```mermaid
-sequenceDiagram
-    participant U as 👤 User
-    participant UC as 🤖 UserCron
-    participant Hub as 📊 ObservabilityHub
-    participant N as 📬 Notifications
-
-    Note over UC: Background analysis cycle
-    UC->>Hub: record_artifact_created("insight_001")
-    UC->>Hub: record_proposal_created("crystallize_pattern")
-    UC->>Hub: record_cycle_complete(3 tasks, 2.5s)
-
-    Note over U: User checks in
-    U->>Hub: get_activity_feed()
-    Hub-->>U: [3 events in last hour]
-
-    U->>Hub: get_pending_notifications()
-    Hub-->>U: [1 insight, 1 suggestion]
-
-    U->>Hub: acknowledge("insight_001")
-    Hub-->>N: Mark as read
-```
-
-### Observable Events
-
-```python
-# Everything is tracked
-EventType.CRON_STARTED          # Cron began running
-EventType.ARTIFACT_CREATED      # New insight, tool, or agent
-EventType.ARTIFACT_EVOLVED      # Existing artifact improved
-EventType.ARTIFACT_PROMOTED     # Moved up the hierarchy
-EventType.INSIGHT_GENERATED     # Pattern discovered
-EventType.SUGGESTION_CREATED    # Improvement opportunity
-```
-
-### Query Your AI's Activity
-
-```python
-# What happened while I was away?
-activity = kernel.get_activity_feed(since_hours=24)
-
-# Any notifications for me?
-notifications = kernel.get_cron_notifications()
-
-# What changed in my volume?
-changes = kernel.get_artifact_changes(volume_type="user")
-
-# Show me the full report
-print(kernel.format_activity_report())
-```
-
----
-
-## The Cron Terminal: Interactive Dashboard
-
-LLM OS includes an interactive terminal for monitoring and interacting with your crons:
-
-```
-┌─────────────────────────────────────┬────────────────────────────────────────────────┐
-│ 🤖 CRON PROCESSES                   │ 📋 CRON DETAILS: UserCron:alice                │
-│                                     │                                                │
-│ ▼ 🧠 SystemCron                     │ ┌─ Current Thinking ──────────────────────────┐│
-│   │ ├─ Analyzing global patterns... │ │ Analyzing 12 recent traces...               ││
-│   │ └─ 3 insights generated         │ │ Found pattern: "API integration tasks"      ││
-│   │                                 │ │ Considering crystallization opportunity...  ││
-│   ├─▼ 👥 TeamCron:engineering       │ └─────────────────────────────────────────────┘│
-│   │   │ ├─ Aggregating team data... │                                                │
-│   │   │ └─ 1 promotion pending      │ ┌─ Suggested Next Steps ──────────────────────┐│
-│   │   │                             │ │ 1. 🎯 Complete the API error handling       ││
-│   │   ├─ 👤 UserCron:alice [YOU]    │ │ 2. 💡 Consider using team's retry-logic     ││
-│   │   │   ├─ 💭 Thinking...         │ │ 3. 🔮 Write tests (reduces bugs by 40%)     ││
-│   │   │   └─ 2 suggestions ready    │ └─────────────────────────────────────────────┘│
-│   │   │                             │                                                │
-│   │   └─ 👤 UserCron:bob            │ ┌─ Recent Activity ───────────────────────────┐│
-│   │       └─ Idle (last: 5m ago)    │ │ [10:32] Created insight: "API patterns"     ││
-│   │                                 │ │ [10:31] Analyzed trace: api_handler_v3      ││
-│   └─▼ 👥 TeamCron:design            │ │ [10:30] Cycle started                       ││
-│       └─ 👤 UserCron:carol          │ └─────────────────────────────────────────────┘│
-│           └─ 1 insight ready        │                                                │
-│                                     │ ┌─ Interactive ────────────────────────────────┐│
-│ [r] Refresh  [q] Quit               │ │ > Ask your cron: _                          ││
-│                                     │ │                                              ││
-└─────────────────────────────────────┴────────────────────────────────────────────────┘
-```
-
-**Features:**
-- **Left Panel**: Live tree of all cron processes with activity summaries
-- **Right Panel**: Detailed view of selected cron
-- **Interactive Mode**: Chat with your UserCron to ask questions or give directions
-- **Read-Only Mode**: View other crons' activity (team/system) without interaction
-
-```bash
-# Launch the cron terminal
-python llmos/boot.py terminal --user alice --team engineering
-```
-
----
-
-## The Evolution Journey
-
-When you use LLM OS, your knowledge flows through a continuous evolution cycle:
-
-```mermaid
-graph LR
-    subgraph Execute["1️⃣ Execute"]
-        Task["Run a task"]
-        Trace["Create trace"]
-    end
-
-    subgraph Learn["2️⃣ Learn"]
-        Pattern["Detect pattern"]
-        Match["Semantic match"]
-    end
-
-    subgraph Evolve["3️⃣ Evolve"]
-        Analyze["Cron analyzes"]
-        Propose["Propose changes"]
-        Apply["Apply evolution"]
-    end
-
-    subgraph Promote["4️⃣ Promote"]
-        User2["User → Team"]
-        Team2["Team → System"]
-    end
-
-    Task --> Trace --> Pattern --> Match
-    Match --> Analyze --> Propose --> Apply
-    Apply --> User2 --> Team2
-    Team2 -.-> Task
-
-    style Execute fill:#3b82f6,color:#fff
-    style Learn fill:#8b5cf6,color:#fff
-    style Evolve fill:#10b981,color:#fff
-    style Promote fill:#f59e0b,color:#fff
-```
-
-### A Concrete Example
-
-```
-Day 1: You create a Python calculator
-       → Trace saved to User Volume
-
-Day 2: You create another calculator
-       → UserCron notices: "Pattern detected!"
-       → Insight generated: "Calculator tasks are common"
-
-Day 5: Fifth calculator request
-       → UserCron proposes: "Crystallize into tool?"
-       → Tool created: calc_generator.py
-       → Notification: "New tool available!"
-
-Day 10: Your teammate creates a calculator
-        → TeamCron notices: "Alice's tool works great"
-        → Tool promoted to Team Volume
-        → Team notification: "New team tool!"
-
-Day 30: Multiple teams use the tool
-        → SystemCron promotes to System Volume
-        → Now available to everyone, forever
-```
-
----
-
-## On-Demand Agent Creation
-
-LLM OS can **automatically create specialized agents** when you need them:
-
-```bash
-# First time running a quantum simulation?
-python llmos/boot.py "Orchestrate VQE simulation with specialized agents"
-
-# LLM OS automatically:
-# 1. Plans the task and identifies needed agents
-# 2. Creates ansatz-designer, optimizer-agent, vqe-executor
-# 3. Saves them to workspace/agents/ for future use
-# 4. Executes the multi-agent workflow
-```
-
-**No manual setup required.** The system designs domain-appropriate agents on-the-fly, solves the "cold-start" problem, and agents are reusable for future tasks.
+5. **Everything is Git-backed** - Version control for skills, workflows, traces
 
 ---
 
 ## Quick Start
 
+### 1. Install
+
 ```bash
-# Install
-git clone https://github.com/EvolvingAgentsLabs/llmunix.git
-cd llmunix
+cd llmos-lite
 pip install -r requirements.txt
 export ANTHROPIC_API_KEY="your-key"
-
-# Run
-python llmos/boot.py interactive
 ```
 
-### Start with Crons
+### 2. Run the API
 
-```python
-from llmos.boot import LLMOS
+```bash
+python api/main.py
+# Server starts at http://localhost:8000
+# API docs at http://localhost:8000/docs
+```
 
-async def main():
-    os = LLMOS()
-    await os.boot()
+### 3. Try the Chat Endpoint
 
-    # Start background evolution for your user
-    os.kernel.start_crons(user_id="alice", team_id="engineering")
+```bash
+curl -X POST "http://localhost:8000/chat" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "alice",
+    "team_id": "engineering",
+    "message": "Write a Python function to calculate Fibonacci numbers",
+    "include_skills": true
+  }'
+```
 
-    # Work normally - crons evolve in the background
-    await os.execute("Create a Python calculator")
+### 4. Try Workflow Endpoints
 
-    # Check what the crons discovered
-    notifications = os.kernel.get_cron_notifications()
-    for n in notifications:
-        print(f"📬 {n['title']}: {n['description']}")
+```bash
+# List executable skills
+curl "http://localhost:8000/workflows/skills/executable?user_id=alice&team_id=engineering"
 
-    await os.shutdown()
+# Get skill categories
+curl "http://localhost:8000/workflows/categories"
 ```
 
 ---
 
-## How the Mechanisms Work
+## Architecture
 
-The cron and volume system is enabled by several underlying mechanisms:
+### Four-Layer Stack
 
-```mermaid
-graph TB
-    subgraph Core["🎯 Core Feature"]
-        Crons["Sentience Crons"]
-        Volumes["Volume Architecture"]
-        Observe["Observability Hub"]
-    end
-
-    subgraph Enable["⚙️ Enabling Mechanisms"]
-        Sentience["Sentience Layer"]
-        Learning["Learning System"]
-        Evolution["Evolution Engine"]
-        Agents["Adaptive Agents"]
-    end
-
-    Sentience -->|"state-aware decisions"| Crons
-    Learning -->|"traces to analyze"| Crons
-    Evolution -->|"propose changes"| Crons
-    Agents -->|"execute analysis"| Crons
-
-    Crons --> Volumes
-    Crons --> Observe
-
-    style Core fill:#6366f1,color:#fff
-    style Enable fill:#64748b,color:#fff
+```
+┌──────────────────────────────────────────────────────────┐
+│          PRESENTATION LAYER (Browser)                    │
+│  ┌──────────────┐  ┌────────────────┐                   │
+│  │ React Flow   │  │ Chat Interface │                   │
+│  │ Canvas       │  │ (Skill Context)│                   │
+│  └──────┬───────┘  └────────┬───────┘                   │
+└─────────┼──────────────────────┼────────────────────────┘
+          │                      │
+┌─────────▼─────────┐  ┌────────▼────────┐
+│ Workflow Executor │  │ Skills Manager  │
+│ (TypeScript/Wasm) │  │ (Load/Filter)   │
+└─────────┬─────────┘  └────────┬────────┘
+          │                     │
+┌─────────▼─────────────────────▼─────────┐
+│        INTERFACE LAYER (API)            │
+│  - FastAPI endpoints                    │
+│  - /workflows (executable skills)       │
+│  - /chat (LLM + context)                │
+│  - /evolve (pattern detection)          │
+└─────────┬───────────────────────────────┘
+          │
+┌─────────▼─────────────────────────────────┐
+│         LOGIC LAYER (Core)                │
+│  - WorkflowEngine: DAG execution          │
+│  - SkillsManager: Load/filter skills      │
+│  - EvolutionCron: Detect patterns         │
+│  - PatternDetector: Analyze traces        │
+└─────────┬─────────────────────────────────┘
+          │
+┌─────────▼─────────────────────────────────┐
+│         STORAGE LAYER (Volumes)           │
+│  - GitVolume: Git-backed storage          │
+│  - VolumeManager: Multi-tenant access     │
+│  - Hierarchy: System → Team → User        │
+└───────────────────────────────────────────┘
 ```
 
-| Mechanism | What it enables |
-|-----------|-----------------|
-| **Sentience Layer** | Crons make state-aware decisions (curiosity, safety, energy) |
-| **Learning System** | Traces provide the data crons analyze |
-| **Evolution Engine** | Proposes how artifacts should change |
-| **Adaptive Agents** | Execute the analysis intelligently |
-| **On-Demand Agent Creation** | Auto-creates specialized agents when needed |
+---
+
+## Key Features
+
+### 1. Two Types of Skills
+
+**Context Skills** - For LLM guidance:
+```markdown
+---
+name: Python Best Practices
+category: coding
+keywords: [python, coding]
+---
+
+# Skill: Python Best Practices
+## When to Use
+[Description]
+## Approach
+[Steps]
+```
+
+**Executable Skills** - For workflows:
+```markdown
+---
+skill_id: quantum-vqe-node
+type: qiskit
+execution_mode: browser-wasm
+inputs:
+  - name: iterations
+    type: number
+outputs:
+  - name: eigenvalue
+    type: number
+---
+
+\`\`\`python
+def execute(inputs):
+    # Runs in browser via Pyodide
+    return {"eigenvalue": -1.137}
+\`\`\`
+```
+
+### 2. Git-Backed Volumes
+
+```
+/volumes/
+  system/         # Global skills (read-only for users)
+  teams/
+    {team_id}/    # Shared team skills
+  users/
+    {user_id}/    # Private user skills
+```
+
+**Access Control:**
+| Volume | User Can | Team Cron Can | System Cron Can |
+|--------|----------|---------------|-----------------|
+| User   | R/W      | R             | R/W             |
+| Team   | R        | R/W           | R/W             |
+| System | R        | R             | R/W             |
+
+### 3. Evolution Engine
+
+**Automatic skill generation from patterns:**
+
+```
+Day 1-7: User runs workflows
+         → Traces saved to user volume
+
+Night 7: Evolution Cron runs
+         → Detects: "VQE simulation" x 5 times
+         → Generates: vqe-compound-skill.md
+
+Day 8+:  User's future VQE tasks
+         → New skill auto-loaded
+         → Better guidance from LLM
+```
+
+### 4. Multi-Runtime Support
+
+| Runtime | Language | Use Cases |
+|---------|----------|-----------|
+| **Pyodide** | Python | Quantum, Data Science, ML |
+| **JavaScript** | JS | Utilities, Transformations |
+| **Three.js** | JS | 3D Graphics, Animations |
+| **Ngspice.js** | SPICE | Circuit Simulation |
+
+---
+
+## Example Workflows
+
+### Quantum VQE Workflow
+
+```
+[Hamiltonian Node] → [VQE Node] → [Plot Node] → [Export Node]
+
+1. Hamiltonian Node: Defines quantum system
+2. VQE Node: Runs simulation (Pyodide)
+3. Plot Node: Visualizes convergence (JavaScript)
+4. Export Node: Saves results (Canvas API)
+
+Result: Instant, interactive, in-browser execution
+```
+
+### 3D Animation Workflow
+
+```
+[Model Node] → [Material Node] → [Scene Node] → [Render Node]
+
+1. Model Node: Creates 3D geometry (Three.js)
+2. Material Node: Applies textures (Three.js)
+3. Scene Node: Positions objects (Three.js)
+4. Render Node: WebGL rendering (60 FPS)
+
+Result: Real-time 3D visualization in browser
+```
+
+---
+
+## API Endpoints
+
+### Chat
+- `POST /chat` - Chat with skill context injection
+
+### Skills
+- `GET /skills` - List skills
+- `GET /skills/{skill_id}` - Get skill details
+- `POST /skills` - Create skill
+- `POST /skills/promote` - Promote skill (user → team)
+
+### Evolution
+- `POST /evolve` - Trigger pattern detection
+- `GET /traces` - List execution traces
+
+### Workflows
+- `GET /workflows/skills/executable` - List executable skills
+- `POST /workflows/execute` - Prepare workflow for browser execution
+- `POST /workflows/save` - Save workflow to Git
+- `GET /workflows/categories` - List skill categories
+
+### Volumes
+- `GET /volumes/stats` - Volume statistics
+- `GET /volumes/history` - Git commit history
+
+---
+
+## Examples
+
+### qiskit-studio (Being Migrated)
+
+**Location:** `/examples/qiskit-studio`
+
+React Flow-based quantum computing workflow builder:
+- Drag-and-drop quantum circuit nodes
+- Visual workflow canvas
+- Live code generation
+- Frontend: Next.js + React Flow
+- Will integrate with llmos-lite API
+
+**Run it:**
+```bash
+cd examples/qiskit-studio/frontend
+npm install
+npm run dev
+# Open http://localhost:3000
+```
+
+---
+
+## Documentation
+
+- **[llmos-lite/README.md](llmos-lite/README.md)** - Quick start guide
+- **[llmos-lite/ARCHITECTURE.md](llmos-lite/ARCHITECTURE.md)** - Technical deep dive
+- **[llmos-lite/WASM_WORKFLOWS.md](llmos-lite/WASM_WORKFLOWS.md)** - WebAssembly workflow guide
+- **[llmos-lite/QUICKSTART.md](llmos-lite/QUICKSTART.md)** - 5-minute getting started
+- **[EXAMPLES_MIGRATION_ANALYSIS.md](EXAMPLES_MIGRATION_ANALYSIS.md)** - Why examples were removed
+
+---
+
+## Original llmos (Deprecated)
+
+The original llmos architecture is preserved in the `/llmos` folder for reference but is **deprecated**.
+
+**Original llmos featured:**
+- Terminal UI
+- 5 execution modes (LEARNER, FOLLOWER, MIXED, ORCHESTRATOR, CRYSTALLIZED)
+- Sentience layer with valence/emotion
+- Multi-agent orchestration
+- Python tools
+- Server-side execution
+
+**Why deprecated:** Over-engineered for a web app. llmos-lite simplifies to essentials while adding browser-native execution.
+
+**If you need the original llmos:** Check the Git history or the `/llmos` folder (reference only).
 
 ---
 
@@ -477,50 +341,92 @@ graph TB
 
 ```
 llmunix/
-├── llmos/kernel/
-│   ├── sentience_cron.py    # 🤖 UserCron, TeamCron, SystemCron
-│   ├── volumes.py           # 📦 Volume architecture
-│   ├── observability.py     # 📊 Event tracking & notifications
-│   ├── evolution.py         # ✨ Artifact evolution engine
-│   ├── sentience.py         # 🧠 Internal state management
-│   └── cognitive_kernel.py  # 🎛️ Coordination layer
-├── workspace/
-│   └── volumes/             # 📁 Artifact storage
-│       ├── users/           #    └── Per-user volumes
-│       ├── teams/           #    └── Per-team volumes
-│       └── system/          #    └── Global volume
-└── examples/
+├── llmos-lite/              # ⭐ New platform (active development)
+│   ├── core/                # Backend logic
+│   │   ├── volumes.py       # Git-backed storage
+│   │   ├── skills.py        # Skills loader
+│   │   ├── evolution.py     # Pattern detection
+│   │   └── workflow.py      # Workflow engine
+│   ├── api/                 # REST API
+│   │   ├── main.py          # Main API
+│   │   └── workflows.py     # Workflow endpoints
+│   ├── ui/                  # Browser frontend
+│   │   └── lib/             # Executors (Pyodide, workflow)
+│   └── volumes/             # Git repositories
+│       └── system/skills/   # Example skills
+│
+├── examples/
+│   └── qiskit-studio/       # Quantum workflow builder (migrating)
+│
+├── llmos/                   # ⚠️ Original architecture (deprecated, kept for reference)
+│
+└── docs/                    # Documentation
 ```
 
 ---
 
-## Why This Matters
+## Roadmap
 
-Traditional AI systems are **stateless** - they don't remember, don't learn, don't improve.
+### Phase 1: Core llmos-lite ✅ (Complete)
+- [x] Git-backed volumes
+- [x] Skills loader
+- [x] Evolution engine
+- [x] FastAPI service
 
-LLM OS is **living** - it:
+### Phase 2: WebAssembly Workflows ✅ (Complete)
+- [x] Executable skill format
+- [x] Workflow engine (DAG execution)
+- [x] Pyodide integration
+- [x] Multi-runtime support
+- [x] Example skills (Quantum, 3D, Electronics)
 
-- **Remembers** every successful pattern
-- **Learns** from repetition and failure
-- **Improves** artifacts continuously
-- **Shares** knowledge across boundaries
-- **Reports** everything it does
+### Phase 3: React UI (Current)
+- [ ] React Flow canvas
+- [ ] Node library panel
+- [ ] Execution controls & progress
+- [ ] Preview renderers (plots, 3D, circuits)
+- [ ] Chat interface integration
 
-The result: an AI that gets better at helping you, automatically, while you sleep.
+### Phase 4: Advanced Features
+- [ ] GPU acceleration (WebGPU)
+- [ ] Workflow marketplace
+- [ ] Collaborative editing
+- [ ] Mobile PWA
 
 ---
 
-## Learn More
+## Contributing
 
-- **[Architecture Guide](ARCHITECTURE.md)** - Deep dive into all components
-- **[Examples](examples/)** - Production-ready implementations
+We welcome contributions!
+
+**Priority areas:**
+1. React Flow UI development
+2. New executable skills (domains: quantum, 3D, electronics, ML)
+3. Runtime integrations (WebGPU, WebR, etc.)
+4. Example workflows
+
+See [llmos-lite/README.md](llmos-lite/README.md) for development setup.
+
+---
+
+## License
+
+Apache 2.0
+
+---
+
+## Credits
+
+Built by [Evolving Agents Labs](https://github.com/EvolvingAgentsLabs)
+
+**Core Innovation:** Treating capabilities as **version-controlled Markdown files** that execute as **WebAssembly workflows** in the browser.
+
+Inspired by OpenAI/Anthropic's 2025 direction toward Skills as the new paradigm for AI capabilities.
 
 ---
 
 <div align="center">
 
-**[Evolving Agents Labs](https://github.com/EvolvingAgentsLabs)**
-
-*Building AI that evolves*
+**[Get Started](llmos-lite/QUICKSTART.md)** · **[Architecture](llmos-lite/ARCHITECTURE.md)** · **[Examples](examples/)**
 
 </div>

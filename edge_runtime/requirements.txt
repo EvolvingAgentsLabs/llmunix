@@ -1,7 +1,0 @@
-# LLMunix Edge Runtime Dependencies
-# Minimal dependencies for standalone execution on edge devices
-
-pyyaml>=6.0
-
-# Agentic Mode (LLM-powered execution)
-ollama>=0.6.0  # For Granite 4/small model execution with reasoning
