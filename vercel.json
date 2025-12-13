@@ -7,11 +7,10 @@
   "framework": "nextjs",
   "outputDirectory": "llmos-lite/ui/.next",
   "functions": {
-    "llmos-lite/api/**/*.py": {
-      "runtime": "python3.12",
+    "api/**/*.py": {
+      "runtime": "python3.9",
       "memory": 1024,
-      "maxDuration": 30,
-      "excludeFiles": "{tests/**,__tests__/**,**/*.test.py,**/test_*.py,fixtures/**,testdata/**,llmos/**,examples/**,edge_runtime/**}"
+      "maxDuration": 30
     }
   },
   "crons": [
@@ -23,14 +22,5 @@
       "path": "/api/cron/evolution-team",
       "schedule": "0 0 * * 0"
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/llmos-lite/api/:path*"
-    }
-  ],
-  "env": {
-    "PYTHON_VERSION": "3.12"
-  }
+  ]
 }
