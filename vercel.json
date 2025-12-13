@@ -1,4 +1,9 @@
 {
+  "buildCommand": "cd llmos-lite/ui && npm run build",
+  "devCommand": "cd llmos-lite/ui && npm run dev",
+  "installCommand": "cd llmos-lite/ui && npm install",
+  "framework": null,
+  "outputDirectory": "llmos-lite/ui/.next",
   "crons": [
     {
       "path": "/api/cron/evolution-user",
