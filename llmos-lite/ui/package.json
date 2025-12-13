@@ -1,13 +1,14 @@
 {
   "name": "llmos-lite-ui",
   "version": "1.0.0",
-  "description": "WebAssembly-powered workflow UI for LLMos-Lite",
+  "description": "Terminal-style web UI for LLMos-Lite",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "next": "14.1.0",
@@ -19,7 +20,23 @@
     "@react-three/drei": "^9.92.0",
     "pyodide": "^0.25.0",
     "axios": "^1.6.5",
-    "zustand": "^4.5.0"
+    "zustand": "^4.5.0",
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.33",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.0",
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-scroll-area": "^1.0.5",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-tooltip": "^1.0.7",
+    "@monaco-editor/react": "^4.6.0",
+    "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
+    "recharts": "^2.10.3",
+    "lucide-react": "^0.309.0",
+    "date-fns": "^3.0.6"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -28,6 +45,7 @@
     "@types/three": "^0.160.0",
     "typescript": "^5",
     "eslint": "^8",
-    "eslint-config-next": "14.1.0"
+    "eslint-config-next": "14.1.0",
+    "@tailwindcss/typography": "^0.5.10"
   }
 }
