@@ -1,35 +1,64 @@
 # LLMos-Lite
 
-> A simplified, Git-backed, Skills-driven LLM Operating System
+> A WebAssembly-Powered, Git-Backed Computational Workbench
 
-**LLMos-Lite** is a refactored version of the original `llmos` system, designed as a **web-first, collaborative platform** for building self-evolving AI systems.
+**LLMos-Lite** is a complete reimagining of the original `llmos` system, transforming it from a terminal-based LLM OS into a **browser-native computational workbench** where skills become executable nodes in visual workflows.
+
+## 🚀 Migration Notice
+
+**We are migrating from the original llmos architecture to llmos-lite:**
+
+- **Original llmos:** Terminal UI, Python tools, server execution
+- **llmos-lite:** Web UI, executable skills, browser execution via WebAssembly
+
+This migration enables:
+- ⚡ **Zero-latency execution** - Skills run instantly in browser
+- 🎨 **Rich interactive previews** - 3D animations, quantum states, circuit diagrams
+- 🔒 **Sandboxed safety** - Generated code runs in browser, not on servers
+- 💰 **Zero server costs** - Execution happens on user devices
+- 🌍 **Infinite scalability** - P2P computational model
+
+See [WASM_WORKFLOWS.md](WASM_WORKFLOWS.md) for the complete WebAssembly workflow guide.
 
 ## Key Concepts
 
-### 1. Skills (Not Tools)
-Skills are **Markdown files** containing best practices, patterns, and instructions. They get injected into the LLM's context to guide behavior.
+### 1. Skills (Two Types)
 
-**Example Skill:**
+**A. Context Skills** - Markdown files for LLM guidance:
 ```markdown
 ---
 name: Python Testing
 category: coding
-description: How to write effective Python tests
 keywords: [python, testing, pytest]
 ---
 
 # Skill: Python Testing
-
-## When to Use
-Use when writing tests for Python code.
-
 ## Approach
-1. Write test functions starting with `test_`
-2. Use descriptive names
-3. Test one thing per function
-4. Use fixtures for setup
-...
+1. Write test functions...
 ```
+
+**B. Executable Skills** - Runnable nodes in workflows:
+```markdown
+---
+skill_id: quantum-vqe-node
+type: python-wasm
+execution_mode: browser-wasm
+inputs:
+  - name: iterations
+    type: number
+outputs:
+  - name: eigenvalue
+    type: number
+---
+
+\`\`\`python
+def execute(inputs):
+    # Runs in browser via Pyodide
+    return {"eigenvalue": -1.137}
+\`\`\`
+```
+
+Executable skills can be chained into **visual workflows** that execute entirely in the browser via WebAssembly.
 
 ### 2. Git-Backed Volumes
 All artifacts (skills, traces, memory) are stored in **Git repositories**, enabling:
@@ -63,28 +92,37 @@ The **Evolution Cron** analyzes execution traces, detects patterns, and auto-gen
 
 ## Architecture
 
+### Hybrid: Chat + Workflows
+
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Web UI (React)                       │
-│   - Chat Interface                                      │
-│   - Skills Panel (browse/create)                        │
-│   - Evolution View (review auto-generated skills)       │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│                 FastAPI Service                         │
-│   - /chat (LLM with skills injection)                   │
-│   - /skills (CRUD operations)                           │
-│   - /evolve (trigger pattern detection)                 │
-│   - /volumes (Git history, stats)                       │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│                  Core Modules                           │
-│   - volumes.py (Git-backed storage)                     │
-│   - skills.py (Skills loader & context injection)       │
-│   - evolution.py (Pattern detection & skill generation) │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│              Web UI (React Flow + Chat)                  │
+│  ┌─────────────────┐  ┌────────────────────────┐        │
+│  │ Workflow Canvas │  │ Chat Interface         │        │
+│  │ - Drag nodes    │  │ - Skill context        │        │
+│  │ - Connect edges │  │ - LLM guidance         │        │
+│  │ - Run in browser│  │ - Generate workflows   │        │
+│  └─────────────────┘  └────────────────────────┘        │
+└────────────┬──────────────────────┬──────────────────────┘
+             │                      │
+   ┌─────────▼─────────┐  ┌────────▼────────┐
+   │ Workflow Executor │  │ Skills Manager  │
+   │ (TypeScript/Wasm) │  │ (Context inject)│
+   └─────────┬─────────┘  └────────┬────────┘
+             │                     │
+   ┌─────────▼─────────────────────▼─────────┐
+   │          FastAPI Backend                │
+   │  - /workflows (executable skills)       │
+   │  - /chat (LLM + context)                │
+   │  - /evolve (pattern → skill)            │
+   └─────────┬───────────────────────────────┘
+             │
+   ┌─────────▼─────────┐
+   │ WebAssembly       │
+   │ - Pyodide (Python)│
+   │ - Three.js (3D)   │
+   │ - Ngspice (SPICE) │
+   └───────────────────┘
 ```
 
 ---
@@ -222,27 +260,26 @@ curl -X POST "http://localhost:8000/skills/promote" \
 
 ```
 llmos-lite/
-├── core/
-│   ├── volumes.py          # Git-backed volume system
-│   ├── skills.py           # Skills loader & manager
-│   └── evolution.py        # Pattern detection & skill generation
-├── api/
-│   └── main.py             # FastAPI service
-├── volumes/                # Git repositories
-│   ├── system/
-│   │   ├── skills/         # Global skills library
-│   │   └── .git/
-│   ├── teams/
-│   │   └── {team_id}/
-│   │       ├── skills/     # Team-specific skills
-│   │       ├── traces/     # Team execution history
-│   │       └── .git/
-│   └── users/
-│       └── {user_id}/
-│           ├── skills/     # User's draft skills
-│           ├── traces/     # User's execution traces
-│           └── .git/
-├── requirements.txt
+├── core/                          # Backend logic
+│   ├── volumes.py                 # Git-backed storage
+│   ├── skills.py                  # Skills loader
+│   ├── evolution.py               # Pattern detection
+│   └── workflow.py                # ✨ Workflow engine (NEW)
+├── api/                           # REST API
+│   ├── main.py                    # Main API
+│   └── workflows.py               # ✨ Workflow endpoints (NEW)
+├── ui/                            # ✨ Browser frontend (NEW)
+│   ├── lib/
+│   │   ├── pyodide-runner.ts      # Python → Wasm
+│   │   └── workflow-executor.ts   # DAG executor
+│   └── package.json               # React Flow deps
+├── volumes/                       # Git repositories
+│   └── system/skills/
+│       ├── python-coding.md       # Context skill
+│       ├── quantum-vqe-node.md    # ✨ Executable skill
+│       ├── threejs-cube-node.md   # ✨ Executable skill
+│       └── circuit-rc-node.md     # ✨ Executable skill
+├── WASM_WORKFLOWS.md              # ✨ WebAssembly guide (NEW)
 └── README.md
 ```
 
@@ -252,12 +289,15 @@ llmos-lite/
 
 | Original `llmos` | `llmos-lite` |
 |------------------|--------------|
-| 5 execution modes (LEARNER, FOLLOWER, MIXED, CRYSTALLIZED, ORCHESTRATOR) | 1 mode: Load Skills → Execute → Save Trace |
-| Sentience Layer (Valence, Emotion, Theory of Mind) | Simple Pattern Detection |
-| Python Tools | Markdown Skills (context injection) |
-| File-based Volumes | Git-backed Volumes |
-| Complex agent_loader | Simple SkillsManager |
-| Terminal UI | Web API (FastAPI) + React UI |
+| **Execution** | 5 modes (LEARNER, FOLLOWER, etc.) | Chat + Workflows (hybrid) |
+| **Interface** | Terminal UI | Web UI (React Flow + Chat) |
+| **Capabilities** | Python tools | Markdown skills (2 types) |
+| **Execution Location** | Server (Python/Docker) | Browser (WebAssembly) |
+| **Latency** | 100-500ms (network) | <50ms (local) |
+| **Previews** | Text logs | Interactive (3D, plots, etc.) |
+| **Storage** | File-based | Git-backed |
+| **State** | Sentience/Valence | Simple pattern detection |
+| **Cost** | Server compute | Free (user devices) |
 
 ---
 
@@ -317,23 +357,33 @@ llmos-lite/
 - [x] Evolution engine
 - [x] FastAPI service
 
-### Phase 2: LLM Integration (Next)
-- [ ] Anthropic Claude integration
+### Phase 2: WebAssembly Workflows ✓
+- [x] Executable skill format (inputs/outputs/code)
+- [x] Workflow engine (DAG execution)
+- [x] Pyodide integration (Python → Wasm)
+- [x] Multi-runtime support (Python, JS, Three.js, SPICE)
+- [x] Example skills (Quantum VQE, 3D Cube, RC Circuit)
+- [x] Workflow API endpoints
+
+### Phase 3: React UI (Current)
+- [ ] React Flow canvas
+- [ ] Node library panel
+- [ ] Execution controls & progress
+- [ ] Preview renderers (plots, 3D, circuits)
+- [ ] Chat interface integration
+- [ ] Workflow save/load
+
+### Phase 4: LLM Integration
+- [ ] Anthropic Claude API
+- [ ] Generate workflows from chat
 - [ ] Skill-aware prompting
 - [ ] Streaming responses
-- [ ] Token tracking
 
-### Phase 3: Web UI (Next)
-- [ ] React chat interface
-- [ ] Skills browser/editor
-- [ ] Evolution review panel
-- [ ] Git history viewer
-
-### Phase 4: Advanced Features
-- [ ] Multi-agent orchestration
-- [ ] RAG/Vector search for skills
-- [ ] Skill templates library
-- [ ] Team collaboration features
+### Phase 5: Advanced Features
+- [ ] GPU acceleration (WebGPU)
+- [ ] Workflow marketplace
+- [ ] Collaborative editing
+- [ ] Mobile PWA
 
 ---
 

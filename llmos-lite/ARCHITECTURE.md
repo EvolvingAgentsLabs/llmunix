@@ -1,47 +1,76 @@
 # LLMos-Lite Architecture
 
-> From Complex OS to Simple, Git-Backed Skills Platform
+> From Terminal OS to Browser-Native Computational Workbench
+
+## 🚀 Migration Status
+
+**We are migrating from original llmos to llmos-lite + WebAssembly workflows:**
+
+### What Changed
+- **From:** Terminal UI, Python tools, server execution
+- **To:** Web UI, executable skills, browser execution (WebAssembly)
+
+### Why
+- ⚡ **Zero-latency** - No network round-trips
+- 🎨 **Rich previews** - Interactive 3D, plots, circuits
+- 🔒 **Sandboxed** - Browser security, no server risk
+- 💰 **Cost-free** - User devices, not servers
+- 🌍 **P2P scalable** - Unlimited execution capacity
 
 ## Philosophy
 
-LLMos-Lite embraces the **"Skills as Markdown"** paradigm emerging in the AI industry (OpenAI, Anthropic).
+LLMos-Lite combines **two paradigms**:
 
-Instead of:
-- ❌ Complex Python tools
-- ❌ Multiple execution modes
-- ❌ "Sentience" and emotional state
+1. **Skills as Context** (OpenAI/Anthropic 2025)
+   - Markdown files injected into LLM prompts
+   - Git-backed version control
+   - Simple pattern detection
 
-We have:
-- ✅ Markdown skills (context injection)
-- ✅ Git-backed storage (version control)
-- ✅ Simple pattern detection (evolution)
+2. **Skills as Executables** (WebAssembly Era)
+   - Runnable nodes in visual workflows
+   - Browser-native execution
+   - Multi-runtime support (Python, JS, SPICE)
 
 ---
 
-## Three-Layer Architecture
+## Four-Layer Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│             INTERFACE LAYER (API)                       │
-│   - FastAPI endpoints                                   │
-│   - Request/response models                             │
-│   - Authentication (future)                             │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│             LOGIC LAYER (Core)                          │
-│   - SkillsManager: Load/filter skills                   │
-│   - EvolutionCron: Detect patterns                      │
-│   - PatternDetector: Analyze traces                     │
-│   - SkillGenerator: Generate draft skills               │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│             STORAGE LAYER (Volumes)                     │
-│   - GitVolume: Git-backed storage                       │
-│   - VolumeManager: Multi-tenant access control          │
-│   - Hierarchy: System → Team → User                     │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│          PRESENTATION LAYER (Browser)                    │
+│  ┌──────────────┐  ┌────────────────┐                   │
+│  │ React Flow   │  │ Chat Interface │                   │
+│  │ Canvas       │  │ (Skill Context)│                   │
+│  └──────┬───────┘  └────────┬───────┘                   │
+└─────────┼──────────────────────┼────────────────────────┘
+          │                      │
+┌─────────▼─────────┐  ┌────────▼────────┐
+│ Workflow Executor │  │ Skills Manager  │
+│ (TypeScript/Wasm) │  │ (Load/Filter)   │
+└─────────┬─────────┘  └────────┬────────┘
+          │                     │
+┌─────────▼─────────────────────▼─────────┐
+│        INTERFACE LAYER (API)            │
+│  - FastAPI endpoints                    │
+│  - /workflows (executable skills)       │
+│  - /chat (LLM + context)                │
+│  - /evolve (pattern detection)          │
+└─────────┬───────────────────────────────┘
+          │
+┌─────────▼─────────────────────────────────┐
+│         LOGIC LAYER (Core)                │
+│  - WorkflowEngine: DAG execution          │
+│  - SkillsManager: Load/filter skills      │
+│  - EvolutionCron: Detect patterns         │
+│  - PatternDetector: Analyze traces        │
+└─────────┬─────────────────────────────────┘
+          │
+┌─────────▼─────────────────────────────────┐
+│         STORAGE LAYER (Volumes)           │
+│  - GitVolume: Git-backed storage          │
+│  - VolumeManager: Multi-tenant access     │
+│  - Hierarchy: System → Team → User        │
+└───────────────────────────────────────────┘
 ```
 
 ---
@@ -190,6 +219,10 @@ Return stats (traces_analyzed, skills_created, etc.)
 | `/traces/{trace_id}` | GET | Get trace |
 | `/volumes/stats` | GET | Volume statistics |
 | `/volumes/history` | GET | Git commit history |
+| `/workflows/skills/executable` | GET | List executable skills |
+| `/workflows/execute` | POST | Prepare workflow for execution |
+| `/workflows/save` | POST | Save workflow to Git |
+| `/workflows/categories` | GET | List skill categories |
 
 ### Chat Flow
 
@@ -209,6 +242,36 @@ POST /chat
 6. Save trace to user volume
   ↓
 Return {response, skills_used, trace_id}
+```
+
+### Workflow Execution Flow
+
+```
+POST /workflows/execute
+  ↓
+1. Load executable skills (WorkflowEngine.load_executable_skills)
+  ↓
+2. Create workflow DAG from nodes + edges
+  ↓
+3. Prepare browser payload
+  ↓
+4. Return {status: "ready", payload: {workflow, skills}}
+  ↓
+Browser receives payload
+  ↓
+5. Load Pyodide if needed (first time: ~3s, cached: 0ms)
+  ↓
+6. Execute workflow via topological sort
+   - Level 1 nodes execute in parallel
+   - Level 2 nodes wait for dependencies
+   - Continue until all nodes complete
+  ↓
+7. Render previews
+   - Python/Qiskit: Text outputs, plots
+   - Three.js: WebGL canvas rendering
+   - SPICE: Circuit diagrams, voltage plots
+  ↓
+Return results to UI
 ```
 
 ---
@@ -313,14 +376,18 @@ Merge to team/main
 | Feature | llmos | llmos-lite |
 |---------|-------|------------|
 | **Storage** | File-based volumes | Git-backed volumes |
-| **Capabilities** | Python tools | Markdown skills |
-| **Execution** | 5 modes (LEARNER, FOLLOWER, etc.) | 1 mode (context injection) |
+| **Capabilities** | Python tools | Markdown skills (2 types) |
+| **Execution** | 5 modes (LEARNER, FOLLOWER, etc.) | Chat + Workflows (hybrid) |
+| **Execution Location** | Server (Python/Docker) | Browser (WebAssembly) |
+| **Latency** | 100-500ms (network) | <50ms (local) |
+| **Previews** | Text logs | Interactive (3D, plots, circuits) |
 | **Evolution** | SentienceCron (complex) | EvolutionCron (simple) |
 | **State** | Valence, emotion, theory of mind | Pattern detection only |
-| **Interface** | Terminal UI | Web API |
+| **Interface** | Terminal UI | Web UI (React Flow + Chat) |
 | **Collaboration** | File system | Git (commits, branches, PRs) |
 | **Context Injection** | Tool search + examples | Direct markdown injection |
 | **LLM Integration** | Claude SDK with agents | Direct API calls |
+| **Cost** | Server compute | Free (user devices) |
 
 ---
 
