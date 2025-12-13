@@ -4,8 +4,20 @@ interface NodeEditorProps {
   selectedNode: string | null;
 }
 
+interface NodeData {
+  id: string;
+  name: string;
+  type: string;
+  skill?: string;
+  status: string;
+  inputs: Array<{ name: string; type: string; value: string }>;
+  outputs: Array<{ name: string; type: string; value: string }>;
+  code: string;
+  logs: string[];
+}
+
 export default function NodeEditor({ selectedNode }: NodeEditorProps) {
-  const nodeData = {
+  const nodeData: Record<string, NodeData> = {
     'vqe-node': {
       id: 'vqe-node-1',
       name: 'VQE Node',
