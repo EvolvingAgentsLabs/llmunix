@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Terminal color palette */
+    --bg-primary: #0a0e14;
+    --bg-secondary: #131721;
+    --bg-tertiary: #1c212b;
+
+    --fg-primary: #e6e6e6;
+    --fg-secondary: #8a8a8a;
+    --fg-tertiary: #4a4a4a;
+
+    --accent-green: #00ff88;
+    --accent-blue: #00d4ff;
+    --accent-yellow: #ffcc00;
+    --accent-red: #ff4444;
+    --accent-purple: #bb00ff;
+
+    --border: #2a2e3a;
+    --border-focus: #00ff88;
+
+    --terminal-cursor: #00ff88;
+    --terminal-selection: rgba(0, 255, 136, 0.3);
+  }
+
+  * {
+    @apply border-terminal-border;
+  }
+
+  body {
+    @apply bg-terminal-bg-primary text-terminal-fg-primary;
+    @apply font-mono text-sm leading-relaxed;
+    @apply overflow-hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-terminal-bg-primary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-terminal-border rounded;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-terminal-accent-green;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-terminal-selection text-terminal-fg-primary;
+  }
+}
+
+@layer components {
+  /* Terminal panel */
+  .terminal-panel {
+    @apply bg-terminal-bg-secondary border border-terminal-border rounded;
+    @apply p-4 overflow-auto;
+  }
+
+  .terminal-panel:focus-within {
+    @apply border-terminal-border-focus;
+  }
+
+  /* Terminal button */
+  .btn-terminal {
+    @apply bg-transparent border border-terminal-accent-green text-terminal-accent-green;
+    @apply font-mono px-3 py-1.5 cursor-pointer transition-all duration-200;
+    @apply hover:bg-terminal-accent-green hover:text-terminal-bg-primary;
+    @apply hover:shadow-glow-green;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent;
+  }
+
+  .btn-terminal-secondary {
+    @apply bg-transparent border border-terminal-fg-secondary text-terminal-fg-secondary;
+    @apply font-mono px-3 py-1.5 cursor-pointer transition-all duration-200;
+    @apply hover:bg-terminal-fg-secondary hover:text-terminal-bg-primary;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Terminal input */
+  .terminal-input {
+    @apply bg-terminal-bg-tertiary border border-terminal-border;
+    @apply text-terminal-fg-primary font-mono px-3 py-2;
+    @apply focus:outline-none focus:border-terminal-border-focus focus:shadow-glow-green;
+    @apply placeholder:text-terminal-fg-tertiary;
+  }
+
+  /* Terminal heading */
+  .terminal-heading {
+    @apply text-terminal-accent-green font-mono font-semibold uppercase tracking-wide;
+  }
+
+  /* Status indicators */
+  .status-active::before {
+    content: '●';
+    @apply text-terminal-accent-green mr-2;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .status-success::before {
+    content: '✓';
+    @apply text-terminal-accent-green mr-2;
+  }
+
+  .status-error::before {
+    content: '✗';
+    @apply text-terminal-accent-red mr-2;
+  }
+
+  .status-warning::before {
+    content: '⚠';
+    @apply text-terminal-accent-yellow mr-2;
+  }
+
+  .status-pending::before {
+    content: '⏸';
+    @apply text-terminal-fg-secondary mr-2;
+  }
+
+  /* Terminal cursor */
+  .terminal-cursor {
+    @apply inline-block w-2 h-4 bg-terminal-cursor;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* Code block */
+  .code-block {
+    @apply bg-terminal-bg-primary border border-terminal-border;
+    @apply p-3 rounded font-mono text-xs overflow-x-auto;
+  }
+
+  /* Git status badge */
+  .git-badge {
+    @apply inline-flex items-center px-2 py-0.5;
+    @apply bg-terminal-bg-tertiary border border-terminal-border rounded;
+    @apply text-xs text-terminal-fg-secondary;
+  }
+
+  .git-badge-uncommitted {
+    @apply border-terminal-accent-yellow text-terminal-accent-yellow;
+  }
+
+  .git-badge-committed {
+    @apply border-terminal-accent-green text-terminal-accent-green;
+  }
+
+  /* Panel dividers */
+  .panel-divider {
+    @apply border-l border-terminal-border h-full;
+  }
+
+  /* Hover effects */
+  .terminal-hover {
+    @apply transition-colors duration-150;
+    @apply hover:bg-terminal-bg-tertiary cursor-pointer;
+  }
+
+  /* Active item */
+  .terminal-active {
+    @apply bg-terminal-bg-tertiary border-l-2 border-l-terminal-accent-green;
+  }
+}
+
+@layer utilities {
+  /* Animations */
+  .animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-cursor-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  /* Text utilities */
+  .text-mono {
+    @apply font-mono;
+  }
+
+  /* Glow effects */
+  .glow-green {
+    @apply shadow-glow-green;
+  }
+
+  .glow-blue {
+    @apply shadow-glow-blue;
+  }
+}
+
+/* Keyframes */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* xterm.js terminal styles */
+.xterm {
+  @apply font-mono;
+  padding: 0;
+}
+
+.xterm-viewport {
+  @apply bg-terminal-bg-primary;
+}
+
+.xterm .xterm-cursor-layer .xterm-cursor {
+  @apply bg-terminal-cursor;
+}
+
+.xterm .xterm-selection {
+  @apply bg-terminal-selection;
+}
+
+/* React Flow custom styles */
+.react-flow {
+  @apply bg-terminal-bg-primary;
+}
+
+.react-flow__node {
+  @apply bg-terminal-bg-secondary border border-terminal-border rounded;
+  @apply font-mono text-sm;
+}
+
+.react-flow__node.selected {
+  @apply border-terminal-accent-green shadow-glow-green;
+}
+
+.react-flow__edge {
+  stroke: var(--accent-green);
+}
+
+.react-flow__edge.selected {
+  stroke: var(--accent-blue);
+}
+
+.react-flow__controls {
+  @apply bg-terminal-bg-secondary border border-terminal-border rounded;
+}
+
+.react-flow__controls button {
+  @apply bg-transparent border-none text-terminal-fg-primary;
+  @apply hover:bg-terminal-bg-tertiary;
+}
+
+/* Monaco Editor custom styles */
+.monaco-editor {
+  @apply font-mono;
+}
+
+.monaco-editor .margin {
+  @apply bg-terminal-bg-primary;
+}
