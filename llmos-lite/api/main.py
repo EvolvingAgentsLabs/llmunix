@@ -25,6 +25,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from core.volumes import VolumeManager, GitVolume
 from core.skills import SkillsManager, Skill
 from core.evolution import EvolutionCron
+from core.workflow import WorkflowEngine
+from api.workflows import router as workflows_router
 
 # Initialize FastAPI
 app = FastAPI(
@@ -46,6 +48,14 @@ app.add_middleware(
 VOLUMES_PATH = Path(os.getenv("LLMOS_VOLUMES_PATH", "./volumes"))
 volume_manager = VolumeManager(VOLUMES_PATH)
 skills_manager = SkillsManager(volume_manager)
+
+# Initialize workflow engine
+from api import workflows as workflows_module
+workflow_engine = WorkflowEngine(volume_manager)
+workflows_module.workflow_engine = workflow_engine
+
+# Include workflow router
+app.include_router(workflows_router)
 
 
 # ============================================================================
