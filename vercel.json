@@ -1,18 +1,4 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "buildCommand": "cd llmos-lite/ui && npm install && npm run build",
-  "devCommand": "cd llmos-lite/ui && npm run dev",
-  "installCommand": "pip install -r llmos-lite/requirements.txt && cd llmos-lite/ui && npm install",
-  "framework": "nextjs",
-  "outputDirectory": "llmos-lite/ui/.next",
-  "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.9",
-      "memory": 1024,
-      "maxDuration": 30
-    }
-  },
   "crons": [
     {
       "path": "/api/cron/evolution-user",
